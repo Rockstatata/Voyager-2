@@ -1,0 +1,22 @@
+# Build output
+x64/
+Win32/
+Debug/
+Release/
+*.obj
+*.pdb
+*.ilk
+*.exe
+*.log
+*.tlog
+*.idb
+*.iobj
+*.ipdb
+
+# Visual Studio / VS Code local state
+.vs/
+*.aps
+*.user
+
+# Keep Libraries/ tracked: glad, GLFW, glm and glfw3.lib are part of the
+# instructor starter project and must travel with the repo.
