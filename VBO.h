@@ -3,13 +3,24 @@
 
 #include <glad/glad.h>
 
+// RAII wrapper around a GL array buffer.
+// Move-only: copying would let two objects delete the same buffer name.
 class VBO {
 public:
-	GLuint ID;
-	VBO(GLfloat* vertices, GLsizeiptr size);
+	GLuint ID = 0;
 
-	void Bind();
-	void Unbind();
+	VBO(const GLfloat* vertices, GLsizeiptr size);
+	~VBO();
+
+	VBO(const VBO&) = delete;
+	VBO& operator=(const VBO&) = delete;
+	VBO(VBO&& other) noexcept;
+	VBO& operator=(VBO&& other) noexcept;
+
+	void Bind() const;
+	void Unbind() const;
+
+	// Releases the buffer early. Idempotent, so the destructor stays safe.
 	void Delete();
 };
 

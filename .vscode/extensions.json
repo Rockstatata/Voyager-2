@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "ms-vscode.cpptools"
+    ],
+    "unwantedRecommendations": [
+        "formulahendry.code-runner"
+    ]
+}

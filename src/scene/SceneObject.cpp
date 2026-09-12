@@ -10,6 +10,9 @@ void SceneObject::update(double dt)
 
 void SceneObject::render(Renderer& renderer)
 {
+	if (!m_visible)
+		return;
+
 	if (m_mesh != nullptr)
 		renderer.submit(*m_mesh, glm::mat4(worldMatrix()));
 
@@ -17,7 +20,7 @@ void SceneObject::render(Renderer& renderer)
 		child->render(renderer);
 }
 
-void SceneObject::setMesh(std::unique_ptr<Mesh> mesh)
+void SceneObject::setMesh(std::shared_ptr<Mesh> mesh)
 {
 	m_mesh = std::move(mesh);
 }
