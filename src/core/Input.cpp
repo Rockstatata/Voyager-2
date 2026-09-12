@@ -21,7 +21,7 @@ void Input::update()
 	m_previousKeys = m_keys;
 	m_previousMouseButtons = m_mouseButtons;
 
-	for (int key = 0; key <= GLFW_KEY_LAST && key < kKeyCount; ++key)
+	for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST && key < kKeyCount; ++key)
 		m_keys[key] = glfwGetKey(m_window, key) == GLFW_PRESS;
 
 	for (int button = 0; button < kMouseButtonCount; ++button)

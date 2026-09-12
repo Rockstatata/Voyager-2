@@ -17,6 +17,16 @@ Release/
 .vs/
 *.aps
 *.user
+*.sdf
+*.opendb
+*.VC.db
+*.VC.VC.opendb
+ipch/
+
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store
 
 # Keep Libraries/ tracked: glad, GLFW, glm and glfw3.lib are part of the
 # instructor starter project and must travel with the repo.
