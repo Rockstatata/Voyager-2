@@ -39,6 +39,9 @@
     <ClCompile Include="shaderClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="stb_image_impl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="VAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -60,11 +63,44 @@
     <ClCompile Include="src\rendering\Camera.cpp">
       <Filter>src\rendering</Filter>
     </ClCompile>
+	<ClCompile Include="src\rendering\BoxGenerator.cpp">
+	  <Filter>src\rendering</Filter>
+	</ClCompile>
     <ClCompile Include="src\rendering\Mesh.cpp">
+      <Filter>src\rendering</Filter>
+    </ClCompile>
+	<ClCompile Include="src\rendering\ParabolicDishGenerator.cpp">
+	  <Filter>src\rendering</Filter>
+	</ClCompile>
+    <ClCompile Include="src\rendering\CircleGenerator.cpp">
+      <Filter>src\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\CylinderGenerator.cpp">
       <Filter>src\rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\rendering\Renderer.cpp">
       <Filter>src\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\RingGenerator.cpp">
+      <Filter>src\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\StarfieldGenerator.cpp">
+      <Filter>src\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\Texture2D.cpp">
+      <Filter>src\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\UvSphereGenerator.cpp">
+      <Filter>src\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\CelestialBody.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\InstancedField.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\ScaleManager.cpp">
+      <Filter>src\scene</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\Scene.cpp">
       <Filter>src\scene</Filter>
@@ -72,6 +108,18 @@
     <ClCompile Include="src\scene\SceneObject.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\scene\SolarSystem.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+	<ClCompile Include="src\scene\Trajectory.cpp">
+	  <Filter>src\scene</Filter>
+	</ClCompile>
+    <ClCompile Include="src\scene\Voyager2.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+	<ClCompile Include="src\scene\VoyagerModelBuilder.cpp">
+	  <Filter>src\scene</Filter>
+	</ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EBO.h">
@@ -101,11 +149,59 @@
     <ClInclude Include="src\rendering\Camera.h">
       <Filter>src\rendering</Filter>
     </ClInclude>
+	<ClInclude Include="src\rendering\BoxGenerator.h">
+	  <Filter>src\rendering</Filter>
+	</ClInclude>
+    <ClInclude Include="src\rendering\Material.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
     <ClInclude Include="src\rendering\Mesh.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\MeshData.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
+	<ClInclude Include="src\rendering\ParabolicDishGenerator.h">
+	  <Filter>src\rendering</Filter>
+	</ClInclude>
+    <ClInclude Include="src\rendering\CircleGenerator.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\CylinderGenerator.h">
       <Filter>src\rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\rendering\Renderer.h">
       <Filter>src\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\RingGenerator.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\StarfieldGenerator.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\Texture2D.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\UvSphereGenerator.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\Vertex.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\BodyType.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\CelestialBody.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\CelestialBodyData.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\InstancedField.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\ScaleManager.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\Scene.h">
       <Filter>src\scene</Filter>
@@ -113,9 +209,21 @@
     <ClInclude Include="src\scene\SceneObject.h">
       <Filter>src\scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\scene\SolarSystem.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
     <ClInclude Include="src\scene\Transform.h">
       <Filter>src\scene</Filter>
     </ClInclude>
+	<ClInclude Include="src\scene\Trajectory.h">
+	  <Filter>src\scene</Filter>
+	</ClInclude>
+    <ClInclude Include="src\scene\Voyager2.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+	<ClInclude Include="src\scene\VoyagerModelBuilder.h">
+	  <Filter>src\scene</Filter>
+	</ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag" />

@@ -18,7 +18,7 @@ public:
 	VAO(VAO&& other) noexcept;
 	VAO& operator=(VAO&& other) noexcept;
 
-	void LinkAttrib(const VBO& vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
+	void LinkAttrib(const VBO& vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, const void* offset);
 	void Bind() const;
 	void Unbind() const;
 

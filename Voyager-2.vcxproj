@@ -152,6 +152,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="shaderClass.cpp" />
+    <ClCompile Include="stb_image_impl.cpp" />
     <ClCompile Include="VAO.cpp" />
     <ClCompile Include="VBO.cpp" />
     <ClCompile Include="src\core\Application.cpp" />
@@ -159,10 +160,25 @@
     <ClCompile Include="src\core\Time.cpp" />
     <ClCompile Include="src\core\Window.cpp" />
     <ClCompile Include="src\rendering\Camera.cpp" />
+	<ClCompile Include="src\rendering\BoxGenerator.cpp" />
+    <ClCompile Include="src\rendering\CircleGenerator.cpp" />
+    <ClCompile Include="src\rendering\CylinderGenerator.cpp" />
     <ClCompile Include="src\rendering\Mesh.cpp" />
+	<ClCompile Include="src\rendering\ParabolicDishGenerator.cpp" />
     <ClCompile Include="src\rendering\Renderer.cpp" />
+    <ClCompile Include="src\rendering\RingGenerator.cpp" />
+    <ClCompile Include="src\rendering\StarfieldGenerator.cpp" />
+    <ClCompile Include="src\rendering\Texture2D.cpp" />
+    <ClCompile Include="src\rendering\UvSphereGenerator.cpp" />
+    <ClCompile Include="src\scene\CelestialBody.cpp" />
+    <ClCompile Include="src\scene\InstancedField.cpp" />
+    <ClCompile Include="src\scene\ScaleManager.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\scene\SceneObject.cpp" />
+    <ClCompile Include="src\scene\SolarSystem.cpp" />
+	<ClCompile Include="src\scene\Trajectory.cpp" />
+    <ClCompile Include="src\scene\Voyager2.cpp" />
+	<ClCompile Include="src\scene\VoyagerModelBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag" />
@@ -178,11 +194,31 @@
     <ClInclude Include="src\core\Time.h" />
     <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\rendering\Camera.h" />
+	<ClInclude Include="src\rendering\BoxGenerator.h" />
+    <ClInclude Include="src\rendering\Material.h" />
     <ClInclude Include="src\rendering\Mesh.h" />
+    <ClInclude Include="src\rendering\CircleGenerator.h" />
+    <ClInclude Include="src\rendering\CylinderGenerator.h" />
+    <ClInclude Include="src\rendering\MeshData.h" />
+	<ClInclude Include="src\rendering\ParabolicDishGenerator.h" />
     <ClInclude Include="src\rendering\Renderer.h" />
+    <ClInclude Include="src\rendering\RingGenerator.h" />
+    <ClInclude Include="src\rendering\StarfieldGenerator.h" />
+    <ClInclude Include="src\rendering\Texture2D.h" />
+    <ClInclude Include="src\rendering\UvSphereGenerator.h" />
+    <ClInclude Include="src\rendering\Vertex.h" />
+    <ClInclude Include="src\scene\BodyType.h" />
+    <ClInclude Include="src\scene\CelestialBody.h" />
+    <ClInclude Include="src\scene\CelestialBodyData.h" />
+    <ClInclude Include="src\scene\InstancedField.h" />
+    <ClInclude Include="src\scene\ScaleManager.h" />
     <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\scene\SceneObject.h" />
+    <ClInclude Include="src\scene\SolarSystem.h" />
     <ClInclude Include="src\scene\Transform.h" />
+	<ClInclude Include="src\scene\Trajectory.h" />
+    <ClInclude Include="src\scene\Voyager2.h" />
+	<ClInclude Include="src\scene\VoyagerModelBuilder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

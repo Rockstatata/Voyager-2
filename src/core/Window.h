@@ -25,6 +25,7 @@ public:
 
 	void pollEvents();
 	void swapBuffers();
+	void setTitle(const std::string& title);
 
 	int width() const { return m_width; }
 	int height() const { return m_height; }

@@ -21,7 +21,7 @@ VAO& VAO::operator=(VAO&& other) noexcept {
 	return *this;
 }
 
-void VAO::LinkAttrib(const VBO& vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset) {
+void VAO::LinkAttrib(const VBO& vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, const void* offset) {
 	vbo.Bind();
 
 	glVertexAttribPointer(layout, numComponents, type, GL_FALSE, (GLsizei)stride, offset);

@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Transform.h"
+#include "../rendering/Material.h"
 #include "../rendering/Mesh.h"
 
 class Renderer;
@@ -32,6 +33,8 @@ public:
 
 	void setMesh(std::shared_ptr<Mesh> mesh);
 	const std::shared_ptr<Mesh>& mesh() const { return m_mesh; }
+	void setMaterial(std::shared_ptr<Material> material);
+	const std::shared_ptr<Material>& material() const { return m_material; }
 
 	const std::string& name() const { return m_name; }
 	void setName(std::string name) { m_name = std::move(name); }
@@ -51,6 +54,7 @@ protected:
 	SceneObject* m_parent = nullptr; // non-owning; owned via parent's m_children
 	std::vector<std::unique_ptr<SceneObject>> m_children;
 	std::shared_ptr<Mesh> m_mesh;    // shared geometry, never per-object copies
+	std::shared_ptr<Material> m_material;
 	bool m_visible = true;
 };
 

@@ -1,55 +1,60 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Source of Truth
 
-## What this is
+This is a Windows/OpenGL 3.3 Core solar-system explorer built with C++20, MSVC, GLAD, GLFW, and GLM. Read `docs/Voyager_2_Solar_System_Implementation_Bible.md` before architectural work. It is authoritative when guidance conflicts. Section 45 defines the phases, section 43 the manual tests, and sections 49–52 the conventions, failure modes, and canonical interfaces.
 
-A Windows/OpenGL 3.3 Core solar-system explorer ("Voyager 2 Explorer"), built from an instructor starter project (VAO/VBO/EBO/Shader wrappers, GLAD, GLFW, glm) and now growing into the architecture specified in `docs/Voyager_2_Solar_System_Implementation_Bible.md` — the master spec for this project. Read it before any architectural change; it is authoritative over anything below where they'd conflict. Section 45 tracks phase-by-phase scope, section 52 has canonical class interfaces, section 49 has naming/ownership/logging conventions, section 51 lists failure modes to avoid (e.g. F1: everything in main.cpp, F8: one VAO/VBO created every frame, F9: one draw call per asteroid).
+`docs/copilot-plan-phase.md` records the completed Phase 1 refactor. `docs/vscode-working.md` is historical; `.vscode/` and `scripts/` are the working configuration. `ChatGPT.cpp` is uncompiled reference material, not production code.
 
-`docs/copilot-plan-phase.md` is the plan that produced the current `src/core` and `src/rendering/Camera` layer (Phase 1) — historical record, already executed, not a pending task list. `docs/vscode-working.md` is superseded by the `.vscode/` config and `scripts/` described below; the MSBuild/tasks.json approach it recommends is what's actually wired up now.
+**Current state:** The pre-lighting object pass is complete. `SolarSystem` registers 26 textured bodies (Sun, eight planets, Pluto, and all required/optional moons) sharing one 32×64 indexed UV sphere. `ScaleManager` maps body radius, heliocentric distance, and spacecraft metres independently; bodies spin and follow eccentric educational orbits under pause/speed controls. Four planetary ring systems, eight orbit guides, a 4,000-point starfield, instanced asteroid/Kuiper/Oort fields, and one moving tailed comet are present. Voyager 2 is built entirely from project-native procedural geometry by `VoyagerModelBuilder`: real dish/bus proportions, parabolic HGA/feed/LGA, decagonal bus, three lattice booms, finned RTGs, scan-platform instruments/cameras, magnetometers, PWS antennas, panels, Golden Record, and 16 thrusters. Historical mode interpolates 160 offline NASA/JPL Horizons samples and renders the same path; `1`–`6` select mission bookmarks, `T` toggles the path, `V` switches Historical/Manual, and the default chase camera is a verified three-quarter view. Lighting, shading, synchronized planetary ephemerides, and a full text HUD remain outside this pre-lighting submission.
 
-**Current state:** Phase 0 and Phase 1 complete — `Application` owns `Window`/`Input`/`Time`/`Camera`/`Renderer`/`Scene` and runs the loop; two `SceneObject`s share one uploaded `Mesh` via `shared_ptr`; free-fly `Camera` reproduces the starter's exact original view. Next up is Phase 2 (UV sphere + `Vertex{position, normal, uv}` + depth-tested multi-body render — bible section "Phase 2").
+## Build, Run, and Verify
 
-## Build, run, debug
+The project requires MSVC platform toolset `v145`, the Windows SDK, and Visual Studio's **Desktop development with C++** workload. There is no CMake or automated test suite.
 
-Windows-only, MSVC toolchain (`v145` platform toolset, C++20). Requires the **Desktop development with C++** workload (MSVC compiler, Windows SDK, MSBuild) — no CMake, no ninja.
-
-From VS Code, opened at this folder:
-- **Ctrl+Shift+B** — Debug x64 build (default task).
-- **F5** — build then launch under the Visual Studio debugger (`cppvsdbg`), breakpoints work.
-- Other tasks via Command Palette → *Run Task*: `Build Release x64`, `Rebuild Debug x64`, `Run Debug x64`.
-
-From a plain terminal (no Developer Prompt needed — the scripts locate MSBuild via `vswhere` themselves):
 ```powershell
 .\scripts\build.ps1                          # Debug x64
-.\scripts\build.ps1 -Configuration Release
-.\scripts\build.ps1 -Rebuild                 # full rebuild; needed after editing the .vcxproj
-.\scripts\run.ps1                            # build, then run from the project root
+.\scripts\build.ps1 -Configuration Release   # Release x64
+.\scripts\build.ps1 -Rebuild                 # after project-file changes
+.\scripts\run.ps1                            # build and run at repo root
 ```
-Output lands at `x64\<Configuration>\Voyager-2.exe`.
 
-**Working directory matters.** `Shader` (`shaderClass.cpp`) loads `default.vert`/`default.frag` by relative path and throws a bare `errno` if the cwd is wrong. The exe must run with the project root as cwd — `scripts/run.ps1` and `.vscode/launch.json` both set this; don't launch the `.exe` directly from `x64\Debug\`.
+The working directory must be the repository root because shaders and textures use relative paths. Output is `x64\<Configuration>\Voyager-2.exe`. Verify changes with the relevant tests in bible section 43 and record visual results. When adding a `.cpp` or `.h`, register it in both `Voyager-2.vcxproj` and `Voyager-2.vcxproj.filters`, then rebuild.
 
-**No automated test suite.** Bible section 43 defines the test plan (T1–T11) as manual/visual checks — window opens, shapes render, transforms are correct, FPS is stable, etc. Verify a change by building, running, and checking against the relevant T-numbered criterion.
+## Architecture and Ownership
 
-**Adding a new source file** requires registering it in *both* `Voyager-2.vcxproj` (`ClCompile`/`ClInclude` ItemGroups) and `Voyager-2.vcxproj.filters` (for VS Solution Explorer grouping) — MSBuild does not glob. `Rebuild Debug x64` after any such change; an incremental build can miss a project-file edit.
+- `Main.cpp` only constructs, initializes, and runs `Application`. The loop remains `input -> update(dt) -> render`; rendering never mutates simulation state.
+- `Window` exclusively owns GLFW/context lifetime. `Input` exclusively polls GLFW and distinguishes held from pressed/released state.
+- `Scene` owns root `SceneObject`s; parents own children with `unique_ptr`, while child parent links are non-owning.
+- Reusable GPU resources use `shared_ptr`. All bodies share one sphere mesh; do not upload a mesh per body.
+- `VAO`, `VBO`, `EBO`, `Mesh`, and `Texture2D` are move-only RAII owners. Do not add raw `new`/`delete` for GPU objects.
+- World transforms use `dvec3`/`dquat` and narrow to float only at GPU upload. Camera movement never edits a body's physical transform.
+- `Application` composes systems; pure geometry algorithms such as `UvSphereGenerator` stay independent of OpenGL.
 
-## Architecture
+## Phase 2 Rendering Contract
 
-**Loop ownership (bible section 10, Rule 4).** `Application` (`src/core/Application.*`) is the only thing `Main.cpp` touches: `initialize()` then `run()`. Its loop is strictly `input → update(dt) → render()` — `render()` must never mutate scene/simulation state, and objects must never touch OpenGL from inside `update()`. `Window` is the sole owner of the GLFW window/context lifetime and the only class that calls GLFW window/context APIs directly; `Input` is the sole reader of `glfwGetKey`/`glfwGetMouseButton`, exposing `keyDown` (continuous — thrust, steering) vs `keyPressed`/`keyReleased` (edge-triggered — mode switches, toggles) so no other code queries GLFW state directly.
+`Vertex` is eight tightly packed floats: `position` at location 0, `normal` at location 1, and `texCoord` at location 2. `Mesh` and `default.vert` must change together if this format changes. Shader uniforms are `model`, `view`, `proj`, `baseColor`, `useTexture`, and `albedoTexture`.
 
-**Scene graph.** `Scene` owns root `SceneObject`s; each owns children via `unique_ptr` and computes `worldMatrix()` by walking to its (non-owning) parent pointer. A `Mesh` is held by `shared_ptr` on `SceneObject`, not by value — geometry is meant to be shared (one sphere mesh for every planet), and duplicating uploads per-body is exactly the Phase-2+ trap the bible warns against (F9).
+The sphere call is `generate(32, 64)`, producing 2,145 vertices and 3,968 non-degenerate counter-clockwise triangles. The duplicated longitude column is required for the `u=0/1` texture seam.
 
-**Double-precision transforms (bible section 11–12, Rule 6).** `Transform` (`src/scene/Transform.h`) keeps `position`/`rotation`/`scale` in `dvec3`/`dquat` and only narrows to `float` in `modelMatrix()` at upload time. `Camera` does the same — position is `dvec3`, narrowed to `vec3` only inside `viewMatrix()`. This is the seam the later floating-origin phase (bible section 20) will hook into; don't introduce `float` world positions elsewhere. Moving the camera must never write to a body's physical `Transform` — the camera and the simulation are separate systems by construction (`Renderer::submit` never touches `Transform`, `Camera::update` never touches `Scene`).
+## Texture Policy
 
-**Renderer holds no camera.** `Renderer::beginFrame(camera, aspectRatio)` takes the camera each frame instead of caching a view/proj internally — this was the Phase 1 refactor. It caches GL uniform locations per shader (`model`/`view`/`proj`/`scale`) rather than re-resolving them every `submit()`.
+Geometry (vertices, normals, UVs, indices, transforms) must always be self-authored — never import a pre-built mesh or another project's geometry. Textures are a separate pipeline stage (fragment-only; see `docs/objects/phase-2-rendering-pipeline.md`) and may be real, credited photographic imagery: currently the Solar System Scope free 2k pack (CC BY 4.0) and NASA 3D Resources (public domain) — see `assets/textures/bodies/README.md` for the full per-file manifest. `Texture2D::loadFromFile` decodes files via the vendored public-domain `stb_image.h` (same category as GLAD/GLFW — a utility, not geometry/shading logic you'd be graded on). Do not reintroduce a procedural texture generator as the primary path; if one is added later it must be additional, not a replacement for credited real imagery, and must say so in the relevant object docs.
 
-**GPU resource ownership.** `VAO`/`VBO`/`EBO` (project root) are move-only RAII: constructor allocates, destructor frees, `Delete()` is idempotent and safe to call early. `Mesh` (`src/rendering/Mesh.*`) holds them *by value*, not by pointer — no `new`/`delete` inside `Mesh`. When binding EBOs, always bind the VAO first (element-array binding is captured as VAO state) and unbind the VAO before unbinding the EBO, or the binding is lost — see the comment in `Mesh::Mesh`.
+## Solar-System Registry and Scale
 
-**Shader contract.** `default.vert`/`default.frag` expect uniforms `model`, `view`, `proj`, `scale` and vertex attributes `layout(location=0) vec3 aPos`, `layout(location=1) vec3 aColor`. Any new mesh format (normals, UVs — Phase 2) needs a shader update in lockstep; `Mesh`'s attribute layout and the `.vert`'s `layout(location=...)` must agree.
+`CelestialBodyData` holds physical facts independently of rendering. `SolarSystem` registers parents before children and keeps moons under their planet. `ScaleManager` now owns all educational mappings; `CelestialBody` applies axial spin and eccentric orbit motion. Read `docs/objects/scale-manager.md` and `docs/objects/orbital-motion.md` before changing parent-scale compensation or orbital units.
 
-**Logging categories** (bible section 49): `[APP] [GLFW] [OPENGL] [SHADER] [ASSET] [SCENE] [SOLAR] [VOYAGER] [TRAJECTORY]` — `std::cout` prefixed, no logging framework. Follow this when adding diagnostics.
+## Object Documentation Contract
 
-`ChatGPT.cpp` is a scratch/reference file (procedural sphere generation) — not part of the build (`Voyager-2.vcxproj` doesn't compile it); consult it for sphere-generation approach when starting Phase 2, don't build on it directly.
+`docs/objects/README.md` is the teaching-document index. Every new renderable object must have `docs/objects/<object-id>.md` before its phase is complete. Explain geometry generation, vertex attributes, triangle/index construction, transform order, animation/units, material mapping, asset source and credit, limitations, a diagram or annotated screenshot, and verification steps. Shared mathematics belongs in a shared guide and should be linked from each object file. All 26 current bodies have this doc.
 
-`assets/{data,models,shaders,textures,trajectory}/` are empty scaffolding for later phases (solar-system JSON, trajectory CSV, textures — bible section 44) — nothing loads from them yet.
+## Coverage Boundary
+
+All bible-named bodies and all four ring systems are present. Spherical bodies intentionally share one mesh; later geometry work may add oblateness/irregular silhouettes without changing the registry. Remaining astronomy accuracy work is synchronized date-based planetary ephemerides and higher-frequency Voyager sampling, not missing object categories.
+
+## Style, Logs, and Commits
+
+Use tabs, Allman braces, one declaration per line, `PascalCase` types, `lowerCamelCase` functions, `m_` members, and `kPascalCase` constants. Use established log prefixes: `[APP]`, `[GLFW]`, `[OPENGL]`, `[SHADER]`, `[ASSET]`, `[SCENE]`, `[SOLAR]`, `[VOYAGER]`, `[TRAJECTORY]`.
+
+Commit summaries are concise, imperative, and focused. Never add Claude, Codex, ChatGPT, or other AI/tool attribution to a commit message. Never add an AI `Co-authored-by`, `Signed-off-by`, or similar trailer. Pull requests should name the bible phase, describe architectural impact, report build/manual tests, and include a screenshot or capture for rendering changes.

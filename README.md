@@ -6,11 +6,11 @@ Started from an instructor starter project (VAO/VBO/EBO/Shader wrappers, GLAD, G
 
 ## Status
 
-**Phase 0–1 complete:** `Application` owns `Window` / `Input` / `Time` / `Camera` / `Renderer` / `Scene` and drives the loop; scene objects share uploaded meshes via `shared_ptr`; a free-fly `Camera` supports double-precision world positions (`dvec3`/`dquat`), narrowed to `float` only at GPU upload time.
+**Pre-lighting object pass complete:** `SolarSystem` registers 26 textured bodies: the Sun, eight planets, Pluto, all bible-required moons, and four optional Saturnian moons. They share one indexed 32×64 UV-sphere mesh, use real physical metadata, educational radius/distance mapping, axial spin, and eccentric orbital paths.
 
-**Phase 2 (in progress):** procedural UV sphere geometry, full vertex format (`position` / `normal` / `uv`), multi-body depth-tested rendering.
+The environment also contains four procedural ring systems, planet orbit guides, termination-shock/heliopause wireframes, a 4,000-point starfield, instanced asteroid/Kuiper/Oort fields, and a moving tailed comet. Voyager 2 is authored from project-native geometry—parabolic dish, decagonal bus, lattice booms, finned RTGs, scan-platform instruments, antennas, panels, Golden Record, and 16 thrusters—with NASA assets used only as reference. Historical mode follows a checked-in NASA/JPL Horizons trajectory and draws its path offline. Lighting and shading are intentionally deferred.
 
-See the implementation bible (linked above) for the full phase breakdown and architectural rules this project follows.
+See the implementation bible for the full roadmap and [`docs/objects/`](docs/objects/) for illustrated, object-by-object implementation explanations.
 
 ## Build & run
 
@@ -39,10 +39,19 @@ Output lands at `x64\<Configuration>\Voyager-2.exe`. **Run it via `scripts/run.p
 
 ## Controls
 
-- `W` / `A` / `S` / `D` — move
-- `Space` / `Left Ctrl` — up / down
-- `Left Shift` / `Right Shift` — sprint
+- `C` — toggle the fixed ThirdPerson chase camera / FreeFly camera
+- `Tab` / `Shift+Tab` — focus next / previous celestial body
+- `V` — toggle Voyager Historical / Manual flight
+- `T` — show/hide the Voyager trajectory
+- `1`–`6` — jump to Launch, Jupiter, Saturn, Uranus, Neptune, or Interstellar bookmarks
+- `W` / `S`, `A` / `D` — thrust and yaw in Manual mode; move in FreeFly
+- `Space` / `Left Ctrl` — vertical thrust in Manual mode; up/down in FreeFly
+- `P` — pause/resume celestial motion
+- `=` / `-` (or `]` / `[`) — increase/decrease simulation speed
+- `Right mouse` — look around in FreeFly; `Shift` boosts camera speed
 - `Esc` — quit
+
+The window title acts as a minimal no-shader HUD for camera/flight mode, historical Julian Date, Voyager distance/speed, simulation speed/pause, and focused body.
 
 ## Architecture
 

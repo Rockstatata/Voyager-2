@@ -1,0 +1,148 @@
+# Voyager 2 spacecraft
+
+## Overview
+
+`voyager2` is a procedural, from-scratch model built by `VoyagerModelBuilder`. The application does **not** load NASA's downloadable glTF/USDZ model. NASA's model, spacecraft pages, diagrams, and the two local reference images are used only to establish proportions and component layout; the sourced facts and exact links are collected in [the research note](../research/voyager-2-spacecraft-reference.md).
+
+The root is one `Voyager2` scene object. Its visible children include a decagonal bus, true parabolic high-gain antenna, feed supports and low-gain antenna, three separate lattice booms, a finned three-RTG assembly, science scan platform and instruments, two cameras, magnetometer packages, the Golden Record, radiator/calibration panels, two 10 m plasma-wave antennas, and 16 attitude-control thruster nozzles. All parts inherit the root transform, so manual or historical motion moves one coherent spacecraft.
+
+![Procedural spacecraft inspection view](images/voyager-procedural-runtime.png)
+
+## Real dimensions and display scale
+
+`ScaleManager::spacecraftSizeToRenderUnits` uses one linear factor of `0.0001 render units / metre`. This scale is intentionally independent of planet radius and interplanetary distance, but ratios inside the spacecraft remain real:
+
+| Component | Source size | Render size |
+| --- | ---: | ---: |
+| High-gain antenna | 3.7 m diameter | 0.00037 diameter |
+| Decagonal bus | 1.78 m diameter, 0.47 m deep | 0.000178 diameter, 0.000047 deep |
+| Magnetometer boom | 13 m | 0.0013 |
+| RTG boom | 3.7 m | 0.00037 |
+| Science boom | 3.0 m | 0.0003 |
+| PRA/PWS antennas | 10 m each | 0.001 each |
+| RTGs | 0.58 m long, 0.40 m across fin tips | 0.000058 long, 0.000040 across |
+
+The 3.7 m dish is therefore about 2.08 times the 1.78 m bus diameter. Nothing is enlarged independently to improve visibility; the fixed camera distance provides framing without changing component ratios.
+
+## Geometry and triangles
+
+All vertices use `Vertex { position, normal, texCoord }`, all surface triangles are counter-clockwise from outside, and no two faces are deliberately coplanar. Rods intersect only at structural joints, where real hardware would also connect; these are volume intersections, not overlapping coplanar triangles. [Procedural Mesh Construction Handbook](procedural-meshes.md) gives the exact vertex equations and index triples for every generator used below.
+
+### Decagonal bus and cylindrical hardware
+
+`CylinderGenerator` makes the 10-sided bus, feed/LGA bodies, camera barrels, RTG cores, thin rods, and thruster frusta. A capped straight cylinder or frustum with `n` radial segments has `4n+6` vertices, `2n` side triangles, and `2n` cap triangles. A frustum uses the same topology with different end radii. Repeated parts share uploaded meshes where their dimensions match.
+
+### Parabolic high-gain antenna
+
+`ParabolicDishGenerator` uses 48 angular segments and 8 radial rings. For radial fraction `t = ring / 8`:
+
+```text
+r = radius * t
+y = -depth + depth * t^2
+x = r * cos(theta)
+z = r * sin(theta)
+```
+
+That equation produces a paraboloid, not the old capped cone. The front and rear surfaces are separated by a real thickness and joined only at the rim, so the shell is watertight without coincident faces. Each surface has one center vertex plus `8 * (48 + 1)` ring vertices. One 48-triangle fan covers the center and seven rings of 96 triangles connect outward. Front, rear, and rim together total 1,536 triangles. The `+1` seam vertex carries the distinct `u=1` coordinate required beside `u=0`.
+
+### Boxes and panels
+
+`BoxGenerator` creates 24 vertices and 12 triangles: four independent vertices per face, two triangles per face, six faces. Position-sharing across an edge is deliberately not vertex-sharing because the adjoining faces need different normals and UVs. The unit box mesh is shared and scaled into instrument packages, panels, magnetometers, the scan platform, and each RTG fin.
+
+### Lattice booms
+
+For endpoints `S,E`, `axis=normalize(E-S)`. A reference vector is `(0,1,0)` unless the axis is almost vertical, then `(1,0,0)`. The perpendicular basis is `sideA=normalize(cross(axis,reference))`, `sideB=normalize(cross(axis,sideA))`. Three rail offsets form an equilateral triangle:
+
+```text
+o0 = halfWidth*sideA
+o1 = halfWidth*(-0.5*sideA + 0.866025403784*sideB)
+o2 = halfWidth*(-0.5*sideA - 0.866025403784*sideB)
+```
+
+`buildTriangularTruss` first places the three rails from `S+oi` to `E+oi`. For every bay `[t0,t1]` and each triangular face `rail -> (rail+1)%3`, it adds one brace. `(bay+rail)%2` selects which diagonal direction, creating the alternating lattice without doubled rods. Every rod is a capped six-sided cylinder with 30 vertices and 24 triangles, rotated from local `+Y` onto its endpoint direction and translated to its midpoint. A truss with `b` bays therefore contains `3+3b` rods and `72+72b` triangles.
+
+### Finned RTGs
+
+Three cylindrical cores are placed end-to-end beyond the 3.7 m RTG boom. Each gets six longitudinal radial box fins, matching the six-fin NASA construction. All cores and 18 fins are merged into one CPU `MeshData` and one GPU mesh/draw submission.
+
+At startup the `[VOYAGER]` diagnostic prints the final visible-assembly and rendered-triangle counts. This is the number to quote during inspection; it is generated from the exact current build rather than duplicated as a stale constant here.
+
+### Exact triangle inventory in the submitted model
+
+| Assembly | Copies/detailed construction | Triangles |
+| --- | --- | ---: |
+| Decagonal bus | capped 10-segment cylinder: `4*10` | 40 |
+| High-gain antenna | 48×8 front/back paraboloid plus rim | 1,536 |
+| Feed horn | capped 12-segment frustum | 48 |
+| Low-gain antenna | capped 12-segment frustum | 48 |
+| Three feed supports | 3 capped 5-segment rods, 20 each | 60 |
+| Radiator, electronics bay, calibration target | 3 boxes, 12 each | 36 |
+| Golden Record | capped 24-segment cylinder | 96 |
+| Magnetometer boom | 18 bays: 57 six-sided rods × 24 | 1,368 |
+| Two magnetometer packages | 2 boxes × 12 | 24 |
+| RTG boom | 7 bays: 24 six-sided rods × 24 | 576 |
+| Three RTGs | 3 twelve-sided cores × 48 + 18 box fins × 12 | 360 |
+| Science boom | 5 bays: 18 six-sided rods × 24 | 432 |
+| Scan platform and two spectrometers | 3 boxes × 12 | 36 |
+| Two camera barrels | 2 capped 12-segment cylinders × 48 | 96 |
+| Two PRA/PWS elements | 2 capped 5-segment rods × 20 | 40 |
+| Sixteen thruster nozzles | 16 capped 8-segment frusta × 32 | 512 |
+| **Total** | **37 visible scene assemblies** | **5,308** |
+
+The total counts actual submitted triangles, including repeated `SceneObject`s that share one GPU mesh. For example, the thruster mesh is uploaded once but drawn at 16 transforms, so it contributes `16*32=512` visible triangles.
+
+## Component hierarchy and transforms
+
+The physical HGA boresight is local `-Z`; project flight heading is local `+Z`. The bus cylinder is rotated from the generator's `+Y` axis onto `+Z`, while the dish is rotated so its concave face opens toward `-Z`. Its feed and low-gain antenna continue outward on that same axis. In the following formulas `u(m)=0.0001m`, bus radius `B=u(1.78)/2=0.000089`, bus depth `H=u(0.47)=0.000047`, dish radius `R=u(3.7)/2=0.000185`, and dish-rim coordinate `Zr=-H/2-u(0.10)=-0.0000335`.
+
+| Part | Exact local placement / size before root motion |
+| --- | --- |
+| Bus | center `(0,0,0)`, radius `B`, depth `H`, rotate `+Y` axis 90° about `+X` onto `+Z` |
+| Dish | center `(0,0,Zr)`, `R=0.148`, depth `u(0.38)=0.0304`, thickness `u(0.045)=0.0036`, rotate -90° about `+X` |
+| Feed | center `(0,0,Zr-u(0.72))`; radii `u(0.07),u(0.16)`, length `u(0.30)` |
+| Low-gain antenna | center `(0,0,Zr-u(0.96))`; radii `u(0.10),u(0.025)`, length `u(0.20)` |
+| Feed support `i` | from `(0.68R*cos(2*pi*i/3),0.68R*sin(2*pi*i/3),Zr-u(0.02))` to feed center |
+| Magnetometer boom | start `(B,u(0.12),u(0.08))`; direction `normalize(1,0.10,0.05)`; length `u(13)` |
+| Magnetometers | same boom line at `u(7)` and `u(13)` from its start; cubes `u(0.18)` and `u(0.22)` |
+| RTG boom | start `(-B,-u(0.12),u(0.04))`; direction `normalize(-1,-0.20,0.05)`; length `u(3.7)` |
+| RTG core `g=0..2` | along RTG direction from `u(3.7+0.64g)` to that value plus `u(0.58)`; radius `u(0.14)` |
+| RTG fin `f=0..5` | radial angle `2*pi*f/6`; dimensions `u(0.50) × u(0.12) × u(0.025)`; center offset `u(0.14)` from core axis |
+| Science boom | start `(0.65B,0.70B,u(0.04))`; end `start+(u(3.0),u(0.30),u(0.15))` |
+| PRA/PWS elements | common root `(0,-0.75B,u(0.04))`; directions `normalize(-0.75,-1,0.15)` and `normalize(0.75,-1,-0.15)`; length `u(10)` |
+| Thruster cluster `c=0..3` | radial `(cos(c*pi/2),sin(c*pi/2),0)`; four nozzles combine tangent offsets `+/-u(0.055)` and axial offsets `+/-u(0.16)` |
+
+The three major booms start on different bus sides:
+
+- the 13 m magnetometer lattice ends in mid-field and low-field sensor packages;
+- the 3.7 m RTG lattice leads to three tandem finned generators;
+- the 3.0 m science lattice ends in an asymmetric platform of camera barrels and spectrometer boxes.
+
+The two 10 m PRA/PWS elements share a root below the bus and open into a wide V. Four bus locations each carry four small nozzles, representing all 16 attitude-control thrusters without inventing a main engine.
+
+In Historical mode the root starts at the first scaled NASA/JPL trajectory sample and advances by interpolation; in Manual mode it continues from the current position with inertial velocity. `Voyager2::update` applies root orientation and motion; child local transforms then compose through `rootWorld * childLocal`.
+
+## Camera and controls
+
+The application starts in ThirdPerson mode because Voyager is the main character. The camera is a true fixed chase view: `cameraPosition = voyagerPosition - forward * 0.008 + up * 0.002`. The lateral offset is exactly zero, so the opening view is directly behind the spacecraft rather than from its side. Every frame it recomputes this position from `Voyager2::headingForward()`, so it follows both the automated historical trajectory and manual yaw/control.
+
+- `C`: toggle fixed ThirdPerson and FreeFly camera modes. `Tab` independently enters body Focus mode.
+- `V`: toggle Historical/Manual flight.
+- Manual mode: `W/S` thrust, `A/D` or arrow keys yaw, `Space/Ctrl` vertical thrust.
+
+Manual flight is inertial: yaw changes attitude, not existing velocity. Speed is clamped for a controllable demonstration.
+
+## Materials and assets
+
+The spacecraft currently uses deliberate flat colors—off-white antenna, gold thermal blanket/bays, metallic trusses, dark instruments/RTGs, copper thrusters—because lighting and shading are deferred. It uses no image texture and no imported model geometry. The local reference images remain under `images/` and NASA sources are linked from the research note.
+
+## Historical trajectory boundary
+
+Historical mode interpolates 164 heliocentric Voyager 2 vectors sampled from NASA/JPL Horizons between 1977-08-21 and 2030-01-01. Jupiter, Saturn, Uranus, and Neptune use matching offline Horizons tracks at the same Julian date. At each exact encounter the display path retains the real approach direction but uses a four-planet-radius visual clearance, so the compressed scene cannot depict Voyager inside a planet. See [Voyager trajectory](voyager-trajectory.md).
+
+## Verification
+
+1. Rebuild Debug x64 after project-file edits.
+2. Run from the repository root and confirm the `[VOYAGER] procedural spacecraft built` diagnostic.
+3. Inspect the default chase view: the camera must begin centered behind Voyager's direction of travel, not beside it, and must remain attached as the trajectory turns.
+4. Press `C` once to detach into FreeFly, move/inspect the spacecraft from any angle, then press `C` again and confirm the camera snaps back behind Voyager.
+5. Press `V`, then use thrust/yaw/vertical controls and confirm every part remains attached to one root.

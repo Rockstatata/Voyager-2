@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <defs>
+    <marker id="blueArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#58a6ff"/></marker>
+    <marker id="orangeArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#f0883e"/></marker>
+  </defs>
+  <rect width="960" height="540" fill="#0d1117"/>
+  <text x="40" y="52" fill="#f0f6fc" font-family="Segoe UI, sans-serif" font-size="28" font-weight="700">One latitude-longitude cell becomes two triangles</text>
+  <polygon points="130,120 500,120 130,400" fill="#1f6feb" fill-opacity="0.35"/>
+  <polygon points="500,120 500,400 130,400" fill="#d18616" fill-opacity="0.35"/>
+  <line x1="130" y1="120" x2="500" y2="120" stroke="#58a6ff" stroke-width="5" marker-end="url(#blueArrow)"/>
+  <line x1="500" y1="120" x2="130" y2="400" stroke="#58a6ff" stroke-width="5" marker-end="url(#blueArrow)"/>
+  <line x1="130" y1="400" x2="130" y2="120" stroke="#58a6ff" stroke-width="5" marker-end="url(#blueArrow)"/>
+  <line x1="500" y1="120" x2="500" y2="400" stroke="#f0883e" stroke-width="5" marker-end="url(#orangeArrow)"/>
+  <line x1="500" y1="400" x2="130" y2="400" stroke="#f0883e" stroke-width="5" marker-end="url(#orangeArrow)"/>
+  <line x1="130" y1="400" x2="500" y2="120" stroke="#f0883e" stroke-width="2" stroke-dasharray="8 7"/>
+  <g fill="#f0f6fc" font-family="Consolas, monospace" font-size="19" font-weight="700">
+    <circle cx="130" cy="120" r="10" fill="#ff7b72"/><text x="82" y="102">TL</text>
+    <circle cx="500" cy="120" r="10" fill="#ff7b72"/><text x="510" y="102">TR</text>
+    <circle cx="130" cy="400" r="10" fill="#ff7b72"/><text x="72" y="430">BL</text>
+    <circle cx="500" cy="400" r="10" fill="#ff7b72"/><text x="510" y="430">BR</text>
+  </g>
+  <rect x="570" y="105" width="345" height="330" rx="14" fill="#161b22" stroke="#30363d"/>
+  <text x="600" y="150" fill="#58a6ff" font-family="Segoe UI, sans-serif" font-size="21" font-weight="700">Triangle 1: TL → TR → BL</text>
+  <text x="600" y="188" fill="#f0883e" font-family="Segoe UI, sans-serif" font-size="21" font-weight="700">Triangle 2: TR → BR → BL</text>
+  <text x="600" y="245" fill="#c9d1d9" font-family="Consolas, monospace" font-size="16">rowWidth = longitudeSegments + 1</text>
+  <text x="600" y="282" fill="#c9d1d9" font-family="Consolas, monospace" font-size="16">TL = latitude × rowWidth + longitude</text>
+  <text x="600" y="317" fill="#c9d1d9" font-family="Consolas, monospace" font-size="16">TR = TL + 1</text>
+  <text x="600" y="352" fill="#c9d1d9" font-family="Consolas, monospace" font-size="16">BL = TL + rowWidth</text>
+  <text x="600" y="387" fill="#c9d1d9" font-family="Consolas, monospace" font-size="16">BR = BL + 1</text>
+  <text x="40" y="495" fill="#8b949e" font-family="Segoe UI, sans-serif" font-size="16">Arrows show counter-clockwise winding viewed from outside. Degenerate pole halves are omitted.</text>
+</svg>

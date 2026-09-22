@@ -2,7 +2,7 @@
 
 #include <utility>
 
-EBO::EBO(const GLuint* indices, GLsizeiptr size) {
+EBO::EBO(const void* indices, GLsizeiptr size) {
 	glGenBuffers(1, &ID);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);

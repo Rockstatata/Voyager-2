@@ -103,6 +103,12 @@ void Window::swapBuffers()
 		glfwSwapBuffers(m_window);
 }
 
+void Window::setTitle(const std::string& title)
+{
+	if (m_window != nullptr)
+		glfwSetWindowTitle(m_window, title.c_str());
+}
+
 float Window::aspectRatio() const
 {
 	if (m_width <= 0 || m_height <= 0)

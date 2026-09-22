@@ -14,7 +14,11 @@ void SceneObject::render(Renderer& renderer)
 		return;
 
 	if (m_mesh != nullptr)
-		renderer.submit(*m_mesh, glm::mat4(worldMatrix()));
+	{
+		static const Material kDefaultMaterial;
+		const Material& material = m_material != nullptr ? *m_material : kDefaultMaterial;
+		renderer.submit(*m_mesh, material, glm::mat4(worldMatrix()));
+	}
 
 	for (auto& child : m_children)
 		child->render(renderer);
@@ -23,6 +27,11 @@ void SceneObject::render(Renderer& renderer)
 void SceneObject::setMesh(std::shared_ptr<Mesh> mesh)
 {
 	m_mesh = std::move(mesh);
+}
+
+void SceneObject::setMaterial(std::shared_ptr<Material> material)
+{
+	m_material = std::move(material);
 }
 
 SceneObject& SceneObject::addChild(std::unique_ptr<SceneObject> child)

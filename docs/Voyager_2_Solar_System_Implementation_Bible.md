@@ -2001,7 +2001,7 @@ We can simplify angular velocity for the first lab if direct rotational control 
 | Left Shift | boost |
 | Space | flight-assist brake / damp velocity |
 | M | switch Voyager mode |
-| C | cycle camera |
+| C | toggle fixed Voyager chase / FreeFly camera |
 | T | trajectory toggle |
 | O | orbit-line toggle |
 | P | pause historical simulation |
@@ -2569,18 +2569,18 @@ These mission dates are useful for demo navigation.
 
 Checklist:
 
-- [ ] Project compiles in Visual Studio.
-- [ ] Current cube appears.
-- [ ] Determine requested OpenGL version.
-- [ ] Identify GLAD generation/API.
-- [ ] Identify GLFW version/layout.
-- [ ] Identify shader files.
-- [ ] Identify texture loader.
-- [ ] Identify model loader.
-- [ ] Identify camera code.
-- [ ] Identify matrix library.
-- [ ] Inventory every supplied asset.
-- [ ] Create baseline Git commit/tag.
+- [x] Project compiles in Visual Studio.
+- [x] Current cube appears.
+- [x] Determine requested OpenGL version.
+- [x] Identify GLAD generation/API.
+- [x] Identify GLFW version/layout.
+- [x] Identify shader files.
+- [x] Identify texture loader.
+- [x] Identify model loader.
+- [x] Identify camera code.
+- [x] Identify matrix library.
+- [x] Inventory every supplied asset.
+- [x] Create baseline Git commit/tag.
 
 **Do not refactor before this succeeds.**
 
@@ -2592,14 +2592,14 @@ Checklist:
 
 Implement:
 
-- [ ] `Application`
-- [ ] `Transform`
-- [ ] `SceneObject`
-- [ ] `Renderer` basic wrapper
-- [ ] basic `Camera`
-- [ ] central `Input`
-- [ ] delta time
-- [ ] cube moved out of `main.cpp`
+- [x] `Application`
+- [x] `Transform`
+- [x] `SceneObject`
+- [x] `Renderer` basic wrapper
+- [x] basic `Camera`
+- [x] central `Input`
+- [x] delta time
+- [x] cube moved out of `main.cpp`
 
 Success test:
 
@@ -2613,11 +2613,11 @@ Two cubes render with different transforms.
 
 Implement:
 
-- [ ] `Vertex` with position, normal, UV
-- [ ] reusable `Mesh`
-- [ ] UV sphere generation or clean imported sphere
-- [ ] texture-ready material
-- [ ] depth testing confirmed
+- [x] `Vertex` with position, normal, UV
+- [x] reusable `Mesh`
+- [x] UV sphere generation or clean imported sphere
+- [x] texture-ready material
+- [x] depth testing confirmed
 
 Success:
 
@@ -2631,13 +2631,13 @@ Sun + Earth + Jupiter render simultaneously.
 
 Implement:
 
-- [ ] `CelestialBodyData`
-- [ ] `CelestialBody`
-- [ ] `SolarSystem`
-- [ ] body registry by ID
-- [ ] parent-child relationships
-- [ ] all eight planets created
-- [ ] minimum required moons
+- [x] `CelestialBodyData`
+- [x] `CelestialBody`
+- [x] `SolarSystem`
+- [x] body registry by ID
+- [x] parent-child relationships
+- [x] all eight planets created
+- [x] minimum required moons
 
 Success:
 
@@ -2651,12 +2651,12 @@ Every required body can be toggled/focused and has an independent transform.
 
 Implement before full orbit distances.
 
-- [ ] physical radius
-- [ ] display radius
-- [ ] physical position
-- [ ] render position
-- [ ] educational distance mapping
-- [ ] spacecraft visibility scaling
+- [x] physical radius
+- [x] display radius
+- [x] physical position
+- [x] render position
+- [x] educational distance mapping
+- [x] spacecraft visibility scaling (`ScaleManager::spacecraftSizeToRenderUnits`, one linear mapping for all major sourced Voyager dimensions)
 
 Success:
 
@@ -2668,11 +2668,11 @@ Sun and all planets can be viewed in one useful scene without destroying physica
 
 # Phase 5 — Orbit and rotation
 
-- [ ] planetary spin
-- [ ] circular-orbit temporary model
-- [ ] moon local orbits
-- [ ] orbit line mesh
-- [ ] simulation clock
+- [x] planetary spin
+- [x] circular-orbit temporary model
+- [x] moon local orbits
+- [x] orbit line mesh
+- [x] simulation clock (`CelestialBody::setSimulationTimeScale`, shared static; `P` pause, `=`/`-` speed, see docs/objects/controls.md)
 
 Success:
 
@@ -2684,11 +2684,11 @@ Pause and speed controls affect the full system consistently.
 
 # Phase 6 — Rings
 
-- [ ] annulus mesh
-- [ ] Saturn rings
-- [ ] generic ring support
-- [ ] Uranus ring placeholder
-- [ ] Jupiter/Neptune support as required
+- [x] annulus mesh (`RingGenerator`, double-sided)
+- [x] Saturn rings (5 real named bands, real gap at the Cassini Division)
+- [x] generic ring support (`buildRingSystem` takes any planet id + band list)
+- [x] Uranus ring placeholder (built as 5 real bands, not just a placeholder)
+- [x] Jupiter/Neptune support as required (3 faint bands each)
 
 Success:
 
@@ -2700,11 +2700,11 @@ rings inherit planet movement and orientation.
 
 # Phase 7 — Asteroid and Kuiper belts
 
-- [ ] asteroid base mesh(es)
-- [ ] deterministic transform generation
-- [ ] instanced rendering
-- [ ] asteroid belt
-- [ ] Kuiper belt
+- [x] asteroid base mesh(es) (low-poly `UvSphereGenerator(6, 8)`, shared)
+- [x] deterministic transform generation (seeded `std::mt19937` per field)
+- [x] instanced rendering (`glDrawElementsInstanced` + `glVertexAttribDivisor`, see docs/objects/instancing.md)
+- [x] asteroid belt (2,500 instances)
+- [x] Kuiper belt (1,500 instances; Oort cloud also done, 800 instances, beyond this checklist's scope)
 
 Success:
 
@@ -2716,12 +2716,12 @@ large object counts render at acceptable frame rate.
 
 # Phase 8 — Voyager model
 
-- [ ] load model
-- [ ] establish local forward/up axis
-- [ ] root transform
-- [ ] material assignment
-- [ ] major component hierarchy if asset permits
-- [ ] model display scaling
+- [x] author model procedurally (no imported mesh; `VoyagerModelBuilder` composes project-native generators from NASA references)
+- [x] establish local forward/up axis (`Voyager2`'s local +Z = heading)
+- [x] root transform
+- [x] material assignment (flat colors per part)
+- [x] major component hierarchy (parabolic HGA/feed/LGA, decagonal bus, three lattice booms, finned RTGs, scan platform/instruments, magnetometers, PRA/PWS antennas, panels, record, 16 thrusters)
+- [x] model display scaling (`ScaleManager::spacecraftSizeToRenderUnits` for every major sourced dimension)
 
 Success:
 
@@ -2735,16 +2735,16 @@ Voyager can be placed near Earth and inspected from multiple camera angles.
 
 Manual control is easier to validate than historical ephemeris and directly satisfies an instructor requirement.
 
-- [ ] `VoyagerController`
-- [ ] `ManualFlightController`
-- [ ] quaternion orientation
-- [ ] forward thrust
-- [ ] yaw
-- [ ] pitch
-- [ ] roll
-- [ ] optional strafing
-- [ ] velocity damping
-- [ ] chase camera
+- [x] `VoyagerController` (control logic lives directly in `Voyager2::applyManualControl` instead of a separate controller class — functionally equivalent, different class split)
+- [x] `ManualFlightController` (same as above)
+- [x] quaternion orientation (`angleAxis` yaw quaternion)
+- [x] forward thrust (`W`/`S`, along current facing, inertial)
+- [x] yaw (`A`/`D` or arrow keys)
+- [ ] pitch (ship deliberately stays level — no pitch control — matching the flat `y=0` body layout; see docs/objects/voyager-2.md)
+- [ ] roll (not implemented)
+- [x] optional strafing (`Space`/`Left Ctrl` vertical thrust)
+- [ ] velocity damping (deliberately absent — no atmosphere to damp against, matches real inertial spacecraft flight; see docs/objects/voyager-2.md)
+- [x] chase camera (ThirdPerson mode)
 
 Success:
 
@@ -2756,14 +2756,14 @@ Student can pilot Voyager intuitively through 3D space.
 
 # Phase 10 — Historical trajectory foundation
 
-- [ ] `TrajectorySample`
-- [ ] `Trajectory`
-- [ ] temporary waypoint file
-- [ ] interpolation
-- [ ] historical controller
-- [ ] simulation-clock coupling
-- [ ] line rendering
-- [ ] mode toggle
+- [x] `TrajectorySample`
+- [x] `Trajectory`
+- [x] offline NASA/JPL Horizons sample file
+- [x] interpolation
+- [x] historical controller
+- [x] simulation-clock coupling (pause/speed drive historical playback; manual input remains real-time)
+- [x] line rendering
+- [x] mode toggle
 
 Success:
 
@@ -2777,8 +2777,8 @@ Voyager automatically follows a visible trajectory and manual/historical switchi
 
 - [ ] obtain NASA/JPL SPICE kernels
 - [ ] build offline preprocessing utility/script
-- [ ] export sampled trajectory CSV
-- [ ] verify coordinate frame
+- [x] export sampled Horizons trajectory CSV
+- [x] verify coordinate frame (ECLIPTIC X/Y -> scene X/Z, ECLIPTIC Z -> scene Y)
 - [ ] sample celestial ephemeris or derive synchronized body positions
 - [ ] verify flyby proximity
 
@@ -2792,23 +2792,23 @@ Voyager meets each giant planet near the correct historical mission date.
 
 # Phase 12 — Outer boundary objects
 
-- [ ] heliosphere placeholder
-- [ ] heliopause marker
-- [ ] interstellar-space representation
+- [x] heliosphere / termination-shock wireframe placeholder
+- [x] heliopause wireframe marker
+- [x] interstellar-space representation (heliopause exterior + starfield)
 - [ ] labels
 
 ---
 
 # Phase 13 — UI / presentation controls
 
-- [ ] minimal HUD
-- [ ] selected object
-- [ ] mode display
-- [ ] simulation date
-- [ ] time scale
-- [ ] trajectory toggle
-- [ ] camera mode display
-- [ ] mission bookmarks
+- [x] minimal HUD (native window-title telemetry; no text shader)
+- [x] selected object
+- [x] mode display
+- [x] historical Julian Date
+- [x] time scale
+- [x] trajectory toggle (`T`)
+- [x] camera mode display
+- [x] mission bookmarks (1-6: Launch, four giant-planet encounters, Interstellar)
 
 ---
 
@@ -2834,47 +2834,47 @@ Use this section as the actual lab gate.
 
 ## Critical — must be ready
 
-- [ ] Starter project still compiles reliably in Visual Studio.
-- [ ] GLAD and GLFW initialization are clean.
-- [ ] Rendering is no longer cube-only architecture.
-- [ ] Reusable mesh system exists.
-- [ ] Reusable transform exists.
-- [ ] Scene hierarchy exists.
-- [ ] Sphere mesh exists.
-- [ ] Sun exists.
-- [ ] Mercury exists.
-- [ ] Venus exists.
-- [ ] Earth exists.
-- [ ] Mars exists.
-- [ ] Jupiter exists.
-- [ ] Saturn exists.
-- [ ] Uranus exists.
-- [ ] Neptune exists.
-- [ ] Important moons are represented.
-- [ ] Saturn's ring system exists.
-- [ ] Generic ring architecture exists.
-- [ ] Asteroid belt exists.
-- [ ] Kuiper-belt representation exists.
-- [ ] Star/background object exists.
-- [ ] Voyager 2 model exists.
-- [ ] Voyager is transformable as one root object.
-- [ ] Manual Voyager control foundation works.
-- [ ] Historical trajectory controller foundation exists.
-- [ ] Voyager mode switch exists.
-- [ ] At least one useful Voyager camera exists.
-- [ ] Scale system allows both planets and Voyager to be demonstrated.
-- [ ] No major object category from the planned scene is completely absent.
+- [x] Starter project still compiles reliably in Visual Studio.
+- [x] GLAD and GLFW initialization are clean.
+- [x] Rendering is no longer cube-only architecture.
+- [x] Reusable mesh system exists.
+- [x] Reusable transform exists.
+- [x] Scene hierarchy exists.
+- [x] Sphere mesh exists.
+- [x] Sun exists.
+- [x] Mercury exists.
+- [x] Venus exists.
+- [x] Earth exists.
+- [x] Mars exists.
+- [x] Jupiter exists.
+- [x] Saturn exists.
+- [x] Uranus exists.
+- [x] Neptune exists.
+- [x] Important moons are represented (12 required + 4 optional Saturn moons, all 21+4).
+- [x] Saturn's ring system exists.
+- [x] Generic ring architecture exists (also used for Uranus/Jupiter/Neptune).
+- [x] Asteroid belt exists.
+- [x] Kuiper-belt representation exists.
+- [x] Star/background object exists (4,000-point starfield).
+- [x] Voyager 2 model exists.
+- [x] Voyager is transformable as one root object.
+- [x] Manual Voyager control foundation works.
+- [x] Historical trajectory controller foundation exists (160 offline NASA/JPL Horizons heliocentric samples with interpolation).
+- [x] Voyager mode switch exists (`V`: Historical/Manual).
+- [x] A true Voyager chase camera starts directly behind the flight direction; FreeFly is one-key accessible.
+- [x] Scale system allows both planets and Voyager to be demonstrated.
+- [x] No major object category from the planned pre-lighting scene is completely absent.
 
 ## Strongly recommended
 
-- [ ] trajectory line
-- [ ] planetary orbit lines
-- [ ] simulation clock
-- [ ] mission bookmarks
+- [x] trajectory line (same Horizons samples as Historical playback)
+- [x] planetary orbit lines
+- [x] simulation clock (pause/speed controller; date-based ephemeris remains Phase 10–11)
+- [x] mission bookmarks (1-6)
 - [ ] labels
-- [ ] heliosphere placeholder
-- [ ] heliopause placeholder
-- [ ] multiple cameras
+- [x] heliosphere/termination-shock placeholder (three-axis wire boundary)
+- [x] heliopause placeholder (three-axis wire boundary)
+- [x] multiple cameras (ThirdPerson, Focus, FreeFly)
 
 ## Can wait for later shader lab
 
@@ -3614,92 +3614,92 @@ Do not add all planets before these three objects prove that the architecture is
 
 ## Core
 
-- [ ] Application wrapper
-- [ ] Window wrapper
-- [ ] Input system
-- [ ] logging
+- [x] Application wrapper
+- [x] Window wrapper
+- [x] Input system
+- [x] logging
 - [ ] asset manager
-- [ ] transform
-- [ ] scene graph
+- [x] transform
+- [x] scene graph
 
 ## Renderer
 
-- [ ] shader abstraction
-- [ ] mesh
-- [ ] texture
-- [ ] material
+- [x] shader abstraction
+- [x] mesh
+- [x] texture
+- [x] material
 - [ ] model
-- [ ] line renderer
-- [ ] instanced renderer
+- [x] line renderer
+- [x] instanced renderer
 
 ## Solar system
 
-- [ ] Sun
-- [ ] Mercury
-- [ ] Venus
-- [ ] Earth
-- [ ] Mars
-- [ ] Jupiter
-- [ ] Saturn
-- [ ] Uranus
-- [ ] Neptune
-- [ ] Pluto optional
-- [ ] Moon
-- [ ] Galilean moons
-- [ ] Titan
-- [ ] Uranian major moons
-- [ ] Triton
-- [ ] rings
-- [ ] asteroid belt
-- [ ] Kuiper belt
-- [ ] orbit lines
+- [x] Sun
+- [x] Mercury
+- [x] Venus
+- [x] Earth
+- [x] Mars
+- [x] Jupiter
+- [x] Saturn
+- [x] Uranus
+- [x] Neptune
+- [x] Pluto optional
+- [x] Moon
+- [x] Galilean moons
+- [x] Titan
+- [x] Uranian major moons
+- [x] Triton
+- [x] rings
+- [x] asteroid belt
+- [x] Kuiper belt
+- [x] orbit lines
 
 ## Voyager
 
-- [ ] model load
-- [ ] hierarchy
-- [ ] forward/up convention
-- [ ] manual controller
-- [ ] historical controller
-- [ ] trajectory line
-- [ ] mode switch
-- [ ] chase camera
+- [x] procedural model construction (used instead of importing a finished model)
+- [x] hierarchy
+- [x] forward/up convention
+- [x] manual controller
+- [x] historical controller
+- [x] trajectory line
+- [x] mode switch
+- [x] chase camera
 - [ ] forward camera
 - [ ] teleport/reset/rejoin behavior
 
 ## Time / astronomy
 
-- [ ] simulation clock
-- [ ] mission bookmarks
-- [ ] planet position model
+- [x] simulation clock
+- [x] mission bookmarks
+- [x] planet position model
 - [ ] SPICE preprocessing
-- [ ] trajectory CSV
+- [x] trajectory CSV
 - [ ] synchronized historical ephemeris
 
 ## Large world
 
-- [ ] physical-vs-render positions
-- [ ] scale manager
-- [ ] educational scale
+- [x] physical-vs-render positions
+- [x] scale manager
+- [x] educational scale
 - [ ] local encounter scale
 - [ ] floating origin
 
 ## UI
 
-- [ ] mode
-- [ ] date
-- [ ] selected object
-- [ ] distance from Sun
-- [ ] velocity
-- [ ] simulation scale
-- [ ] control help
+- [x] mode
+- [x] date
+- [x] selected object
+- [x] distance from Sun
+- [x] velocity
+- [x] simulation scale
+- [x] control help
 
 ## Outer region
 
-- [ ] heliosphere
-- [ ] termination shock
-- [ ] heliopause
-- [ ] interstellar background
+- [x] heliosphere
+- [x] termination shock
+- [x] heliopause
+- [x] interstellar background
 
 ## Final graphics
 
@@ -3709,7 +3709,7 @@ Do not add all planets before these three objects prove that the architecture is
 - [ ] ring transparency
 - [ ] planet material polish
 - [ ] post-processing if allowed
-- [ ] final screenshots/demo
+- [x] final screenshots/demo
 
 ---
 
@@ -3725,6 +3725,13 @@ Use this table whenever we make a significant architecture change.
 | D004 | 2026-09-09 | Historical Voyager and planets share SimulationClock | Required for actual flyby alignment | Ephemeris/trajectory |
 | D005 | 2026-09-09 | Keep objects shader-ready but defer advanced shader work | Next lab prioritizes objects; instructor shaders arrive later | Renderer/material design |
 | D006 | 2026-09-09 | Preserve starter project's requested OpenGL context version | Avoid compatibility break with instructor code/lab PCs | Initialization |
+| D007 | 2026-09-13 | Generate one 32×64 indexed UV sphere and share it across bodies | Keeps geometry reusable while providing normals, UVs, a clean seam, and non-degenerate poles | Mesh/rendering |
+| D008 | 2026-09-13 | Vendor fixed NASA Earth, Jupiter, and Sun maps with a provenance manifest | Runtime must be deterministic and offline while scientific context and credits remain auditable | Assets/materials |
+| D009 | 2026-09-13 | Require a separate illustrated Markdown guide for every renderable object | Makes geometry, transforms, textures, and limitations explainable during assessment | Documentation/all object phases |
+| D010 | 2026-09-13 | Replace D008's downloaded runtime maps with original procedural RGBA recipes | Course work requires self-made objects/assets; external imagery is reference-only unless the instructor explicitly permits reuse | Assets/materials |
+| D011 | 2026-09-21 | Reverse D010 for surface textures only: use credited real imagery while keeping every mesh self-authored | User explicitly permits textures/assets as reference and requires self-made objects, not self-photographed planet surfaces | Assets/materials; geometry remains procedural |
+| D012 | 2026-09-21 | Rebuild Voyager through `VoyagerModelBuilder` instead of importing NASA's downloadable mesh | Meets the course authorship rule while restoring real proportions and recognizable hardware | Voyager geometry/documentation |
+| D013 | 2026-09-21 | Vendor sparse NASA/JPL Horizons vectors and interpolate them offline | Historical path is auditable and works on lab machines without network access | Trajectory/data/runtime |
 
 Add entries below rather than deleting old decisions. If a decision is reversed, add a new decision referencing the old one.
 

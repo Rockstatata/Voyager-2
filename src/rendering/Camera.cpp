@@ -52,6 +52,56 @@ void Camera::update(const Input& input, double deltaTime)
 		m_position += glm::normalize(move) * (double)speed * deltaTime;
 }
 
+void Camera::followTarget(const glm::dvec3& targetPosition, const glm::vec3& targetForward,
+						   double distance, double heightOffset)
+{
+	m_right = glm::normalize(glm::cross(targetForward, glm::vec3(0.0f, 1.0f, 0.0f)));
+	m_up = glm::normalize(glm::cross(m_right, targetForward));
+
+	// A conventional third-person chase camera: directly behind the target's
+	// forward axis, with only a vertical lift. There is deliberately no
+	// lateral term, so the opening frame can never become a side view.
+	const glm::dvec3 offsetPosition = targetPosition - glm::dvec3(targetForward) * distance
+		+ glm::dvec3(m_up) * heightOffset;
+	m_forward = glm::normalize(glm::vec3(targetPosition - offsetPosition));
+	m_position = offsetPosition;
+	m_right = glm::normalize(glm::cross(m_forward, glm::vec3(0.0f, 1.0f, 0.0f)));
+	m_up = glm::normalize(glm::cross(m_right, m_forward));
+}
+
+void Camera::orbitFollowTarget(const glm::dvec3& targetPosition, const glm::vec3& targetForward,
+							 double distance, double heightOffset, const Input& input)
+{
+	if (input.mouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT))
+	{
+		const glm::dvec2 delta = input.mouseDelta();
+		m_followYawOffset += static_cast<float>(delta.x) * m_mouseSensitivity;
+		m_followPitchOffset = glm::clamp(m_followPitchOffset - static_cast<float>(delta.y) * m_mouseSensitivity,
+			-75.0f, 75.0f);
+	}
+
+	glm::vec3 flatForward(targetForward.x, 0.0f, targetForward.z);
+	if (glm::length(flatForward) < 1e-6f)
+		flatForward = glm::vec3(0.0f, 0.0f, 1.0f);
+	flatForward = glm::normalize(flatForward);
+
+	const glm::vec3 behind = -flatForward;
+	const float yawRadians = glm::radians(m_followYawOffset);
+	const glm::vec3 orbitDirection(
+		behind.x * std::cos(yawRadians) + behind.z * std::sin(yawRadians),
+		0.0f,
+		-behind.x * std::sin(yawRadians) + behind.z * std::cos(yawRadians));
+	const float pitchRadians = glm::radians(m_followPitchOffset);
+	const double horizontalDistance = distance * std::cos(pitchRadians);
+	const double verticalDistance = heightOffset + distance * std::sin(pitchRadians);
+
+	m_position = targetPosition + glm::dvec3(orbitDirection) * horizontalDistance +
+		glm::dvec3(0.0, verticalDistance, 0.0);
+	m_forward = glm::normalize(glm::vec3(targetPosition - m_position));
+	m_right = glm::normalize(glm::cross(m_forward, glm::vec3(0.0f, 1.0f, 0.0f)));
+	m_up = glm::normalize(glm::cross(m_right, m_forward));
+}
+
 void Camera::updateBasis()
 {
 	const float yaw = glm::radians(m_yaw);

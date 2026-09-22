@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 
 #include "../../shaderClass.h"
+#include "Material.h"
 #include "Mesh.h"
 
 class Camera;
@@ -19,8 +20,14 @@ public:
 	// Clears the frame and uploads the camera's view/projection once.
 	void beginFrame(const Camera& camera, float aspectRatio);
 
-	// Per-object draw. Only the model matrix changes between submits.
-	void submit(const Mesh& mesh, const glm::mat4& modelMatrix);
+	// Per-object draw. Geometry, appearance and placement remain independent.
+	void submit(const Mesh& mesh, const Material& material,
+				const glm::mat4& modelMatrix);
+
+	// Draws every instance Mesh::setInstanceTransforms uploaded, in one GPU
+	// call — the belt/starfield path. No single modelMatrix: each instance
+	// carries its own (see Mesh.h / default.vert).
+	void submitInstanced(const Mesh& mesh, const Material& material);
 
 	void endFrame();
 
@@ -29,7 +36,9 @@ public:
 private:
 	Shader* m_shader = nullptr; // non-owning; the Application owns the shader
 
-	glm::vec4 m_clearColor{ 0.102f, 0.137f, 0.494f, 1.0f };
+	// Pitch-black space (bible section 30 background) rather than the
+	// starter project's placeholder blue; a starfield is layered in later.
+	glm::vec4 m_clearColor{ 0.0f, 0.0f, 0.0f, 1.0f };
 
 	// Uniform locations are resolved once per shader instead of per draw call.
 	void cacheUniformLocations();
@@ -37,7 +46,10 @@ private:
 	GLint m_modelLocation = -1;
 	GLint m_viewLocation = -1;
 	GLint m_projLocation = -1;
-	GLint m_scaleLocation = -1;
+	GLint m_baseColorLocation = -1;
+	GLint m_useTextureLocation = -1;
+	GLint m_albedoTextureLocation = -1;
+	GLint m_useInstancingLocation = -1;
 };
 
 #endif

@@ -6,7 +6,7 @@
 #include <glm/gtc/quaternion.hpp>
 
 // Reusable transform for every scene object.
-// Physical state uses double precision (see IMPLEMENTATION_BIBLE.md section 12);
+// Physical state uses double precision (see the implementation bible, section 12);
 // a float model matrix is produced only at render time.
 struct Transform
 {

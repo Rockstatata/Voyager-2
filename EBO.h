@@ -9,7 +9,7 @@ class EBO {
 public:
 	GLuint ID = 0;
 
-	EBO(const GLuint* indices, GLsizeiptr size);
+	EBO(const void* indices, GLsizeiptr size);
 	~EBO();
 
 	EBO(const EBO&) = delete;

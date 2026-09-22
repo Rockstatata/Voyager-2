@@ -23,6 +23,18 @@ public:
 	// simulation speed multiplier can never affect camera feel.
 	void update(const Input& input, double deltaTime);
 
+	// Third-person mode: positions the camera behind and above a target
+	// (Voyager2) and looks at it, bypassing the free-fly yaw/pitch scheme
+	// entirely. Does not touch Input — Application decides which mode is
+	// active and calls the matching method.
+	void followTarget(const glm::dvec3& targetPosition, const glm::vec3& targetForward,
+					   double distance, double heightOffset);
+
+	// Mouse-orbiting third-person camera. The target remains centred while the
+	// user can inspect Voyager from any azimuth/elevation in either flight mode.
+	void orbitFollowTarget(const glm::dvec3& targetPosition, const glm::vec3& targetForward,
+						double distance, double heightOffset, const Input& input);
+
 	glm::dvec3 position() const { return m_position; }
 	glm::vec3 forward() const { return m_forward; }
 	glm::vec3 right() const { return m_right; }
@@ -55,6 +67,8 @@ private:
 	float m_moveSpeed = 2.0f;        // world units per second
 	float m_boostMultiplier = 4.0f;
 	float m_mouseSensitivity = 0.1f; // degrees per pixel
+	float m_followYawOffset = 0.0f;
+	float m_followPitchOffset = 0.0f;
 	static constexpr float kPitchLimit = 89.0f;
 };
 

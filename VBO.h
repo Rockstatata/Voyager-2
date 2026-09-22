@@ -9,7 +9,7 @@ class VBO {
 public:
 	GLuint ID = 0;
 
-	VBO(const GLfloat* vertices, GLsizeiptr size);
+	VBO(const void* data, GLsizeiptr size);
 	~VBO();
 
 	VBO(const VBO&) = delete;

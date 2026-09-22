@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="480" viewBox="0 0 960 480">
+  <defs><marker id="viewArrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#79c0ff"/></marker></defs>
+  <rect width="960" height="480" fill="#0d1117"/>
+  <text x="40" y="50" fill="#f0f6fc" font-family="Segoe UI, sans-serif" font-size="28" font-weight="700">Phase 2 educational scene layout</text>
+  <text x="40" y="78" fill="#8b949e" font-family="Segoe UI, sans-serif" font-size="16">Top view: +X runs left/right; camera looks along −Z. Values are render units, not kilometers.</text>
+  <line x1="80" y1="385" x2="880" y2="385" stroke="#30363d" stroke-width="2"/>
+  <line x1="480" y1="420" x2="480" y2="105" stroke="#30363d" stroke-width="2"/>
+  <text x="885" y="391" fill="#8b949e" font-family="Consolas, monospace" font-size="15">+X</text>
+  <text x="490" y="112" fill="#8b949e" font-family="Consolas, monospace" font-size="15">−Z</text>
+  <polygon points="455,405 505,405 480,370" fill="#79c0ff"/>
+  <text x="420" y="445" fill="#79c0ff" font-family="Segoe UI, sans-serif" font-size="15">Camera (0, 0.25, 4.0)</text>
+  <line x1="480" y1="365" x2="480" y2="145" stroke="#79c0ff" stroke-width="3" marker-end="url(#viewArrow)"/>
+  <circle cx="278" cy="200" r="68" fill="#f85149" stroke="#ffa657" stroke-width="5"/>
+  <circle cx="480" cy="254" r="30" fill="#1f6feb" stroke="#79c0ff" stroke-width="4"/>
+  <circle cx="682" cy="205" r="55" fill="#b08856" stroke="#e3b341" stroke-width="4"/>
+  <g fill="#f0f6fc" font-family="Segoe UI, sans-serif" font-size="17" font-weight="700">
+    <text x="250" y="202">SUN</text><text x="451" y="258">EARTH</text><text x="649" y="210">JUPITER</text>
+  </g>
+  <g fill="#c9d1d9" font-family="Consolas, monospace" font-size="14">
+    <text x="190" y="295">position = (−1.55, 0.25, −2.8)</text><text x="220" y="318">radius scale = 0.80</text>
+    <text x="390" y="315">position = (0, 0.10, −1.8)</text><text x="430" y="338">radius scale = 0.35</text>
+    <text x="615" y="295">position = (1.55, 0.15, −2.7)</text><text x="649" y="318">radius scale = 0.65</text>
+  </g>
+</svg>
