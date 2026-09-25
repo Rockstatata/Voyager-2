@@ -17,21 +17,12 @@
 #include "../rendering/BoxGenerator.h"
 #include "../rendering/CylinderGenerator.h"
 #include "../rendering/Material.h"
+#include "../rendering/MaterialLibrary.h"
 #include "../rendering/Mesh.h"
 #include "../rendering/ParabolicDishGenerator.h"
 
 namespace
 {
-	std::shared_ptr<Material> makeMaterial(const glm::vec3& color)
-	{
-		auto material = std::make_shared<Material>();
-		material->baseColor = color;
-		// Painted and foil surfaces catch a modest Sun highlight.
-		material->specularStrength = 0.35f;
-		material->specularPower = 24.0f;
-		return material;
-	}
-
 	void appendTransformed(MeshData& destination, const MeshData& source, const glm::dmat4& transform)
 	{
 		const std::uint32_t firstVertex = static_cast<std::uint32_t>(destination.vertices.size());
@@ -147,14 +138,14 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 	result.spacecraft = std::make_unique<Voyager2>("voyager2");
 	Voyager2& voyager = *result.spacecraft;
 
-	const auto white = makeMaterial(glm::vec3(0.93f, 0.93f, 0.90f));
-	const auto gold = makeMaterial(glm::vec3(0.78f, 0.57f, 0.16f));
-	const auto darkGold = makeMaterial(glm::vec3(0.40f, 0.27f, 0.08f));
-	const auto metal = makeMaterial(glm::vec3(0.58f, 0.61f, 0.64f));
-	const auto darkMetal = makeMaterial(glm::vec3(0.16f, 0.18f, 0.20f));
-	const auto black = makeMaterial(glm::vec3(0.035f, 0.045f, 0.055f));
-	const auto copper = makeMaterial(glm::vec3(0.72f, 0.28f, 0.08f));
-	const auto blueGrey = makeMaterial(glm::vec3(0.35f, 0.48f, 0.55f));
+	const auto white = MaterialLibrary::spacecraft(glm::vec3(0.93f, 0.93f, 0.90f));
+	const auto gold = MaterialLibrary::spacecraft(glm::vec3(0.78f, 0.57f, 0.16f));
+	const auto darkGold = MaterialLibrary::spacecraft(glm::vec3(0.40f, 0.27f, 0.08f));
+	const auto metal = MaterialLibrary::spacecraft(glm::vec3(0.58f, 0.61f, 0.64f));
+	const auto darkMetal = MaterialLibrary::spacecraft(glm::vec3(0.16f, 0.18f, 0.20f));
+	const auto black = MaterialLibrary::spacecraft(glm::vec3(0.035f, 0.045f, 0.055f));
+	const auto copper = MaterialLibrary::spacecraft(glm::vec3(0.72f, 0.28f, 0.08f));
+	const auto blueGrey = MaterialLibrary::spacecraft(glm::vec3(0.35f, 0.48f, 0.55f));
 
 	const ScaleManager scale;
 	auto units = [&scale](double metres)

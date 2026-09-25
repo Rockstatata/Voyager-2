@@ -1,0 +1,10 @@
+# Mission bookmarks for keys 1-6. An encounter bookmark names a planet and
+# starts lead_days before the computed closest approach; a dated bookmark
+# uses julian_date (0 = start of the Voyager table).
+key,name,planet,julian_date,lead_days
+1,Launch (1977-08-21),,0,0
+2,Jupiter encounter (1979-07-09),jupiter,0,1.5
+3,Saturn encounter (1981-08-26),saturn,0,1.5
+4,Uranus encounter (1986-01-24),uranus,0,1.5
+5,Neptune encounter (1989-08-25),neptune,0,1.5
+6,Heliopause crossing (2018-11-05),,2458427.5,0

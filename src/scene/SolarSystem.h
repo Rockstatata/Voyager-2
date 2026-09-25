@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "CelestialBody.h"
-#include "Scene.h"
 
 // Bible section 18/52 — registry that owns every CelestialBody by inserting
 // it into the Scene tree (root if it has no parent, a child of its parent
@@ -19,7 +18,7 @@
 class SolarSystem
 {
 public:
-	explicit SolarSystem(Scene& scene) : m_scene(scene) {}
+	explicit SolarSystem(SceneObject& root) : m_root(root) {}
 
 	CelestialBody& addBody(CelestialBodyData data, std::shared_ptr<Mesh> mesh,
 							std::shared_ptr<Material> material);
@@ -28,7 +27,7 @@ public:
 	const std::vector<CelestialBody*>& bodies() const { return m_bodies; }
 
 private:
-	Scene& m_scene;
+	SceneObject& m_root; // the scene's `bodies` group
 	std::unordered_map<std::string, CelestialBody*> m_byId;
 	std::vector<CelestialBody*> m_bodies; // insertion order, non-owning
 };

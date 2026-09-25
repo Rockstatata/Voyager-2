@@ -22,7 +22,7 @@ struct CelestialBodyData
 	double axialTiltDegrees = 0.0;
 
 	std::string texturePath;  // relative to project root, per Texture2D::loadFromFile
-	std::string materialId;   // free-form tag for docs/debugging, not yet used by rendering
+	std::string materialId;   // surface preset for MaterialLibrary: emissive, rocky, ocean, cloud, gas, ice
 
 	BodyType type = BodyType::Planet;
 };

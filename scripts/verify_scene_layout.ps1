@@ -153,14 +153,19 @@ foreach ($encounter in $encounters) {
 	Write-Host ("[LAYOUT] {0}: {1:N0} km ({2:N2} radii) at JD {3:F4}; display clearance {4:N2} radii" -f $encounter.Id, $best, ($best / $encounter.RadiusKm), $bestJd, $clearance)
 }
 
-# --- Source contracts. ---
-$applicationSource = Get-Content -Raw (Join-Path $ProjectRoot 'src\core\Application.cpp')
+# --- Data and source contracts. ---
+$ringBands = Get-Content -Raw (Join-Path $ProjectRoot 'assets\data\ring_bands.csv')
 foreach ($planet in @('saturn', 'uranus', 'jupiter', 'neptune')) {
-	if ($applicationSource -notmatch "buildRingSystem\(`"$planet`"") {
-		$failures.Add("$planet ring system is missing.")
+	if ($ringBands -notmatch "(?m)^$planet,") {
+		$failures.Add("$planet ring system is missing from ring_bands.csv.")
 	}
 }
-if ($applicationSource -match 'j2000TrueAnomaliesDegrees|kPlanetDaysPerSecond') {
+$bodyRows = (Get-Content (Join-Path $ProjectRoot 'assets\data\celestial_bodies.csv') | Where-Object { $_ -match '^[a-z]' -and $_ -notmatch '^id,' }).Count
+if ($bodyRows -ne 26) {
+	$failures.Add("celestial_bodies.csv lists $bodyRows bodies; 26 are required.")
+}
+$sources = (Get-ChildItem -Recurse (Join-Path $ProjectRoot 'src') -Include *.cpp | ForEach-Object { Get-Content -Raw $_.FullName }) -join "`n"
+if ($sources -match 'j2000TrueAnomaliesDegrees|kPlanetDaysPerSecond') {
 	$failures.Add('Planets are animated by a private clock instead of the dated ephemeris.')
 }
 

@@ -148,6 +148,15 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ui\HudOverlay.cpp" />
+    <ClCompile Include="src\core\CaptureTour.cpp" />
+    <ClCompile Include="src\core\CameraController.cpp" />
+    <ClCompile Include="src\rendering\MaterialLibrary.cpp" />
+    <ClCompile Include="src\scene\MissionController.cpp" />
+    <ClCompile Include="src\scene\Comet.cpp" />
+    <ClCompile Include="src\scene\EnvironmentBuilder.cpp" />
+    <ClCompile Include="src\scene\SolarSystemBuilder.cpp" />
+    <ClCompile Include="src\scene\BodyCatalog.cpp" />
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
@@ -191,6 +200,15 @@
     <None Include="hud.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ui\HudOverlay.h" />
+    <ClInclude Include="src\core\CaptureTour.h" />
+    <ClInclude Include="src\core\CameraController.h" />
+    <ClInclude Include="src\rendering\MaterialLibrary.h" />
+    <ClInclude Include="src\scene\MissionController.h" />
+    <ClInclude Include="src\scene\Comet.h" />
+    <ClInclude Include="src\scene\EnvironmentBuilder.h" />
+    <ClInclude Include="src\scene\SolarSystemBuilder.h" />
+    <ClInclude Include="src\scene\BodyCatalog.h" />
     <ClInclude Include="EBO.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="VAO.h" />

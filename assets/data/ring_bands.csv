@@ -1,0 +1,18 @@
+# Named ring bands in units of the parent planet's radius (real km / real radius).
+# A gap between rows (Cassini Division) is a real gap: no geometry is generated.
+planet,band,inner,outer,r,g,b,opacity
+saturn,D,1.110,1.236,0.42,0.39,0.34,0.35
+saturn,C,1.239,1.527,0.62,0.57,0.48,0.70
+saturn,B,1.527,1.951,0.93,0.85,0.69,0.97
+saturn,A,2.027,2.269,0.82,0.75,0.61,0.90
+saturn,F,2.320,2.334,0.85,0.80,0.70,0.80
+uranus,6-5-4,1.648,1.662,0.36,0.37,0.39,0.80
+uranus,alpha,1.750,1.760,0.38,0.39,0.41,0.80
+uranus,beta,1.786,1.796,0.38,0.39,0.41,0.80
+uranus,gamma-eta-delta,1.860,1.876,0.40,0.41,0.43,0.80
+uranus,epsilon,2.000,2.020,0.50,0.51,0.54,0.90
+jupiter,halo,1.40,1.71,0.55,0.47,0.40,0.12
+jupiter,main,1.72,1.81,0.66,0.56,0.46,0.28
+neptune,Galle,1.69,1.73,0.45,0.45,0.48,0.18
+neptune,Le Verrier,2.14,2.16,0.55,0.55,0.58,0.30
+neptune,Adams,2.53,2.55,0.58,0.58,0.62,0.35

@@ -17,3 +17,20 @@ void Scene::render(Renderer& renderer)
 	for (auto& object : m_objects)
 		object->render(renderer);
 }
+
+SceneObject& Scene::group(const std::string& name)
+{
+	if (SceneObject* existing = findGroup(name))
+		return *existing;
+	return addObject(std::make_unique<SceneObject>(name));
+}
+
+SceneObject* Scene::findGroup(const std::string& name) const
+{
+	for (const auto& object : m_objects)
+	{
+		if (object->name() == name)
+			return object.get();
+	}
+	return nullptr;
+}

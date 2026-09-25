@@ -13,7 +13,7 @@ CelestialBody& SolarSystem::addBody(CelestialBodyData data, std::shared_ptr<Mesh
 
 	if (parentId.empty())
 	{
-		m_scene.addObject(std::move(body));
+		m_root.addChild(std::move(body));
 	}
 	else
 	{
@@ -22,7 +22,7 @@ CelestialBody& SolarSystem::addBody(CelestialBodyData data, std::shared_ptr<Mesh
 		{
 			std::cout << "[SOLAR] parent '" << parentId << "' not yet registered for body '"
 					  << id << "' — added as a scene root instead" << std::endl;
-			m_scene.addObject(std::move(body));
+			m_root.addChild(std::move(body));
 		}
 		else
 		{
