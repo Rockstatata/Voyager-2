@@ -2,9 +2,9 @@
 
 ## Project Structure & Source of Truth
 
-`Main.cpp` is the thin entry point. Platform services live in `src/core/`, rendering in `src/rendering/`, and scene ownership/transforms in `src/scene/`. Root `VAO`/`VBO`/`EBO` and shader wrappers are the starter layer. Runtime shaders are `default.vert` and `default.frag`; local content belongs under `assets/`; dependencies are vendored in `Libraries/`.
+`Main.cpp` is the thin entry point. Platform services live in `src/core/`, rendering in `src/rendering/`, and scene ownership/transforms in `src/scene/`. Root `VAO`/`VBO`/`EBO` and shader wrappers are the starter layer. Runtime shaders live in `shaders/` (`scene.*`, `lighting.glsl`, `raytrace*`, `hud.*`) and are combined with `#include` by `ShaderProgram`; catalogs are CSVs in `assets/data/`; local content belongs under `assets/`; dependencies are vendored in `Libraries/`.
 
-Read `docs/Voyager_2_Solar_System_Implementation_Bible.md` before architectural work; it is authoritative. All bible phases are complete: 26 textured bodies, four ring systems, orbit guides, starfield, instanced small-body fields, a comet, and a procedural Voyager 2. Planets and Voyager come from dense offline NASA/JPL Horizons state vectors on one `SimulationClock` date (`MissionEphemeris`); Sun lighting, HUD/labels and free-flight camera autonomy are in place. `docs/objects/README.md` indexes how each piece works.
+Read `docs/Voyager_2_Solar_System_Implementation_Bible.md` before architectural work; it is authoritative. All bible phases are complete: 26 textured bodies, four ring systems, orbit guides, starfield, instanced small-body fields, a comet, and a procedural Voyager 2. Planets and Voyager come from dense offline NASA/JPL Horizons state vectors on one `SimulationClock` date (`MissionEphemeris`); Five shading techniques, three light types, derived lighting maps, ray-traced shadows, a Whitted ray-traced view (F9) with a triangle BVH for Voyager, a NASA-textured Voyager with an Inspect mode, HUD/labels and full camera autonomy are in place. `docs/guide/README.md` is the ground-up learning guide; `docs/objects/README.md` indexes how each piece works.
 
 Register every new source/header in both `Voyager-2.vcxproj` and `Voyager-2.vcxproj.filters`, then rebuild. `ChatGPT.cpp` is uncompiled reference material.
 

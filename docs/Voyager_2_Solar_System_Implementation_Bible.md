@@ -2820,10 +2820,11 @@ Only after object architecture is stable.
 - [x] map shader uniforms to `Material` (`shading`, `specularStrength`, `specularPower`, `opacity`)
 - [x] Sun emissive behavior (unlit Sun + two additive glow shells)
 - [x] planet lighting (Sun point light, Lambert + Blinn-Phong; `K` toggles)
-- [x] normal/specular support if provided (specular per material; no normal maps supplied)
+- [x] shading techniques: Flat, Gouraud, Phong, Blinn-Phong, Toon (`F3`); spot headlamp (`F5`), directional fill (`F6`), Sun falloff (`F7`)
+- [x] normal/specular support (maps derived from the albedo photographs, `F8`; tangents from screen-space derivatives)
 - [x] ring blending (translucent two-sided rings)
 - [x] space background (three camera-centred star layers)
-- [ ] shadows if required (not required; documented limitation)
+- [x] shadows: ray-traced hard and soft Sun shadows from spheres, rings and Voyager's BVH (`F4`); full Whitted ray-traced view (`F9`, docs/objects/ray-tracing.md)
 - [x] final visual polishing (floating origin, logarithmic depth, larger display radii)
 
 ---
@@ -3737,6 +3738,13 @@ Use this table whenever we make a significant architecture change.
 | D016 | 2026-09-24 | Power-law body radii (Earth 0.5, exponent 0.6) and a display-capped Sun instead of one linear radius factor | The linear scale made planets sub-pixel and the scene look empty; size order is kept | ScaleManager/all bodies |
 | D017 | 2026-09-24 | Floating origin plus logarithmic depth | Lets one frame hold 2 cm spacecraft struts and the Oort cloud without per-mode clip planes | Renderer/shaders |
 | D018 | 2026-09-24 | Implement Sun lighting on the existing Material seam (supersedes D005's deferral) | No instructor shaders were supplied; readable day/night sides were needed | Material, shaders |
+| D019 | 2026-09-25 | Five selectable shading techniques and three light types in one shared `lighting.glsl` | The course's shading topics must be demonstrable side by side on the same objects without per-object shaders | shaders, LightingController |
+| D020 | 2026-09-25 | Derive normal and specular maps from the albedo photographs; rebuild tangents from screen-space derivatives | No bump maps were supplied, and the shared `Vertex` format must not grow a tangent attribute | SurfaceMaps, scene.frag |
+| D021 | 2026-09-25 | Analytic ray tracing (spheres, annuli, circle-overlap soft shadows) plus a Whitted ray-traced view that writes log depth | Real ray tracing for extra credit that composites with the raster scene and stays interactive | raytrace.glsl, RayTracer |
+| D022 | 2026-09-25 | Ray-trace Voyager's own triangles through a median-split BVH in texture buffers | Voyager must receive self-shadows and appear in the traced view; GLSL 3.30 has no SSBOs | TriangleBvh |
+| D023 | 2026-09-25 | Texture Voyager from NASA's public-domain atlas via per-material UV windows; geometry stays self-authored | Real hardware finishes without importing another project's geometry | MaterialLibrary, VoyagerModelBuilder |
+| D024 | 2026-09-25 | Spacecraft scale 0.006 units/m, 18 inspectable components and an Inspect camera | Voyager is the primary object and must be studied part by part | ScaleManager, CameraController |
+| D025 | 2026-09-25 | Data-driven catalogs (`assets/data/*.csv`) and named scene groups | Bodies, rings and bookmarks can be changed without recompiling; groups toggle whole categories | BodyCatalog, Scene |
 
 Add entries below rather than deleting old decisions. If a decision is reversed, add a new decision referencing the old one.
 
@@ -3806,6 +3814,36 @@ Finish the remaining phases: synchronized ephemeris and verified flybys (11), la
 
 ### Next exact task
 Optional polish: shadows, date-synchronized moons, instructor shader swap-in when supplied.
+
+## Session 2026-09-25
+
+### Goal
+Complete the lighting and shading phase without instructor resources, add ray tracing, overhaul controls, organise the scene as data, make Voyager 2 detailed, textured and inspectable, and document everything for learning.
+
+### Files changed
+- New: `shaders/` (scene, lighting, raytrace, raytrace_mesh, hud), `src/core/{LightingController,CameraController,CaptureTour}.*`, `src/rendering/{ShaderProgram,LightingUniforms,SurfaceMaps,MaterialLibrary,RayTracer,TriangleBvh}.*`, `src/scene/{BodyCatalog,SolarSystemBuilder,EnvironmentBuilder,MissionController,Comet}.*`, `assets/data/*.csv`, `assets/textures/spacecraft/`, `docs/guide/`, `docs/objects/{ray-tracing,voyager-textures}.md`
+- Rewritten: `Application`, `Renderer`, `VoyagerModelBuilder`, `Voyager2`, `HudOverlay`, both verify scripts, lighting/controls/voyager/HUD docs
+
+### Completed
+- [x] Flat, Gouraud, Phong, Blinn-Phong and Toon shading; point, spot and directional lights; attenuation; normal and specular maps
+- [x] Ray-traced hard and soft Sun shadows; Whitted ray-traced view with ring transparency and reflections; Voyager BVH (11,652 triangles)
+- [x] Click-to-select, planet/moon stepping, Inspect mode over 18 Voyager components, key-hint bar, safe quit
+- [x] Voyager rebuilt (82 parts) and textured from NASA's atlas; self-shadowing
+- [x] Learning guide (10 chapters) and refreshed object docs with new capture tours
+
+### Problems found
+- The dish intersected the bus and straight ribs cut through the bowl; exposed by the ray tracer and fixed.
+
+### Decisions made
+- D019-D025.
+
+### Current build state
+- Builds: Yes (Debug and Release x64)
+- Runs: Yes; both verify scripts pass
+- Known errors: none
+
+### Next exact task
+Optional: date-synchronized moons, shadows from the headlamp, path-traced global illumination.
 
 ---
 
