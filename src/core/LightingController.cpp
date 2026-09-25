@@ -40,6 +40,8 @@ void LightingController::handleKeys(const Input& input)
 		m_sunFalloff = !m_sunFalloff;
 	if (input.keyPressed(GLFW_KEY_F8))
 		m_surfaceMaps = !m_surfaceMaps;
+	if (input.keyPressed(GLFW_KEY_F4))
+		m_shadows = static_cast<ShadowMode>((static_cast<int>(m_shadows) + 1) % 3);
 }
 
 LightingState LightingController::build(const glm::dvec3& sunPosition, const Camera& camera,
@@ -50,6 +52,7 @@ LightingState LightingController::build(const glm::dvec3& sunPosition, const Cam
 	state.technique = m_technique;
 	state.ambient = 0.07f;
 	state.surfaceMaps = m_surfaceMaps;
+	state.shadows = m_shadows;
 
 	// Sun: a point light. With falloff on, 1 / (0.3 + 0.7 (d / 20)^2), which
 	// is 1.0 at Earth's 20-unit orbit and ~0.03 at Neptune (compressed
@@ -96,7 +99,9 @@ std::vector<std::string> LightingController::statusLines() const
 		lines.push_back("LIGHTING OFF (K)");
 		return lines;
 	}
-	lines.push_back(std::string("SHADING ") + shadingTechniqueName(m_technique) + " (F3)");
+	const char* shadowNames[] = { "OFF", "HARD", "SOFT" };
+	lines.push_back(std::string("SHADING ") + shadingTechniqueName(m_technique) + " (F3)   RAY-TRACED SHADOWS " +
+		shadowNames[static_cast<int>(m_shadows)] + " (F4)");
 	lines.push_back(std::string("LIGHTS  SUN") + (m_sunFalloff ? " 1/D2" : "") +
 		"  HEADLAMP " + onOff(m_headlamp) + "  FILL " + onOff(m_fill) + "  MAPS " + onOff(m_surfaceMaps));
 	return lines;

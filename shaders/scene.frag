@@ -1,6 +1,7 @@
 #version 330 core
 
 #include "lighting.glsl"
+#include "raytrace.glsl"
 
 in vec3 normal;
 in vec2 texCoord;
@@ -108,8 +109,11 @@ void main()
 		terms = evaluateLights(surfaceNormal, viewDirection, relativePosition, twoSided, shadingTechnique, specularScale);
 	}
 
-	vec3 diffuse = terms.sunDiffuse + terms.otherDiffuse;
-	vec3 specular = terms.sunSpecular + terms.otherSpecular;
+	// Ray-traced shadow: one shadow ray per pixel toward the Sun, tested
+	// against every body sphere and ring band (raytrace.glsl).
+	float sunlight = sunVisibility(relativePosition);
+	vec3 diffuse = terms.sunDiffuse * sunlight + terms.otherDiffuse;
+	vec3 specular = terms.sunSpecular * sunlight + terms.otherSpecular;
 	vec3 lit = color * (ambientStrength + diffuse) + specular;
 
 	if (shadingTechnique == SHADING_TOON)

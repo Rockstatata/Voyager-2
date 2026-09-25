@@ -73,6 +73,7 @@ private:
 	MissionController m_mission;
 	CameraController m_cameraController{ m_camera, m_solarSystem, m_mission };
 	LightingController m_lighting;
+	RayTraceScene m_traceScene; // rebuilt every frame, reused storage
 	HudOverlay m_hud;
 	CaptureTour m_captureTour;
 

@@ -21,6 +21,9 @@ public:
 	// but must not be dragged round once per planetary day.
 	void render(Renderer& renderer) override;
 
+	// World matrix of the visible sphere: the body frame plus axial spin.
+	glm::dmat4 surfaceMatrix() const;
+
 	const CelestialBodyData& data() const { return m_data; }
 
 	// Phase 5 elliptical-orbit placeholder (bible: "circular orbit

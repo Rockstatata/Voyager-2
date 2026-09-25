@@ -18,6 +18,10 @@ enum class ShadingTechnique { Flat = 0, Gouraud = 1, Phong = 2, BlinnPhong = 3, 
 // them to the camera-relative frame the shaders work in.
 enum class LightType { Directional = 0, Point = 1, Spot = 2 };
 
+// Ray-traced Sun shadows: off, hard (one ray to the Sun's centre) or soft
+// (the Sun treated as a disc; partial cover gives a penumbra).
+enum class ShadowMode { Off = 0, Hard = 1, Soft = 2 };
+
 struct Light
 {
 	LightType type = LightType::Point;
@@ -40,6 +44,7 @@ struct LightingState
 	ShadingTechnique technique = ShadingTechnique::BlinnPhong;
 	float ambient = 0.07f;
 	bool surfaceMaps = true; // normal and specular maps (F8)
+	ShadowMode shadows = ShadowMode::Soft;
 	// Light 0 is always the Sun; only it casts shadows.
 	std::array<Light, kMaxLights> lights{};
 };

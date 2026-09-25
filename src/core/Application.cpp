@@ -255,6 +255,8 @@ void Application::render()
 {
 	m_renderer.setLighting(m_lighting.build(m_sunPosition, m_camera,
 		m_cameraController.nearestSurfaceDistance(m_camera.position())));
+	m_solarSystem.buildTraceScene(m_traceScene, m_sunPosition);
+	m_renderer.setTraceScene(m_traceScene);
 	m_renderer.beginFrame(m_camera, m_window.aspectRatio());
 	for (const auto& layer : m_backgroundLayers)
 		m_renderer.submitBackground(*layer->mesh(), *layer->material());
@@ -353,9 +355,17 @@ void Application::startCaptureTour(const std::string& directory, const std::stri
 		shots.push_back({ "maps_moon_off.bmp", 0.4, [=, this]() { m_lighting.setSurfaceMaps(false); } });
 		shots.push_back({ "maps_earth_on.bmp", 3.0, [=, this]() { m_lighting.setSurfaceMaps(true); focusById("earth"); } });
 		shots.push_back({ "maps_earth_off.bmp", 0.4, [=, this]() { m_lighting.setSurfaceMaps(false); } });
-		shots.push_back({ "light_headlamp.bmp", 3.0, [=, this]()
+		shots.push_back({ "shadow_saturn_soft.bmp", 3.0, [=, this]()
 		{
 			m_lighting.setSurfaceMaps(true);
+			m_lighting.setShadows(ShadowMode::Soft);
+			focusById("saturn");
+		} });
+		shots.push_back({ "shadow_saturn_hard.bmp", 0.4, [=, this]() { m_lighting.setShadows(ShadowMode::Hard); } });
+		shots.push_back({ "shadow_saturn_off.bmp", 0.4, [=, this]() { m_lighting.setShadows(ShadowMode::Off); } });
+		shots.push_back({ "light_headlamp.bmp", 3.0, [=, this]()
+		{
+			m_lighting.setShadows(ShadowMode::Soft);
 			m_lighting.setHeadlamp(true);
 			pause();
 			focusById("moon");

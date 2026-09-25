@@ -74,6 +74,11 @@ void CelestialBody::update(double dt)
 	SceneObject::update(dt);
 }
 
+glm::dmat4 CelestialBody::surfaceMatrix() const
+{
+	return worldMatrix() * glm::mat4_cast(glm::angleAxis(m_spinAngleRadians, glm::dvec3(0.0, 1.0, 0.0)));
+}
+
 void CelestialBody::render(Renderer& renderer)
 {
 	if (!visible())
@@ -81,8 +86,7 @@ void CelestialBody::render(Renderer& renderer)
 
 	if (mesh() != nullptr && material() != nullptr)
 	{
-		const glm::dquat spin = glm::angleAxis(m_spinAngleRadians, glm::dvec3(0.0, 1.0, 0.0));
-		renderer.submit(*mesh(), *material(), worldMatrix() * glm::mat4_cast(spin));
+		renderer.submit(*mesh(), *material(), surfaceMatrix());
 	}
 
 	for (const auto& child : children())

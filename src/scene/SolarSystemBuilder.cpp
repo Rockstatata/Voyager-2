@@ -97,6 +97,7 @@ void SolarSystemBuilder::build(SolarSystem& system, const std::vector<CelestialB
 		ring->setMesh(std::make_shared<Mesh>(RingGenerator::generate(band.innerRadius, band.outerRadius, 128)));
 		ring->setMaterial(MaterialLibrary::flat(band.color, ShadingModel::LitTwoSided, band.opacity));
 		planet->addChild(std::move(ring));
+		system.registerRingBand({ planet, band.innerRadius, band.outerRadius, band.color, band.opacity });
 	}
 	std::cout << "[SCENE] ring systems attached:";
 	for (const auto& [planetId, count] : bandsPerPlanet)

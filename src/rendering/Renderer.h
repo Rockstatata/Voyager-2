@@ -8,6 +8,7 @@
 #include "Lighting.h"
 #include "Material.h"
 #include "Mesh.h"
+#include "RayTraceScene.h"
 #include "ShaderProgram.h"
 
 class Camera;
@@ -34,6 +35,9 @@ public:
 	bool initialize();
 
 	void setLighting(const LightingState& lighting) { m_lighting = lighting; }
+	// Spheres and ring bands the shadow rays are traced against.
+	void setTraceScene(const RayTraceScene& scene) { m_traceScene = scene; }
+	const RayTraceScene& traceScene() const { return m_traceScene; }
 	const LightingState& lighting() const { return m_lighting; }
 
 	// Clears the frame and uploads camera matrices and lights.
@@ -69,11 +73,13 @@ private:
 
 	void applyMaterial(const Material& material);
 	void uploadLights();
+	void uploadTraceScene(ShaderProgram& program) const;
 
 	ShaderProgram m_program;
 	glm::vec4 m_clearColor{ 0.0f, 0.0f, 0.0f, 1.0f };
 	glm::dvec3 m_origin{ 0.0 };
 	LightingState m_lighting;
+	RayTraceScene m_traceScene;
 	std::vector<DeferredDraw> m_deferred;
 };
 
