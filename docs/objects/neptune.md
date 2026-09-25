@@ -49,13 +49,14 @@ Source: NASA Planetary Fact Sheets (https://nssdc.gsfc.nasa.gov/planetary/factsh
 
 - Texture file: `assets/textures/bodies/neptune.jpg` (2048x1024, loaded via `Texture2D::loadFromFile` → `stb_image` decode → `glTexImage2D`)
 - Source and credit: Solar System Scope free 2k texture pack, CC BY 4.0 (https://www.solarsystemscope.com/textures/)
-- Shading: `Lit` (Sun point light, Lambert diffuse + Blinn-Phong specular strength 0.05, ambient 0.07) — [lighting.md](lighting.md). `K` toggles lighting off to show the raw texture.
+- Shading: `Lit`, `gas` preset: specular strength 0.06, power 10, ambient 0.07, no lighting maps (cloud tops have no relief). Lit by the Sun point light (plus the optional headlamp and fill) in whichever technique `F3` selects (default Blinn-Phong) — [lighting.md](lighting.md). `K` toggles lighting off to show the raw texture; `F8` toggles the maps.
+- Shadows: every fragment traces a soft shadow ray to the Sun through all body spheres and ring bands, so this body both casts and receives eclipse shadows (`F4`: off, hard, soft). In the ray-traced view (`F9`) it is an exact analytic sphere — [ray-tracing.md](ray-tracing.md).
 - UVs come from the shared sphere generator; swapping the texture changes no vertex data.
 
 ## Limitations
 
 - Radius is power-law compressed (size order preserved, absolute ratios not); see [scale-manager.md](scale-manager.md).
-- Perfect sphere: no oblateness, no shadows cast onto rings or moons.
+- Perfect sphere: no oblateness. Shadows come only from the Sun; the headlamp and fill cast none.
 
 ## Verification
 

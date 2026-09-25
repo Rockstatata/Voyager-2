@@ -24,7 +24,7 @@ Three independent layers give a magnitude distribution with many faint stars and
 
 ## Vertex attributes / primitives
 
-Standard `Vertex` (normal and UV unused). The indices are `0..count-1` drawn as `GL_POINTS`, and `default.vert` writes `gl_PointSize = 2` (with `GL_PROGRAM_POINT_SIZE` enabled).
+Standard `Vertex` (normal and UV unused). The indices are `0..count-1` drawn as `GL_POINTS`, and `shaders/scene.vert` writes `gl_PointSize = 2` (with `GL_PROGRAM_POINT_SIZE` enabled).
 
 ## Transform
 

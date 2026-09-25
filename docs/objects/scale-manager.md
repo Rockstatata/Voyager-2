@@ -58,10 +58,10 @@ Skipping this division makes every moon too large by the parent's scale and plac
 ## 4. Spacecraft: linear metres
 
 ```text
-renderSize = metres * 0.002
+renderSize = metres * 0.006
 ```
 
-All of Voyager's sourced dimensions share this one factor, so its internal proportions are exact: the 3.7 m dish is 0.0074 units and the 13 m magnetometer boom is 0.026 units. The probe is still tiny beside Neptune (radius 1.125). The chase camera and logarithmic depth ([lighting.md](lighting.md)) make it inspectable at any distance.
+All of Voyager's sourced dimensions share this one factor (`kSpacecraftUnitsPerMetre`), so its internal proportions are exact: the 3.7 m dish is 0.0222 units and the 13 m magnetometer boom is 0.078 units. The factor was raised from 0.002 so the craft reads clearly in chase shots and Inspect mode; the probe is still tiny beside Neptune (radius 1.125). The chase and Inspect cameras and logarithmic depth ([lighting.md](lighting.md)) make it inspectable down to a 5 cm lens.
 
 ## Honesty statement
 

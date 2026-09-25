@@ -42,13 +42,13 @@ Source: NASA Planetary Fact Sheets (https://nssdc.gsfc.nasa.gov/planetary/factsh
 
 - Texture file: `assets/textures/bodies/sun.jpg` (2048x1024, loaded via `Texture2D::loadFromFile` → `stb_image` decode → `glTexImage2D`)
 - Source and credit: Solar System Scope free 2k texture pack, CC BY 4.0 (https://www.solarsystemscope.com/textures/)
-- Shading: `Unlit` — the light source itself — plus two additive `Glow` halo shells.
+- Shading: `Unlit` (emissive preset): the Sun is the light source itself, so its texture is shown at full brightness, surrounded by two additive glow shells — [lighting.md](lighting.md). In the ray-traced view (`F9`) it is an emissive sphere with an analytic glow — [ray-tracing.md](ray-tracing.md).
 - UVs come from the shared sphere generator; swapping the texture changes no vertex data.
 
 ## Limitations
 
 - Radius is power-law compressed (size order preserved, absolute ratios not); see [scale-manager.md](scale-manager.md).
-- Perfect sphere: no oblateness, no shadows cast onto rings or moons.
+- Perfect sphere: no oblateness. Shadows come only from the Sun; the headlamp and fill cast none.
 
 ## Verification
 

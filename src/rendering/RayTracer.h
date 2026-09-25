@@ -19,10 +19,11 @@ class Camera;
 // are shaded with the same lights as the raster path, plus a shadow ray to
 // the Sun (soft, area light), rays that continue through translucent rings,
 // and one mirror-reflection bounce off reflective surfaces (Whitted-style).
+// Voyager 2's triangles are traced too, through its BVH (setTracedMesh).
 //
 // It is hybrid: the pass writes logarithmic depth, so rasterised geometry
-// the tracer does not model (Voyager 2, orbit lines, belts) still composites
-// correctly in front of or behind the traced worlds.
+// the tracer does not model (orbit lines, trajectory, belts, stars) still
+// composites correctly in front of or behind the traced worlds.
 class RayTracer
 {
 public:

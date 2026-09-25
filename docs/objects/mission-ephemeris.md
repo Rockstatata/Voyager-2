@@ -4,7 +4,7 @@
 
 *Runtime capture (`--capture` tour): Jupiter and Voyager 2 placed from the same Horizons date, six hours before the computed closest approach. The encounter banner counts down to it; the chase camera faces the planet.*
 
-This page covers bible Phase 11: one date drives every planet and the spacecraft, and each giant-planet flyby happens at the correct historical moment and on the correct side of the planet. Code: `src/scene/MissionEphemeris.*`, `src/scene/SimulationClock.*`, `src/scene/Trajectory.*`.
+This page covers bible Phase 11: one date drives every planet and the spacecraft, and each giant-planet flyby happens at the correct historical moment and on the correct side of the planet. Code: `src/scene/MissionEphemeris.*`, `src/scene/SimulationClock.*`, `src/scene/Trajectory.*`, and `src/scene/MissionController.*`, which owns the ephemeris, the clock and the bookmarks (`assets/data/mission_bookmarks.csv`). Every frame `MissionController::update` advances the clock, `placeBodies` moves each planet to its Horizons position and `placeVoyager` moves the spacecraft. The derivation is also walked through in [guide chapter 9](../guide/09-mission-data.md).
 
 ## Data
 

@@ -13,13 +13,13 @@ Bible failure mode F9: "thousands of asteroid `SceneObject` draw calls." A naive
 Concretely (`src/rendering/Mesh.h/.cpp`):
 
 1. `Mesh::setInstanceTransforms(matrices)` uploads a `std::vector<glm::mat4>` to a second VBO.
-2. A `mat4` isn't one GL vertex attribute — GL attributes cap out at 4 floats (a `vec4`) — so it's uploaded as **four consecutive `vec4` attributes**, locations 3-6, immediately after the mesh's own `position`/`normal`/`uv` at locations 0-2 (see `default.vert`).
+2. A `mat4` isn't one GL vertex attribute — GL attributes cap out at 4 floats (a `vec4`) — so it's uploaded as **four consecutive `vec4` attributes**, locations 3-6, immediately after the mesh's own `position`/`normal`/`uv` at locations 0-2 (see `shaders/scene.vert`).
 3. `glVertexAttribDivisor(location, 1)` on each of those four attributes is the actual instancing switch: divisor 0 (the default, used by locations 0-2) means "advance this attribute once per **vertex**"; divisor 1 means "advance once per **instance**." That one call is the entire difference between "every rock looks identical and overlaps at the origin" and "each rock has its own position/scale."
 4. `Mesh::drawInstanced()` calls `glDrawElementsInstanced(mode, indexCount, ..., instanceCount)` — one call, GPU-side loop over all instances.
 
 ## Shader side
 
-`default.vert` gained a `uniform int useInstancing` and the four extra attribute inputs:
+`shaders/scene.vert` gained a `uniform int useInstancing` and the four extra attribute inputs:
 
 ```glsl
 mat4 effectiveModel = useInstancing != 0

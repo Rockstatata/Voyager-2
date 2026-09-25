@@ -8,7 +8,7 @@ Three motions animate the solar system, and each has one owner.
 
 | Motion | Owner | Clock |
 | --- | --- | --- |
-| Planet and Pluto positions | `Application::updateEphemerisPositions` using `MissionEphemeris` | Shared `SimulationClock` Julian Date |
+| Planet and Pluto positions | `MissionController::placeBodies` using `MissionEphemeris` | Shared `SimulationClock` Julian Date |
 | Moon revolution | `CelestialBody::setOrbit` / `update` | Visual clock: 0.4 days per real second x speed |
 | Axial spin | `CelestialBody::update` | 1 simulated hour per real second x speed |
 

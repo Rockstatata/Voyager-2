@@ -49,7 +49,8 @@ Source: NASA Planetary Fact Sheets (https://nssdc.gsfc.nasa.gov/planetary/factsh
 
 - Texture file: `assets/textures/bodies/oberon.jpg` (1440x720, loaded via `Texture2D::loadFromFile` → `stb_image` decode → `glTexImage2D`)
 - Source and credit: NASA 3D Resources (github.com/nasa/NASA-3D-Resources), public domain ("free and without copyright" per the repo README)
-- Shading: `Lit` (Sun point light, Lambert diffuse + Blinn-Phong specular strength 0, ambient 0.07) — [lighting.md](lighting.md). `K` toggles lighting off to show the raw texture.
+- Shading: `Lit`, `ice` preset: specular strength 0.22, power 36, ambient 0.07, a derived normal map (relief 1.6). Lit by the Sun point light (plus the optional headlamp and fill) in whichever technique `F3` selects (default Blinn-Phong) — [lighting.md](lighting.md). `K` toggles lighting off to show the raw texture; `F8` toggles the maps.
+- Shadows: every fragment traces a soft shadow ray to the Sun through all body spheres and ring bands, so this body both casts and receives eclipse shadows (`F4`: off, hard, soft). In the ray-traced view (`F9`) it is an exact analytic sphere with mirror reflectivity 0.06 — [ray-tracing.md](ray-tracing.md).
 - UVs come from the shared sphere generator; swapping the texture changes no vertex data.
 
 ## Limitations
@@ -57,7 +58,7 @@ Source: NASA Planetary Fact Sheets (https://nssdc.gsfc.nasa.gov/planetary/factsh
 - Radius is power-law compressed (size order preserved, absolute ratios not); see [scale-manager.md](scale-manager.md).
 - Moon orbital positions run on a visual clock, not the dated ephemeris; real relative periods are preserved.
 - The NASA map leaves the hemisphere Voyager 2 never imaged black; the dark region in the capture is that data gap, not a lighting fault.
-- Perfect sphere: no oblateness, no shadows cast onto rings or moons.
+- Perfect sphere: no oblateness. Shadows come only from the Sun; the headlamp and fill cast none.
 
 ## Verification
 

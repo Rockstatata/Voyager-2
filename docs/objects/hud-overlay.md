@@ -43,7 +43,7 @@ In Manual flight the panel shows ship speed in render units per second instead o
 
 ## Labels
 
-`Application::renderLabels` projects each body centre with the same view and projection as the scene. A name is placed above the projected disc, with a small tick when the body is under two pixels across. A label is skipped when:
+`HudOverlay::renderLabels` projects each body centre with the same view and projection as the scene. A name is placed above the projected disc, with a small tick when the body is under two pixels across. A label is skipped when:
 
 - the body is behind the camera or off screen;
 - the disc fills more than 45 % of the screen height, so the name would cover the surface;
@@ -51,6 +51,18 @@ In Manual flight the panel shows ship speed in render units per second instead o
 - it would overlap a label already placed, or the HUD panel. Placement order is Sun and planets nearest first, then Voyager, then moons.
 
 A moon is named only when the camera is within 10 parent radii of its planet, so a system's labels appear as the camera arrives and do not clutter the overview. `L` toggles all labels and `F2` toggles the HUD. `F1` shows the controls overlay, which lists every key; that list is in [controls.md](controls.md).
+
+## Lighting and render status
+
+Below the telemetry, `LightingController::statusLines` adds the current shading technique and shadow mode (`SHADING BLINN-PHONG (F3)   RAY-TRACED SHADOWS SOFT (F4)`) and the light rig (`LIGHTS  SUN  HEADLAMP OFF  FILL OFF  MAPS ON`), followed by `RENDER RASTER (F9 RAY-TRACE)` or `RENDER RAY-TRACED (F9)  REFLECTIONS ON (F10)`. These arrive through `HudView::extraLines`, so the HUD never needs to know about lighting types.
+
+## Inspect captions and component labels
+
+In Inspect mode (`I`) the panel's camera line reads `INSPECT VOYAGER  (, . COMPONENT  I EXIT)`. A caption at the bottom names the current component with its position in the cycle (`HIGH-GAIN ANTENNA  (2/18)`) and a one-line fact (`HudView::caption`, `captionDetail`). Component centres are projected like body centres. The whole-craft view labels all 18 components; a close-up labels only the inspected one, in the accent colour, so labels never bury the hardware.
+
+## Hint bar and notices
+
+A single line along the bottom (`HudView::hints`, built by `Application::keyHints`) lists the keys that matter in the current mode: free flight, Focus, Inspect, Manual piloting or the default Chase. `HudView::notice` shows short warnings, such as `PRESS ESC AGAIN TO QUIT` for the two seconds after the first `Esc`.
 
 ## Limitations
 
@@ -62,4 +74,5 @@ A moon is named only when the camera is within 10 parent radii of its planet, so
 1. At startup the HUD shows `1977-08-21 00:00 UTC   JD 2443376.50`, and `NEAREST EARTH` is about 323,000 km.
 2. Press `H`. The overview labels the Sun and the planets, and Mercury's label may be hidden where it would collide with the Sun's.
 3. Press `F1`, and the overlay matches the capture above. Resize the window, and the text keeps its proportions.
-4. Press `2`. The banner appears, counts through `T-00:00`, and shows `CLOSEST APPROACH 721,351 KM FROM CENTRE`.
+4. Press `I`, then `.`. The caption changes to the next component and only its label is shown. Press `F3`: the shading line in the panel changes.
+5. Press `2`. The banner appears, counts through `T-00:00`, and shows `CLOSEST APPROACH 721,351 KM FROM CENTRE`.

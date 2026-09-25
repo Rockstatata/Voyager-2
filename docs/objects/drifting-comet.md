@@ -19,7 +19,7 @@ Its sphere and cone use the shared formulas in [uv-sphere.md](uv-sphere.md) and 
 ## Transform
 
 - **Orbit**: `setOrbit(ScaleManager::distanceAuToRenderUnits(60 AU) = 192.2, 0.008 rad/s, start at 270 degrees, centre = Sun, e = 0.35)`. It is a real ellipse with the Sun at the focus, and one revolution takes about 13 minutes at 1x. Pause and speed apply.
-- **Tail direction**: every frame `Application::updateComet` rotates the cone's +Y axis onto `normalize(comet - sun)` with `angleAxis(acos(dot(Y, d)), normalize(Y x d))`, falling back to identity or a 180-degree flip when the vectors are parallel. It then offsets the cone by `rotation * (0, 4.5, 0)`, half its length, so the wide end sits on the nucleus. Real tails point away from the Sun whatever the direction of motion.
+- **Tail direction**: every frame `Comet::update` (src/scene/Comet.cpp) rotates the cone's +Y axis onto `normalize(comet - sun)` with `angleAxis(acos(dot(Y, d)), normalize(Y x d))`, falling back to identity or a 180-degree flip when the vectors are parallel. It then offsets the cone by `rotation * (0, 4.5, 0)`, half its length, so the wide end sits on the nucleus. Real tails point away from the Sun whatever the direction of motion.
 
 ## Limitations
 
