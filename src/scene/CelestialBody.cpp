@@ -4,6 +4,8 @@
 
 #include <glm/gtc/constants.hpp>
 
+#include "../rendering/Renderer.h"
+
 CelestialBody::CelestialBody(CelestialBodyData data, std::shared_ptr<Mesh> sphere,
 							  std::shared_ptr<Material> material)
 	: SceneObject(data.id), m_data(std::move(data))
@@ -64,10 +66,25 @@ void CelestialBody::update(double dt)
 		m_spinAngleRadians += angularVelocity * simDt;
 	}
 
+	// The transform carries only the axial tilt (the equatorial frame that
+	// children inherit); the spin is applied to this body's own mesh in render().
 	const double tiltRadians = glm::radians(m_data.axialTiltDegrees);
-	const glm::dquat tilt = glm::angleAxis(tiltRadians, glm::dvec3(0.0, 0.0, 1.0));
-	const glm::dquat spin = glm::angleAxis(m_spinAngleRadians, glm::dvec3(0.0, 1.0, 0.0));
-	transform().rotation = tilt * spin;
+	transform().rotation = glm::angleAxis(tiltRadians, glm::dvec3(0.0, 0.0, 1.0));
 
 	SceneObject::update(dt);
+}
+
+void CelestialBody::render(Renderer& renderer)
+{
+	if (!visible())
+		return;
+
+	if (mesh() != nullptr && material() != nullptr)
+	{
+		const glm::dquat spin = glm::angleAxis(m_spinAngleRadians, glm::dvec3(0.0, 1.0, 0.0));
+		renderer.submit(*mesh(), *material(), worldMatrix() * glm::mat4_cast(spin));
+	}
+
+	for (const auto& child : children())
+		child->render(renderer);
 }

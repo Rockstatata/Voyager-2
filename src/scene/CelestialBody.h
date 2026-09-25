@@ -16,6 +16,10 @@ public:
 				  std::shared_ptr<Material> material);
 
 	void update(double dt) override;
+	// Draws this body's sphere with its axial spin, then its children
+	// WITHOUT the spin: moons and rings live in the tilted equatorial frame
+	// but must not be dragged round once per planetary day.
+	void render(Renderer& renderer) override;
 
 	const CelestialBodyData& data() const { return m_data; }
 

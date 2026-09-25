@@ -17,7 +17,7 @@ void SceneObject::render(Renderer& renderer)
 	{
 		static const Material kDefaultMaterial;
 		const Material& material = m_material != nullptr ? *m_material : kDefaultMaterial;
-		renderer.submit(*m_mesh, material, glm::mat4(worldMatrix()));
+		renderer.submit(*m_mesh, material, worldMatrix());
 	}
 
 	for (auto& child : m_children)
