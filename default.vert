@@ -13,7 +13,12 @@ layout (location = 6) in vec4 aInstanceModelCol3;
 
 out vec3 normal;
 out vec2 texCoord;
+out vec3 relativePosition; // camera-relative world position (floating origin)
+out float logDepthW;
 
+// `model` is already camera-relative: Renderer subtracts the camera position
+// in double precision before narrowing (bible section 20). For instanced
+// draws it holds only that origin shift and multiplies each world instance.
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
@@ -22,10 +27,14 @@ uniform int useInstancing;
 void main()
 {
     mat4 effectiveModel = useInstancing != 0
-        ? mat4(aInstanceModelCol0, aInstanceModelCol1, aInstanceModelCol2, aInstanceModelCol3)
+        ? model * mat4(aInstanceModelCol0, aInstanceModelCol1, aInstanceModelCol2, aInstanceModelCol3)
         : model;
 
-    gl_Position = proj * view * effectiveModel * vec4(aPos, 1.0);
+    vec4 relative = effectiveModel * vec4(aPos, 1.0);
+    relativePosition = relative.xyz;
+    gl_Position = proj * view * relative;
+    logDepthW = 1.0 + gl_Position.w;
+    gl_PointSize = 2.0;
     normal = mat3(transpose(inverse(effectiveModel))) * aNormal;
     texCoord = aTexCoord;
 }
