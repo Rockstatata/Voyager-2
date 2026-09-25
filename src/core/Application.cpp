@@ -49,6 +49,8 @@ bool Application::initialize(int argc, char** argv)
 			startCaptureTour(argv[i + 1], "shading");
 		else if (option == "--capture-raytrace")
 			startCaptureTour(argv[i + 1], "raytrace");
+		else if (option == "--capture-voyager")
+			startCaptureTour(argv[i + 1], "voyager");
 	}
 
 	m_initialized = true;
@@ -165,6 +167,20 @@ void Application::handleKeys()
 		m_cameraController.refocus();
 	if (m_input.keyPressed(GLFW_KEY_M))
 		m_cameraController.toggleMouseLook();
+	if (m_input.keyPressed(GLFW_KEY_I))
+	{
+		if (m_cameraController.mode() == CameraController::Mode::Inspect)
+			m_cameraController.enterChase();
+		else
+			m_cameraController.inspect(-1);
+	}
+	if (m_cameraController.mode() == CameraController::Mode::Inspect)
+	{
+		if (m_input.keyPressed(GLFW_KEY_PERIOD))
+			m_cameraController.inspectNext(1);
+		if (m_input.keyPressed(GLFW_KEY_COMMA))
+			m_cameraController.inspectNext(-1);
+	}
 
 	if (m_input.keyPressed(GLFW_KEY_L))
 		m_labelsVisible = !m_labelsVisible;
@@ -268,6 +284,7 @@ void Application::refreshWindowTitle()
 
 void Application::render()
 {
+	m_lighting.setInspectionFill(m_cameraController.mode() == CameraController::Mode::Inspect);
 	m_renderer.setLighting(m_lighting.build(m_sunPosition, m_camera,
 		m_cameraController.nearestSurfaceDistance(m_camera.position())));
 	m_solarSystem.buildTraceScene(m_traceScene, m_sunPosition);
@@ -301,6 +318,23 @@ void Application::render()
 	view.hudVisible = m_hudVisible;
 	view.helpVisible = m_helpVisible;
 	view.extraLines = m_lighting.statusLines();
+	if (m_cameraController.mode() == CameraController::Mode::Inspect)
+	{
+		const int component = m_cameraController.inspectedComponent();
+		const auto& components = m_voyager->components();
+		if (component < 0)
+		{
+			view.caption = "VOYAGER 2";
+			view.captionDetail = "722 KG, LAUNCHED 1977-08-20.  , AND . STEP THROUGH " +
+				std::to_string(components.size()) + " COMPONENTS";
+		}
+		else
+		{
+			view.caption = components[component].name + "  (" + std::to_string(component + 1) + "/" +
+				std::to_string(components.size()) + ")";
+			view.captionDetail = components[component].description;
+		}
+	}
 	view.extraLines.push_back(m_rayTraced
 		? std::string("RENDER RAY-TRACED (F9)  REFLECTIONS ") + (m_rayTracer.maxBounces() > 0 ? "ON" : "OFF") + " (F10)"
 		: std::string("RENDER RASTER (F9 RAY-TRACE)"));
@@ -340,6 +374,26 @@ void Application::startCaptureTour(const std::string& directory, const std::stri
 		m_mission.freezeBefore(planet, days);
 	};
 	auto pause = [this]() { m_mission.clock().setPaused(true); };
+
+	if (kind == "voyager")
+	{
+		// The whole spacecraft, then every named component, in Inspect mode.
+		shots.push_back({ "voyager_00_whole.bmp", 3.0, [this]()
+		{
+			jumpToBookmark(0);
+			m_mission.clock().setPaused(true);
+			m_cameraController.inspect(-1);
+		} });
+		for (int i = 0; i < static_cast<int>(m_voyager->components().size()); ++i)
+		{
+			std::string name = m_voyager->components()[i].name;
+			std::replace(name.begin(), name.end(), ' ', '_');
+			const std::string index = (i + 1 < 10 ? "0" : "") + std::to_string(i + 1);
+			shots.push_back({ "voyager_" + index + "_" + name + ".bmp", 2.4, [this, i]() { m_cameraController.inspect(i); } });
+		}
+		m_captureTour.start(directory, std::move(shots));
+		return;
+	}
 
 	if (kind == "raytrace")
 	{

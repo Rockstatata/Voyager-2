@@ -3,6 +3,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <string>
+#include <vector>
 
 #include "SceneObject.h"
 
@@ -48,6 +50,19 @@ public:
 	const glm::dquat& orientation() const { return m_orientation; }
 	glm::dvec3 forward() const { return m_orientation * glm::dvec3(0.0, 0.0, 1.0); }
 	glm::dvec3 up() const { return m_orientation * glm::dvec3(0.0, 1.0, 0.0); }
+	// A named piece of hardware for Inspect mode: where to aim the camera
+	// (spacecraft frame, render units) and how big it is.
+	struct Component
+	{
+		std::string name;
+		std::string description;
+		glm::dvec3 localCentre{ 0.0 };
+		double size = 0.0;
+	};
+	void addComponent(const Component& component) { m_components.push_back(component); }
+	const std::vector<Component>& components() const { return m_components; }
+	glm::dvec3 componentWorldCentre(std::size_t index) const;
+
 	// Axis-aligned radius enclosing the whole model (booms included).
 	double boundingRadius() const { return m_boundingRadius; }
 	void setBoundingRadius(double radius) { m_boundingRadius = radius; }
@@ -57,6 +72,7 @@ private:
 	glm::dquat m_orientation{ 1.0, 0.0, 0.0, 0.0 };
 	glm::dvec3 m_velocity{ 0.0 }; // render units per second
 	double m_boundingRadius = 0.03;
+	std::vector<Component> m_components;
 
 	static constexpr double kTurnRateRadiansPerSecond = 1.1;
 	static constexpr double kRollRateRadiansPerSecond = 1.6;

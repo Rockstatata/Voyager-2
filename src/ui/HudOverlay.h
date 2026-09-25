@@ -32,6 +32,9 @@ struct HudView
 	std::vector<std::string> extraLines;
 	// Transient message shown bottom-left (e.g. "Press Esc again to quit").
 	std::string notice;
+	// Centred caption above the bottom edge (Inspect mode component facts).
+	std::string caption;
+	std::string captionDetail;
 };
 
 // Everything drawn in screen space (bible section 39): body labels, the

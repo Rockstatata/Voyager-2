@@ -31,7 +31,7 @@ Require ($clock -notmatch 'fmod') 'Historical time wraps back to launch.'
 Require ($clock -match 'std::clamp\(m_julianDate, m_start, m_end\)') 'The simulation date is not clamped to the data range.'
 Require ($mission -match 'placeBodies' -and $mission -match 'planetRenderPosition') 'Planets are not placed from the shared dated ephemeris.'
 Require ($mission -match 'voyagerRenderPosition\(julianDate\)') 'Historical Voyager does not read the shared date.'
-Require ($body -match 'worldMatrix\(\) \* glm::mat4_cast\(spin\)') 'Planet spin is applied to the child frame and drags moons round.'
+Require ($body -match 'submit\(\*mesh\(\), \*material\(\), surfaceMatrix\(\)\)') 'Planet spin is applied to the child frame and drags moons round.'
 
 # Camera autonomy.
 Require ($camera -match 'scrollDelta' -and $camera -match 'm_speedMultiplier') 'Free flight has no wheel-controlled speed.'

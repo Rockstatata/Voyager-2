@@ -64,7 +64,7 @@ for ($i = 1; $i -lt $axes.Count; $i++) {
 if (($axes[7] - $axes[6]) -lt 15.0 -or ($axes[6] - $axes[5]) -lt 15.0) {
 	$failures.Add('Outer planets are packed too closely in the overview.')
 }
-if ((13.0 * 0.002) -ge (Get-BodyRadius 24622.0) * 0.1) {
+if ((13.0 * 0.006) -ge (Get-BodyRadius 24622.0) * 0.1) {
 	$failures.Add('Voyager display size is too large relative to Neptune.')
 }
 

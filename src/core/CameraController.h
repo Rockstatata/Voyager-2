@@ -12,13 +12,14 @@ class SolarSystem;
 class Voyager2;
 
 // Decides WHICH rig drives the Camera and WHAT it looks at (bible sections
-// 37 and 40): free flight, the chase rig on Voyager, or Focus on a body.
+// 37 and 40): free flight, the chase rig on Voyager, Focus on a body, or
+// Inspect: a close-up orbit around Voyager or one of its named components.
 // Camera itself only knows how to move; this class owns modes, selection,
 // framing and speed policy. It never edits simulation state.
 class CameraController
 {
 public:
-	enum class Mode { FreeFly, Chase, Focus };
+	enum class Mode { FreeFly, Chase, Focus, Inspect };
 
 	CameraController(Camera& camera, const SolarSystem& system, const MissionController& mission);
 
@@ -36,6 +37,11 @@ public:
 	void enterChase();
 	void enterFreeFly() { m_mode = Mode::FreeFly; }
 	void toggleMouseLook() { m_mouseLookLatched = !m_mouseLookLatched; }
+
+	// Inspect mode: -1 = the whole spacecraft, otherwise a component index.
+	void inspect(int componentIndex);
+	void inspectNext(int direction);
+	int inspectedComponent() const { return m_componentIndex; }
 
 	Mode mode() const { return m_mode; }
 	int focusIndex() const { return m_focusIndex; }
@@ -56,6 +62,7 @@ private:
 	const Voyager2* m_voyager = nullptr;
 	Mode m_mode = Mode::Chase;
 	int m_focusIndex = -1;
+	int m_componentIndex = -1;
 	bool m_mouseLookLatched = false;
 };
 

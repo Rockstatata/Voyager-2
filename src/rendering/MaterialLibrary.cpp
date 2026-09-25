@@ -90,11 +90,11 @@ std::shared_ptr<Material> MaterialLibrary::glow(const glm::vec3& color, float op
 	return material;
 }
 
-std::shared_ptr<Material> MaterialLibrary::spacecraft(const glm::vec3& color)
+std::shared_ptr<Material> MaterialLibrary::spacecraft(const glm::vec3& color, float specular, float power)
 {
 	auto material = std::make_shared<Material>();
 	material->baseColor = color;
-	material->specularStrength = 0.35f;
-	material->specularPower = 24.0f;
+	material->specularStrength = specular;
+	material->specularPower = power;
 	return material;
 }

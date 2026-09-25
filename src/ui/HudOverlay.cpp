@@ -83,6 +83,15 @@ void HudOverlay::render(TextRenderer& text, const HudView& view)
 		if (view.helpVisible)
 			renderHelp(text, view, pixel);
 	}
+	if (view.hudVisible && !view.caption.empty())
+	{
+		const float big = pixel * 1.5f;
+		const float width = static_cast<float>(view.width);
+		const float y = static_cast<float>(view.height) * 0.72f;
+		text.addShadowedText((width - TextRenderer::textWidth(view.caption, big)) * 0.5f, y, view.caption, big, kAccent);
+		text.addShadowedText((width - TextRenderer::textWidth(view.captionDetail, pixel)) * 0.5f,
+			y + TextRenderer::lineHeight(big), view.captionDetail, pixel, kWhite);
+	}
 	if (!view.notice.empty())
 	{
 		const float margin = pixel * 6.0f;
@@ -169,8 +178,11 @@ void HudOverlay::renderLabels(TextRenderer& text, const HudView& view, float pix
 			text.addRect(pixel.x - pixelSize * 0.5f, y + pixelSize * 8.5f, pixelSize, pixelSize * 2.0f, color * 0.8f);
 	};
 
+	const bool inspecting = view.cameraController->mode() == CameraController::Mode::Inspect;
 	auto labelBody = [&](const CelestialBody* body)
 	{
+		if (inspecting)
+			return; // close to Voyager, only its hardware is named
 		const glm::dmat4 world = body->worldMatrix();
 		const glm::dvec3 position(world[3]);
 		const double radius = glm::length(glm::dvec3(world[0]));
@@ -205,8 +217,26 @@ void HudOverlay::renderLabels(TextRenderer& text, const HudView& view, float pix
 	});
 	for (const CelestialBody* body : majorBodies)
 		labelBody(body);
-	if (view.voyager != nullptr && view.cameraController->mode() != CameraController::Mode::Chase)
+	const CameraController::Mode mode = view.cameraController->mode();
+	if (view.voyager != nullptr && mode == CameraController::Mode::Inspect)
+	{
+		// Inspect mode names the spacecraft's hardware instead of worlds.
+		// The whole-craft view names every component; a close-up names only
+		// the one being inspected, so labels never bury the hardware.
+		const auto& components = view.voyager->components();
+		const int inspected = view.cameraController->inspectedComponent();
+		for (std::size_t i = 0; i < components.size(); ++i)
+		{
+			if (inspected >= 0 && static_cast<int>(i) != inspected)
+				continue;
+			drawLabel(view.voyager->componentWorldCentre(i), components[i].size * 0.15, components[i].name,
+				inspected >= 0 ? kAccent : glm::vec4(0.75f, 0.90f, 1.0f, 0.95f));
+		}
+	}
+	else if (view.voyager != nullptr && mode != CameraController::Mode::Chase)
+	{
 		drawLabel(view.voyager->transform().position, view.voyager->boundingRadius(), "Voyager 2", kAccent);
+	}
 	for (const CelestialBody* body : system.bodies())
 	{
 		if (body->data().type == BodyType::Moon)
@@ -243,8 +273,14 @@ void HudOverlay::renderPanel(TextRenderer& text, const HudView& view, float pixe
 	lines.push_back({ timeLine, kWhite });
 
 	const CameraController::Mode mode = controller.mode();
-	std::string cameraLine = std::string("CAMERA ") + (mode == CameraController::Mode::FreeFly ? "FREE FLIGHT"
-		: (mode == CameraController::Mode::Chase ? "CHASE VOYAGER" : "FOCUS"));
+	const char* modeName = "FOCUS";
+	if (mode == CameraController::Mode::FreeFly)
+		modeName = "FREE FLIGHT";
+	else if (mode == CameraController::Mode::Chase)
+		modeName = "CHASE VOYAGER";
+	else if (mode == CameraController::Mode::Inspect)
+		modeName = "INSPECT VOYAGER  (, . COMPONENT  I EXIT)";
+	std::string cameraLine = std::string("CAMERA ") + modeName;
 	if (mode == CameraController::Mode::FreeFly)
 		cameraLine += "  (WHEEL SPEED X" + fixed(view.camera->speedMultiplier(), 2) + ")";
 	const CelestialBody* focused = controller.focusedBody();
@@ -336,6 +372,7 @@ void HudOverlay::renderHelp(TextRenderer& text, const HudView& view, float pixel
 		"  N ENCOUNTER SLOW-MOTION   T VOYAGER PATH   O ORBIT GUIDES",
 		"",
 		"VOYAGER (V: HISTORICAL / MANUAL, MANUAL NEEDS CHASE CAMERA)",
+		"  I INSPECT CLOSE-UP   , / . PREVIOUS / NEXT COMPONENT",
 		"  W/S THRUST   A/D YAW   R/F PITCH   Q/E ROLL",
 		"  SPACE/CTRL UP/DOWN   SHIFT BOOST   X BRAKE",
 		"",

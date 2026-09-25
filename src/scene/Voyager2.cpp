@@ -51,6 +51,13 @@ void Voyager2::setHistoricalState(const glm::dvec3& position, const glm::dvec3& 
 	m_orientation = snap ? target : glm::normalize(glm::slerp(m_orientation, target, 0.2));
 }
 
+glm::dvec3 Voyager2::componentWorldCentre(std::size_t index) const
+{
+	if (index >= m_components.size())
+		return transform().position;
+	return glm::dvec3(worldMatrix() * glm::dvec4(m_components[index].localCentre, 1.0));
+}
+
 void Voyager2::update(double dt)
 {
 	if (m_mode == FlightMode::Manual)

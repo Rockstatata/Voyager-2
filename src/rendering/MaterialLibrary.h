@@ -25,8 +25,9 @@ public:
 	// Additive halo; `falloff` is the facing exponent (see lighting.md).
 	static std::shared_ptr<Material> glow(const glm::vec3& color, float opacity, float falloff);
 
-	// Painted/foil spacecraft hardware.
-	static std::shared_ptr<Material> spacecraft(const glm::vec3& color);
+	// Spacecraft hardware: paint, foil, metal. `specular` and `power` set how
+	// mirror-like the finish is (gold insulation foil is bright and tight).
+	static std::shared_ptr<Material> spacecraft(const glm::vec3& color, float specular = 0.35f, float power = 24.0f);
 };
 
 #endif

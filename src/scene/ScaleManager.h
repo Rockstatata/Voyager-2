@@ -40,7 +40,7 @@ private:
 	static constexpr double kHeliocentricCompressionExponent = 0.55;
 	static constexpr double kMoonOrbitCompressionExponent = 0.50;
 	static constexpr double kMoonOrbitBaseInParentRadii = 1.60;
-	static constexpr double kSpacecraftUnitsPerMetre = 0.002;
+	static constexpr double kSpacecraftUnitsPerMetre = 0.006;
 };
 
 #endif

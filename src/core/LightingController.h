@@ -28,6 +28,9 @@ public:
 	// reach so it is useful beside Voyager and beside Jupiter alike.
 	LightingState build(const glm::dvec3& sunPosition, const Camera& camera, double surfaceDistance) const;
 
+	// Inspect mode adds a soft studio fill so no component is lost in shadow.
+	void setInspectionFill(bool on) { m_inspectionFill = on; }
+
 	void setTechnique(ShadingTechnique technique) { m_technique = technique; }
 	void setHeadlamp(bool on) { m_headlamp = on; }
 	void setFill(bool on) { m_fill = on; }
@@ -44,6 +47,7 @@ private:
 	bool m_fill = false;
 	bool m_sunFalloff = false;
 	bool m_surfaceMaps = true;
+	bool m_inspectionFill = false;
 	ShadowMode m_shadows = ShadowMode::Soft;
 };
 

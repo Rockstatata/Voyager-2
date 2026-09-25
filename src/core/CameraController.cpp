@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <string>
 
 #include "Input.h"
 #include "../rendering/Camera.h"
@@ -63,6 +64,16 @@ void CameraController::update(Input& input, double deltaTime, bool pilotingVoyag
 	{
 		m_camera.updateOrbit(m_voyager->transform().position, chaseFrame(),
 			m_voyager->boundingRadius() * 1.3, 5000.0, input, deltaTime, look);
+	}
+	else if (m_mode == Mode::Inspect && m_voyager != nullptr)
+	{
+		// Rides in Voyager's own frame so a component stays framed as the
+		// craft turns; zooms down to 0.3 of a component's size.
+		const double size = m_componentIndex < 0 ? m_voyager->boundingRadius()
+			: m_voyager->components()[m_componentIndex].size;
+		const glm::dvec3 target = m_componentIndex < 0 ? m_voyager->transform().position
+			: m_voyager->componentWorldCentre(static_cast<std::size_t>(m_componentIndex));
+		m_camera.updateOrbit(target, m_voyager->orientation(), size * 0.3, 5000.0, input, deltaTime, look);
 	}
 	else if (const CelestialBody* focused = focusedBody(); m_mode == Mode::Focus && focused != nullptr)
 	{
@@ -154,6 +165,44 @@ void CameraController::refocus()
 {
 	if (m_focusIndex >= 0)
 		focusBody(m_focusIndex);
+}
+
+void CameraController::inspect(int componentIndex)
+{
+	if (m_voyager == nullptr)
+		return;
+	const int count = static_cast<int>(m_voyager->components().size());
+	m_componentIndex = componentIndex >= count ? -1 : componentIndex;
+	m_mode = Mode::Inspect;
+	const double size = m_componentIndex < 0 ? m_voyager->boundingRadius()
+		: m_voyager->components()[m_componentIndex].size;
+
+	// Open on the lit side: blend "outward from the craft's centre" (so the
+	// camera is never inside the bus or behind the dish) with "toward the
+	// Sun" (so the part is not in its own shadow), in Voyager's frame.
+	const glm::dquat toLocal = glm::inverse(m_voyager->orientation());
+	const glm::dvec3 toSun = glm::normalize(toLocal * (m_mission.sunPosition() - m_voyager->transform().position));
+	glm::dvec3 outward = m_componentIndex < 0 ? glm::dvec3(0.45, 0.35, -0.8)
+		: m_voyager->components()[m_componentIndex].localCentre;
+	outward = glm::length(outward) > 1e-9 ? glm::normalize(outward) : glm::dvec3(0.0, 0.3, -1.0);
+	const glm::dvec3 view = glm::normalize(outward + toSun * 0.8 + glm::dvec3(0.0, 0.25, 0.0));
+	// The orbit rig's local offset is (sin yaw cos pitch, sin pitch, -cos yaw cos pitch).
+	const float yaw = static_cast<float>(glm::degrees(std::atan2(view.x, -view.z)));
+	const float pitch = static_cast<float>(glm::degrees(std::asin(glm::clamp(view.y, -0.95, 0.95))));
+	m_camera.beginOrbit(size * (m_componentIndex < 0 ? 1.5 : 1.9), yaw, pitch);
+	std::cout << "[APP] inspecting: "
+			  << (m_componentIndex < 0 ? std::string("Voyager 2") : m_voyager->components()[m_componentIndex].name)
+			  << std::endl;
+}
+
+void CameraController::inspectNext(int direction)
+{
+	if (m_voyager == nullptr)
+		return;
+	// Cycle through -1 (whole craft), 0 .. count-1.
+	const int slots = static_cast<int>(m_voyager->components().size()) + 1;
+	const int slot = ((m_componentIndex + 1 + direction) % slots + slots) % slots;
+	inspect(slot - 1);
 }
 
 void CameraController::enterChase()

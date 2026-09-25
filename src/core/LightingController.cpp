@@ -83,10 +83,16 @@ LightingState LightingController::build(const glm::dvec3& sunPosition, const Cam
 	// sides and the far faces of Voyager keep readable form.
 	Light& fill = state.lights[2];
 	fill.type = LightType::Directional;
-	fill.enabled = m_fill;
+	fill.enabled = m_fill || m_inspectionFill;
 	fill.direction = glm::normalize(glm::vec3(0.25f, -1.0f, 0.15f));
 	fill.color = glm::vec3(0.55f, 0.65f, 0.85f);
-	fill.intensity = 0.35f;
+	fill.intensity = m_inspectionFill && !m_fill ? 0.45f : 0.35f;
+	if (m_inspectionFill && !m_fill)
+	{
+		// Studio fill from behind the camera, like a photographer's softbox.
+		fill.direction = glm::normalize(camera.forward() - camera.up() * 0.3f + camera.right() * 0.2f);
+		fill.color = glm::vec3(0.85f, 0.90f, 1.0f);
+	}
 
 	return state;
 }
