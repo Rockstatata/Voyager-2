@@ -1,6 +1,6 @@
 # Builds (unless -NoBuild) and runs Voyager-2 from the project root.
 #
-# The working directory matters: Shader loads "default.vert" / "default.frag"
+# The working directory matters: shaders are loaded from "shaders/..."
 # by relative path, so the exe must be started from the project root, not from
 # x64\Debug. That is why this script exists instead of double-clicking the exe.
 #

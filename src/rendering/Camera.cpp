@@ -195,7 +195,7 @@ glm::mat4 Camera::viewMatrixAtOrigin() const
 
 glm::mat4 Camera::projectionMatrix(float aspectRatio) const
 {
-	// The far plane is effectively unbounded; log depth (see default.frag)
+	// The far plane is effectively unbounded; log depth (see shaders/scene.frag)
 	// provides the precision, so no mode has to trade near detail for range.
 	return glm::perspective(glm::radians(m_fovDegrees), aspectRatio, kNearPlane, 1.0e6f);
 }

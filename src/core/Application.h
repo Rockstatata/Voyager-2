@@ -19,7 +19,6 @@
 #include "../scene/Voyager2.h"
 #include "../ui/HudOverlay.h"
 
-class Shader;
 class Mesh;
 
 // Top-level owner of the window, subsystems and loop (bible section 10).
@@ -47,7 +46,6 @@ public:
 	void run();
 
 private:
-	bool loadShaders();
 	void buildScene();
 	void handleKeys();
 	void update(double deltaTime);
@@ -63,7 +61,6 @@ private:
 	Renderer m_renderer;
 	TextRenderer m_text;
 	Scene m_scene;
-	std::unique_ptr<Shader> m_shader;
 
 	// One unit sphere shared by every body (bible F9).
 	std::shared_ptr<Mesh> m_sphereMesh;

@@ -8,26 +8,9 @@
 
 bool TextRenderer::initialize()
 {
-	try
-	{
-		m_shader = std::make_unique<Shader>("hud.vert", "hud.frag");
-	}
-	catch (...)
-	{
-		std::cout << "[SHADER] failed to read hud.vert / hud.frag" << std::endl;
+	if (!m_program.load("shaders/hud.vert", "shaders/hud.frag"))
 		return false;
-	}
-
-	GLint linked = GL_FALSE;
-	glGetProgramiv(m_shader->ID, GL_LINK_STATUS, &linked);
-	if (linked == GL_FALSE)
-	{
-		char log[1024] = {};
-		glGetProgramInfoLog(m_shader->ID, sizeof(log), nullptr, log);
-		std::cout << "[SHADER] HUD program link failed:\n" << log << std::endl;
-		return false;
-	}
-	m_screenSizeLocation = glGetUniformLocation(m_shader->ID, "screenSize");
+	m_screenSizeLocation = m_program.uniform("screenSize");
 
 	m_vao = std::make_unique<VAO>();
 	m_vbo = std::make_unique<VBO>(nullptr, 0);
@@ -111,7 +94,7 @@ float TextRenderer::textWidth(const std::string& text, float pixelSize)
 
 void TextRenderer::flush()
 {
-	if (m_shader == nullptr || m_vertices.empty())
+	if (!m_program.valid() || m_vertices.empty())
 		return;
 
 	glDisable(GL_DEPTH_TEST);
@@ -119,7 +102,7 @@ void TextRenderer::flush()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	m_shader->Activate();
+	m_program.use();
 	glUniform2f(m_screenSizeLocation, static_cast<float>(m_width), static_cast<float>(m_height));
 
 	// Orphan-and-refill: one buffer object for the lifetime of the program.

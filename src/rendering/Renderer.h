@@ -5,9 +5,9 @@
 
 #include <glm/glm.hpp>
 
-#include "../../shaderClass.h"
 #include "Material.h"
 #include "Mesh.h"
+#include "ShaderProgram.h"
 
 class Camera;
 
@@ -26,7 +26,8 @@ class Camera;
 class Renderer
 {
 public:
-	void setShader(Shader* shader);
+	// Loads shaders/scene.vert + scene.frag. False if they fail to build.
+	bool initialize();
 
 	// Clears the frame, uploads the camera's view/projection and the Sun light.
 	void beginFrame(const Camera& camera, float aspectRatio);
@@ -67,7 +68,7 @@ private:
 	void applyMaterial(const Material& material);
 	void cacheUniformLocations();
 
-	Shader* m_shader = nullptr; // non-owning; the Application owns the shader
+	ShaderProgram m_program;
 	glm::vec4 m_clearColor{ 0.0f, 0.0f, 0.0f, 1.0f };
 	glm::dvec3 m_origin{ 0.0 };
 	glm::dvec3 m_lightWorldPosition{ 0.0 };
@@ -75,7 +76,6 @@ private:
 	bool m_lightingEnabled = true;
 	std::vector<DeferredDraw> m_deferred;
 
-	GLuint m_cachedShaderID = 0;
 	GLint m_modelLocation = -1;
 	GLint m_viewLocation = -1;
 	GLint m_projLocation = -1;

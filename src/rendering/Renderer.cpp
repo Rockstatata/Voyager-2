@@ -6,42 +6,33 @@
 
 #include "Camera.h"
 
-namespace
+bool Renderer::initialize()
 {
-	GLint location(GLuint program, const char* name)
-	{
-		return glGetUniformLocation(program, name);
-	}
-}
-
-void Renderer::setShader(Shader* shader)
-{
-	m_shader = shader;
+	if (!m_program.load("shaders/scene.vert", "shaders/scene.frag"))
+		return false;
 	cacheUniformLocations();
+	return true;
 }
 
 void Renderer::cacheUniformLocations()
 {
-	m_cachedShaderID = m_shader != nullptr ? m_shader->ID : 0;
-	const GLuint program = m_cachedShaderID;
-	if (program == 0)
-		return;
+	const auto location = [this](const char* name) { return m_program.uniform(name); };
 
-	m_modelLocation = location(program, "model");
-	m_viewLocation = location(program, "view");
-	m_projLocation = location(program, "proj");
-	m_baseColorLocation = location(program, "baseColor");
-	m_useTextureLocation = location(program, "useTexture");
-	m_albedoTextureLocation = location(program, "albedoTexture");
-	m_useInstancingLocation = location(program, "useInstancing");
-	m_shadingLocation = location(program, "shadingModel");
-	m_lightPositionLocation = location(program, "lightPosition");
-	m_lightColorLocation = location(program, "lightColor");
-	m_lightingEnabledLocation = location(program, "lightingEnabled");
-	m_specularStrengthLocation = location(program, "specularStrength");
-	m_specularPowerLocation = location(program, "specularPower");
-	m_opacityLocation = location(program, "opacity");
-	m_logDepthCoefficientLocation = location(program, "logDepthCoefficient");
+	m_modelLocation = location("model");
+	m_viewLocation = location("view");
+	m_projLocation = location("proj");
+	m_baseColorLocation = location("baseColor");
+	m_useTextureLocation = location("useTexture");
+	m_albedoTextureLocation = location("albedoTexture");
+	m_useInstancingLocation = location("useInstancing");
+	m_shadingLocation = location("shadingModel");
+	m_lightPositionLocation = location("lightPosition");
+	m_lightColorLocation = location("lightColor");
+	m_lightingEnabledLocation = location("lightingEnabled");
+	m_specularStrengthLocation = location("specularStrength");
+	m_specularPowerLocation = location("specularPower");
+	m_opacityLocation = location("opacity");
+	m_logDepthCoefficientLocation = location("logDepthCoefficient");
 }
 
 void Renderer::setLight(const glm::dvec3& worldPosition, const glm::vec3& color)
@@ -64,12 +55,9 @@ void Renderer::beginFrame(const Camera& camera, float aspectRatio)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	m_deferred.clear();
 
-	if (m_shader == nullptr)
+	if (!m_program.valid())
 		return;
-	if (m_shader->ID != m_cachedShaderID)
-		cacheUniformLocations();
-
-	m_shader->Activate();
+	m_program.use();
 	m_origin = camera.position();
 
 	const glm::mat4 view = camera.viewMatrixAtOrigin();
@@ -101,7 +89,7 @@ void Renderer::applyMaterial(const Material& material)
 
 void Renderer::submit(const Mesh& mesh, const Material& material, const glm::dmat4& worldMatrix)
 {
-	if (m_shader == nullptr)
+	if (!m_program.valid())
 		return;
 
 	glm::dmat4 relative = worldMatrix;
@@ -122,7 +110,7 @@ void Renderer::submit(const Mesh& mesh, const Material& material, const glm::dma
 
 void Renderer::submitInstanced(const Mesh& mesh, const Material& material)
 {
-	if (m_shader == nullptr)
+	if (!m_program.valid())
 		return;
 
 	// Instance matrices hold world positions; the shared model uniform moves
@@ -136,7 +124,7 @@ void Renderer::submitInstanced(const Mesh& mesh, const Material& material)
 
 void Renderer::submitBackground(const Mesh& mesh, const Material& material)
 {
-	if (m_shader == nullptr)
+	if (!m_program.valid())
 		return;
 
 	const glm::mat4 model(1.0f); // centred on the camera by construction
@@ -150,7 +138,7 @@ void Renderer::submitBackground(const Mesh& mesh, const Material& material)
 
 void Renderer::endFrame()
 {
-	if (m_shader == nullptr || m_deferred.empty())
+	if (!m_program.valid() || m_deferred.empty())
 		return;
 
 	// Halos and translucent sheets: depth-tested against the opaque scene but

@@ -7,7 +7,7 @@
 
 #include <glm/glm.hpp>
 
-#include "../../shaderClass.h"
+#include "ShaderProgram.h"
 #include "../../VAO.h"
 #include "../../VBO.h"
 
@@ -39,7 +39,7 @@ private:
 		glm::vec4 color;
 	};
 
-	std::unique_ptr<Shader> m_shader;
+	ShaderProgram m_program;
 	std::unique_ptr<VAO> m_vao;
 	std::unique_ptr<VBO> m_vbo;
 	std::vector<OverlayVertex> m_vertices;

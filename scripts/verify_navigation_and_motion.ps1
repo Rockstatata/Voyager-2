@@ -18,7 +18,7 @@ $voyager = Read-Source 'src\scene\Voyager2.cpp'
 $clock = Read-Source 'src\scene\SimulationClock.cpp'
 $body = Read-Source 'src\scene\CelestialBody.cpp'
 $renderer = Read-Source 'src\rendering\Renderer.cpp'
-$fragment = Read-Source 'default.frag'
+$fragment = Read-Source 'shaders/scene.frag'
 $failures = [System.Collections.Generic.List[string]]::new()
 
 function Require([bool]$condition, [string]$message) {

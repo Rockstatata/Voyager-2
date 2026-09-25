@@ -10,7 +10,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "../../shaderClass.h"
 #include "../rendering/Mesh.h"
 #include "../rendering/UvSphereGenerator.h"
 #include "../scene/BodyCatalog.h"
@@ -29,9 +28,8 @@ bool Application::initialize(int argc, char** argv)
 
 	m_input.attach(m_window.handle());
 
-	if (!loadShaders() || !m_text.initialize())
+	if (!m_renderer.initialize() || !m_text.initialize())
 		return false;
-	m_renderer.setShader(m_shader.get());
 
 	buildScene();
 
@@ -47,33 +45,6 @@ bool Application::initialize(int argc, char** argv)
 	}
 
 	m_initialized = true;
-	return true;
-}
-
-bool Application::loadShaders()
-{
-	// Shader reads its files relative to the working directory, which must be
-	// the project root. get_file_contents throws a bare errno on a missing file.
-	try
-	{
-		m_shader = std::make_unique<Shader>("default.vert", "default.frag");
-	}
-	catch (...)
-	{
-		std::cout << "[SHADER] failed to read default.vert / default.frag. "
-					 "The working directory must be the project root." << std::endl;
-		return false;
-	}
-
-	GLint linked = GL_FALSE;
-	glGetProgramiv(m_shader->ID, GL_LINK_STATUS, &linked);
-	if (linked == GL_FALSE)
-	{
-		char log[1024] = {};
-		glGetProgramInfoLog(m_shader->ID, sizeof(log), nullptr, log);
-		std::cout << "[SHADER] program link failed:\n" << log << std::endl;
-		return false;
-	}
 	return true;
 }
 

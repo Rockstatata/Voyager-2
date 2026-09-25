@@ -148,6 +148,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendering\ShaderProgram.cpp" />
     <ClCompile Include="src\ui\HudOverlay.cpp" />
     <ClCompile Include="src\core\CaptureTour.cpp" />
     <ClCompile Include="src\core\CameraController.cpp" />
@@ -194,12 +195,13 @@
 	<ClCompile Include="src\scene\VoyagerModelBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="default.frag" />
-    <None Include="default.vert" />
-    <None Include="hud.frag" />
-    <None Include="hud.vert" />
+    <None Include="shaders\hud.frag" />
+    <None Include="shaders\hud.vert" />
+    <None Include="shaders\scene.frag" />
+    <None Include="shaders\scene.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\ShaderProgram.h" />
     <ClInclude Include="src\ui\HudOverlay.h" />
     <ClInclude Include="src\core\CaptureTour.h" />
     <ClInclude Include="src\core\CameraController.h" />

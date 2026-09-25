@@ -61,7 +61,7 @@ void Mesh::setInstanceTransforms(const std::vector<glm::mat4>& instanceModelMatr
 
 	// A mat4 attribute doesn't exist as one GL type: it's uploaded as four
 	// consecutive vec4 attributes (locations 3-6, following aPos/aNormal/
-	// aTexCoord at 0-2 — see default.vert). glVertexAttribDivisor(loc, 1)
+	// aTexCoord at 0-2 — see shaders/scene.vert). glVertexAttribDivisor(loc, 1)
 	// is what makes each of those four attributes advance once per INSTANCE
 	// instead of once per vertex, the actual mechanism behind "draw N copies
 	// in one call, each with its own transform" (bible failure mode F9).
