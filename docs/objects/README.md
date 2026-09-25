@@ -4,27 +4,29 @@ These notes explain the renderable objects at the level needed to reconstruct an
 
 1. [Procedural mesh handbook](procedural-meshes.md): exact vertex equations, index order, normals, UVs, winding, and counts for boxes, cylinders/frusta/cones, parabolic dishes, annuli, line circles, and star points.
 2. [UV sphere geometry](uv-sphere.md): every position, normal, UV, index, triangle count, seam, pole, and winding decision for all bodies and small rocks.
-3. [Rendering pipeline](phase-2-rendering-pipeline.md): how CPU vertices become pixels through VBO/VAO/EBO state, transforms, materials, shaders, depth testing, and culling.
-4. [ScaleManager](scale-manager.md) (Phase 4) and [Orbital motion](orbital-motion.md) (Phase 5): how real km measurements become render units and real elliptical motion — read these before the per-body pages below, since every body's Transform/Orbit sections depend on them.
-5. [Controls: camera modes, focus, simulation clock](controls.md): direct fixed/free toggle, Tab-to-select, pause/speed.
-6. Every body (all share the one sphere from #2 — only transform and texture differ):
+3. [Rendering pipeline](phase-2-rendering-pipeline.md): how CPU vertices become pixels, including the floating origin and logarithmic depth.
+4. [Sun lighting, glow and depth](lighting.md) (Phase 14): the uniform interface, Lambert/Blinn-Phong model, two-sided rings, additive halo shells.
+5. [ScaleManager](scale-manager.md), [Mission ephemeris and simulation clock](mission-ephemeris.md) (Phase 11) and [Orbital motion and spin](orbital-motion.md): how real km, AU and dates become render positions. Read these before the per-body pages.
+6. [Controls](controls.md): free flight, Focus fly-to, chase rig, six-degree-of-freedom piloting, clock, bookmarks and capture tours.
+7. [HUD, labels and help overlay](hud-overlay.md): the project-authored 5x7 font and screen-space text renderer.
+8. Every body (all share the one sphere from #2; only transform, motion and texture differ). Each page opens with a runtime capture:
 
    | Star | Planets + dwarf | Moons |
    |---|---|---|
    | [Sun](sun.md) | [Mercury](mercury.md), [Venus](venus.md), [Earth](earth.md), [Mars](mars.md), [Jupiter](jupiter.md), [Saturn](saturn.md), [Uranus](uranus.md), [Neptune](neptune.md), [Pluto](pluto.md) | [Moon](moon.md) (Earth); [Io](io.md), [Europa](europa.md), [Ganymede](ganymede.md), [Callisto](callisto.md) (Jupiter); [Tethys](tethys.md), [Dione](dione.md), [Rhea](rhea.md), [Titan](titan.md), [Iapetus](iapetus.md) (Saturn); [Miranda](miranda.md), [Ariel](ariel.md), [Umbriel](umbriel.md), [Titania](titania.md), [Oberon](oberon.md) (Uranus); [Triton](triton.md) (Neptune) |
 
-   26 bodies total. Pluto and Saturn's Tethys/Dione/Rhea/Iapetus are the bible's optional/"when scope permits" set (section 3) — added once the required 21 were solid.
+   26 bodies total. Pluto and Saturn's Tethys, Dione, Rhea and Iapetus are the bible's optional set (section 3).
 
-7. [Planetary rings](rings.md) — Saturn/Uranus (5 real named bands each), generated in units of the parent planet's own radius so each cascades that planet's scale automatically. Jupiter and Neptune intentionally have no enlarged visible ring geometry.
-8. [Voyager 2](voyager-2.md): the from-scratch spacecraft — true parabolic dish, boxes, cylinders/frusta, lattice booms, finned RTGs, full component hierarchy, flight modes, and fixed chase camera. Its [historical trajectory](voyager-trajectory.md) uses offline NASA/JPL Horizons samples, while the [primary-source NASA research note](../research/voyager-2-spacecraft-reference.md) separates sourced dimensions from implementation inference.
-9. [GPU instancing](instancing.md): the shared mechanism behind every "thousands of bodies, one draw call" object below.
-10. [Asteroid belt, Kuiper belt, Oort cloud](small-body-fields.md): instanced small-body fields.
-11. [Background starfield](starfield.md): 4,000 points, one `GL_POINTS` draw call.
-12. [Orbital trajectory guides](orbit-rings.md): sampled historical paths for Earth, Mars, Jupiter, Saturn, Uranus, and Neptune; analytic Kepler ellipses for Mercury, Venus, and Pluto. A moving planet is always drawn on the guide computed by its own position source.
-13. [Drifting comet](drifting-comet.md): a moving nucleus plus tapered tail that dynamically points away from the Sun; it replaced both the poor Andromeda disc and three incomplete static comet nuclei.
-14. [Termination shock and heliopause](heliosphere.md): two nested three-circle wireframe boundaries that communicate the outer heliosphere without transparency.
+9. [Planetary rings](rings.md): Saturn and Uranus (5 real bands each), plus faint translucent Jupiter (2) and Neptune (3) systems, all in planet-radius units.
+10. [Voyager 2](voyager-2.md): the from-scratch spacecraft (parabolic dish, lattice booms, finned RTGs, full hierarchy), its quaternion flight model and chase camera. Its [historical trajectory](voyager-trajectory.md) follows 11,002 NASA/JPL Horizons state vectors. The [primary-source NASA research note](../research/voyager-2-spacecraft-reference.md) separates sourced dimensions from implementation inference.
+11. [GPU instancing](instancing.md): the shared mechanism behind every "thousands of bodies, one draw call" object below.
+12. [Asteroid belt, Kuiper belt, Oort cloud](small-body-fields.md): lit instanced small-body fields.
+13. [Background starfield](starfield.md): three camera-centred brightness layers, 7,380 points.
+14. [Orbit guides](orbit-rings.md): osculating ellipses from each planet's own Horizons state, so every planet rides its line.
+15. [Drifting comet](drifting-comet.md): an elliptical orbit, a glowing coma, and a tail that always points away from the Sun.
+16. [Termination shock and heliopause](heliosphere.md): wireframe boundaries at Voyager 2's own crossing distances.
 
-![Phase 2 scene layout](images/phase2-scene-layout.svg)
+![Scientific overview at launch date](images/runtime/01_overview.jpg)
 
 ## Texture provenance, at a glance
 
@@ -45,4 +47,4 @@ Before an object phase is complete, add `docs/objects/<object-id>.md` containing
 - every visual asset's local path, source, credit, mapping, and scientific limitation;
 - a diagram or annotated screenshot plus the exact build/run/manual checks performed.
 
-Keep reusable algorithms in a shared guide and link to it from each object guide. Do not claim presentation scale or animation speed is physically accurate unless it is driven by the later simulation systems.
+Keep reusable algorithms in a shared guide and link to it from each object guide. Do not claim presentation scale is physically accurate: dates, directions and order are real (Horizons), but distances and radii are compressed ([scale-manager.md](scale-manager.md)). Runtime captures are regenerated with `Voyager-2.exe --capture <dir>` and `--capture-bodies <dir>`.

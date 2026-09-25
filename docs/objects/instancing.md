@@ -27,7 +27,7 @@ mat4 effectiveModel = useInstancing != 0
     : model;
 ```
 
-`Renderer::submit` (the existing per-object path) sets `useInstancing = 0` and uploads a single `model` uniform, unchanged. `Renderer::submitInstanced` (new) sets `useInstancing = 1` and uploads no `model` uniform at all — the per-vertex instance attributes supply it instead. Same shader, same fragment stage, both paths — CLAUDE.md's existing rule ("any new mesh format needs a shader update in lockstep") applied to this format extension too.
+`Renderer::submit` (the existing per-object path) sets `useInstancing = 0` and uploads a single `model` uniform, unchanged. `Renderer::submitInstanced` sets `useInstancing = 1`. The per-instance attributes supply each world matrix, and the `model` uniform now carries only the floating-origin shift `translate(-cameraPosition)`, so the shader computes `model * instanceMatrix`. Same shader, same fragment stage, both paths — CLAUDE.md's existing rule ("any new mesh format needs a shader update in lockstep") applied to this format extension too.
 
 ## Object-graph side
 

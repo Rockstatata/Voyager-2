@@ -1,40 +1,94 @@
-# Controls: Camera Modes, Focus, and the Simulation Clock
+# Controls: cameras, focus, flight and the simulation clock
+
+![F1 controls overlay](images/runtime/12_help.jpg)
+
+*Runtime capture: `F1` shows this list in the program itself ([hud-overlay.md](hud-overlay.md)).*
+
+The camera is fully free. A viewer can fly anywhere, at any speed, and inspect every body, ring, moon and part of Voyager at close range. Input is read only by `Input`, which polls GLFW and accumulates the mouse wheel through one callback. `Application` routes it; bodies and the camera never poll GLFW (bible section 36).
 
 ## Camera modes
 
-`H` or `Home` moves FreeFly to the scientific overview camera: 110 world units from the Sun, looking toward the complete compressed heliocentric system. Bodies keep exact mutual size ratios; use `Tab` to inspect one at close range.
+| Mode | Enter | What it does |
+| --- | --- | --- |
+| **Free flight** | `C` from a locked view, `H`, or any fly key in Focus/Chase | Fly anywhere (below) |
+| **Chase** | startup, `C` from free flight, bookmarks `1`-`6`, `V` into Manual | Orbit rig on Voyager 2 |
+| **Focus** | `Tab` / `Shift+Tab`, `G` | Orbit rig on the selected body, with a fly-to transition |
 
-The application starts in `ThirdPerson` so Voyager is immediately visible from directly behind. `C` is a direct fixed/free toggle: any locked mode (`ThirdPerson` or body `Focus`) switches to `FreeFly`, and `FreeFly` switches back to `ThirdPerson`. Body `Focus` is entered separately with `Tab`, so camera behavior is predictable during a demonstration.
+### Free flight
 
-- **FreeFly**: the original Phase-1 camera — RMB + WASD, Space/Ctrl, Shift boost. Untouched by everything since.
-- **ThirdPerson**: follows Voyager 2 from behind by default. Hold **RMB** and move the mouse to orbit freely around the spacecraft; the probe remains centred in view in both Historical and Manual flight modes. Releasing RMB restores the cursor, while holding it captures the cursor so mouse-look cannot stop at a screen edge.
-- **Focus**: locked on whatever body is currently selected (see below). Reuses `Camera::followTarget` — the same method ThirdPerson uses — with a fixed elevated-diagonal offset direction instead of a moving ship's heading, since a planet has no "facing" direction of its own to frame from.
+- `W A S D` move; `Space`/`E` go up and `Ctrl`/`Q` go down, in world up.
+- Hold **RMB** and move the mouse to look (the cursor is captured while held). `M` latches mouse-look on for trackpads or long flights. The arrow keys also turn.
+- **Adaptive speed.** Base speed is 0.9 x the distance to the nearest surface, whether that is a body or Voyager, clamped between 0.004 and 300 units per second. The same keys therefore skim 1 cm from an antenna or cross the Kuiper belt in seconds.
+- **Wheel**: cruise-speed multiplier, 30 % per notch (0.001x to 1000x), shown in the HUD. **Shift** multiplies speed by 6 and **Alt** by 0.15 for fine positioning.
+- Leaving a locked view keeps the exact current position and view direction, so there is no jump.
 
-## Object selection ("Focus")
+### Focus (any of the 26 bodies)
 
-`Tab` / `Shift+Tab` cycle forward/backward through every body in `SolarSystem` (Sun, planets, moons — in registration order) and switch the camera into Focus mode on the newly-selected one. This is bible section 40's "object selection and focus," in minimal form: keyboard cycling plus a camera snap. The selected name appears in the native window-title HUD and in the `[APP] focused: <name>` console log. In-scene floating labels still require a font atlas and text shader, so they remain part of the later shader/presentation pass.
+- `Tab` / `Shift+Tab` cycle through all bodies. The camera flies there over 1.6 s along an eased path with logarithmic distance blending, so long hops start fast and settle gently. The fly-to tracks the target every frame, so it lands exactly even on a moving planet.
+- It opens on the day side, 40 degrees round from the body-to-Sun direction, at 3.2 radii (5.5 for planets with moons, 4 for the Sun).
+- Drag with RMB or use the arrows to orbit. The wheel zooms multiplicatively from 1.08 radii (surface close-up) out to 5,000 units.
+- `G` flies back to the last selected body after free flight.
+- The HUD shows the name and real radius.
 
-Focus distance is derived per-body, not a fixed number: `Camera::followTarget` is given `worldRadius * 4 + 0.05` as its distance, where `worldRadius` is the length of the focused body's transformed X basis vector — `glm::length(glm::dvec3(focused->worldMatrix()[0]))`. This matters specifically for moons: a moon's own `transform().scale` is *local* (relative to its parent planet — see [scale-manager.md](scale-manager.md)'s cascade explanation), not its actual on-screen size, so reading `transform().scale` directly would compute a wildly wrong distance for any moon. Extracting the scale from the body's full `worldMatrix()` instead is correct for both a root (a planet) and a child (a moon) uniformly.
+### Chase
 
-## Simulation clock (bible section 21)
+- The same orbit rig, expressed in Voyager's own frame, so "behind" follows its pitch and roll in Manual flight. It opens as a three-quarter rear view (20 degree yaw, 10 degree pitch, 4 bounding radii).
+- During a Historical flyby, when within 6 clearances of a giant planet or near Earth at launch, the rig faces the planet instead. The probe stays in the foreground with the world it is passing behind it. The frame change is smoothed.
+- Drag or use the arrows to orbit. The wheel zooms from 1.3 bounding radii out to 5,000 units.
 
-`P` toggles pause. `=` (or `]`) speeds up, `-` (or `[`) slows down, each by 1.5x per press, clamped to [0.02x, 50x]. Historical playback stops at the final mission date instead of teleporting back to launch.
+`H` or `Home` places free flight at the overview camera, 150 units in front of and 62 above the Sun, looking at the inner system.
 
-Implementation: `CelestialBody::setSimulationTimeScale` is a **shared static** — one call reaches every `CelestialBody` instance at once, since every planet and moon is its own object with no back-reference to a central clock. `CelestialBody::update` multiplies incoming `dt` by that shared scale before advancing orbit angle or spin angle: `simDt = dt * s_simulationTimeScale`. The same scale drives Voyager's historical trajectory playback; manual piloting and the camera stay on real time. Pausing sets the scale to 0 (motion literally stops advancing, not just rendered statically) and restores the last non-zero speed on unpause.
+## Voyager flight
 
-**Deliberately not affected**: `Input`, camera movement, and Voyager's manual piloting use real, unscaled `deltaTime`. Historical Voyager playback does use the simulation scale, so pause and speed changes apply consistently to the automated mission path.
+`V` toggles Historical and Manual flight. Manual control is active only in the Chase camera; in free flight the same keys fly the camera.
+
+| Key | Manual action |
+| --- | --- |
+| `W` / `S` | Thrust forward / backward along the nose |
+| `A` / `D` | Yaw left / right about the ship's up axis |
+| `R` / `F` | Pitch nose up / down |
+| `Q` / `E` | Roll |
+| `Space` / `Ctrl` | Translate along the ship's up axis |
+| `Shift` | Boost thrust x8 |
+| `X` | Braking burn: opposes the velocity without overshooting |
+
+Orientation is a quaternion and every turn is about the ship's own axes, so there is no gimbal lock (bible F6). Flight is inertial: turning changes facing, not velocity, and speed is capped at 12 units per second. Details are in [voyager-2.md](voyager-2.md).
+
+## Mission and clock
+
+| Key | Action |
+| --- | --- |
+| `1` | Launch, 1977-08-21 |
+| `2` / `3` / `4` / `5` | Jupiter / Saturn / Uranus / Neptune, 1.5 days before each computed closest approach |
+| `6` | Heliopause crossing, 2018-11-05 |
+| `P` | Pause or resume |
+| `=` / `-` (also `]` `[`, keypad `+` `-`) | Double or halve speed, 1/64x to 64x |
+| `Backspace` | Speed back to 1x and unpause |
+| `N` | Encounter slow-motion on or off |
+| `T` | Voyager trajectory line |
+| `O` | Orbit guides |
+
+The shared Julian Date runs at 120 mission days per second at 1x, easing to about 1.2 hours per second at each closest approach. Planets, Voyager and the HUD all read it ([mission-ephemeris.md](mission-ephemeris.md)). Moon revolution and axial spin use the same speed factor and pause ([orbital-motion.md](orbital-motion.md)).
+
+## Display
+
+| Key | Action |
+| --- | --- |
+| `F1` | Controls overlay |
+| `F2` | HUD panel |
+| `L` | Body labels |
+| `K` | Sun lighting on or off |
+| `F12` | Screenshot to `captures/screenshot_NNN.bmp` |
+| `Esc` | Quit |
+
+## Scripted captures
+
+`Voyager-2.exe --capture <dir>` runs a fixed tour: overview, launch, four pre-encounter views, heliopause, four Focus views and the help overlay. It writes each view as a BMP and exits. `--capture-bodies <dir>` shoots a Focus view of each of the 26 bodies. Both produced the images in `docs/objects/images/`.
 
 ## Verification
 
-- `[APP] camera mode: ...` log line on every `C` press.
-- `[APP] focused: <displayName>` log line on every `Tab`/`Shift+Tab` press; visual: camera immediately snaps to look at that body, sized appropriately whether it's a planet or a small moon.
-- `[APP] simulation paused` / `resumed` / `simulation speed: Nx` log lines; visual: all orbital and spin motion stops on pause and resumes at the logged rate — camera movement and Voyager piloting remain responsive throughout.
-
-## Voyager trajectory controls
-
-- `T` shows/hides the historical path line.
-- `1` through `6` jump to Launch, Jupiter, Saturn, Uranus, Neptune, and Interstellar-space dates. A bookmark switches to Historical + ThirdPerson mode and logs its name.
-
-## Minimal HUD
-
-The native window title is a shader-free HUD. It refreshes four times per second and shows camera mode, Historical/Manual flight mode, current historical Julian Date, Voyager's scene-space distance from the Sun and velocity, simulation running/paused state and speed, plus the focused body's name when Focus is active. This deliberately avoids adding a font atlas and screen-space text shader before the lighting/shading lab.
+1. At startup the HUD reads `CAMERA CHASE VOYAGER`. Drag with RMB and the view orbits the probe. The wheel zooms in until the struts fill the screen.
+2. Press `W`. The HUD switches to `FREE FLIGHT` without a jump. Scroll up and the `WHEEL SPEED` factor rises.
+3. Press `Tab` repeatedly. The camera flies to the Sun, then Mercury, then Venus, and so on. Zoom to 1.08 radii to see surface texture detail.
+4. Press `C`, then `V`. Pilot with `W`/`A`/`R`/`Q`, press `X` to stop, then `V` again. Voyager returns to its historical position.
+5. Press `P` and all motion stops while the camera keeps flying. Press `=` and the HUD rate doubles.

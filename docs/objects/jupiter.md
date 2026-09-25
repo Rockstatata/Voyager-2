@@ -1,42 +1,44 @@
 # Jupiter
 
+![Runtime Focus view of Jupiter](images/bodies/jupiter.jpg)
+
+*Annotated runtime capture: `Tab` Focus view of Jupiter at launch date 1977-08-21, Sun lighting on, labels and HUD visible (`Voyager-2.exe --capture-bodies <dir>`).*
+
 ## Overview
 
-`Jupiter` is a `CelestialBody` (Planet) in the solar-system registry (`SolarSystem`), parent none (root body). It draws using the single shared UV-sphere `Mesh` uploaded once at startup — see [uv-sphere.md](uv-sphere.md) for how that mesh's vertices and triangles are built. This document covers only what's specific to `Jupiter`: its transform, its real physical data, and its texture.
+`Jupiter` is a `CelestialBody` (Planet) registered by `SolarSystem` as a scene root. It draws with the one shared 32x64 UV-sphere `Mesh` ([uv-sphere.md](uv-sphere.md)); this page covers only what is specific to Jupiter: scale, motion, physical data, material and verification.
 
 ## Geometry generation
 
-Not object-specific. `Jupiter` contributes zero unique vertices or triangles — it reuses the one `Mesh` shared by all 26 bodies in the scene (bible failure mode F9: never upload a mesh per body). Full derivation of that shared sphere (stacks/slices grid, pole handling, seam duplication, index winding) is in [uv-sphere.md](uv-sphere.md).
+None of its own. Jupiter contributes zero unique vertices: all 26 bodies share one sphere upload (2,145 vertices, 3,968 triangles, bible F9). The derivation of every vertex, UV, index and the duplicated seam column is in [uv-sphere.md](uv-sphere.md).
 
 ## Vertex attributes / triangle construction
 
-Identical to every other body in the scene — see [uv-sphere.md](uv-sphere.md) and [phase-2-rendering-pipeline.md](phase-2-rendering-pipeline.md). `Jupiter` does not alter the `Vertex{position, normal, uv}` layout or the index buffer.
+Unchanged shared layout: `position` (location 0), `normal` (1), `texCoord` (2), counter-clockwise triangles — see [uv-sphere.md](uv-sphere.md) and [phase-2-rendering-pipeline.md](phase-2-rendering-pipeline.md).
 
 ## Transform
 
-- Class: `CelestialBody`, registry id `"jupiter"`, parent none (root body)
-- Local scale: `0.2667` (uniform, all axes) — real radius 69,911 km compressed by cube root against Earth's radius (`ScaleManager::radiusToRenderUnits`), floored at a minimum of 0.03 render units so small bodies stay visible — see [scale-manager.md](scale-manager.md).
-- Local position: `(-9.4023, 0, -30)` — initial orbit position (moves every frame — see Orbit above)
-- Rotation: `tilt * spin`, both quaternions. `tilt = angleAxis(radians(3.13), Z)` is constant. `spin = angleAxis(spinAngle, Y)` accumulates every frame in `CelestialBody::update(dt)` at `2*pi / (rotationPeriodHours * 3600) * kVisualSpinSpeedup` rad/s, where `kVisualSpinSpeedup = 3600` compresses time (1 simulated hour per real second) so the true rotation period stays proportional and relatively correct against every other body, just fast enough to see. `dt` here is already scaled by the simulation clock (`controls.md`) before this multiplication.
+- Scale: `2.1046` = 0.50 x (69,911.0 / 6,371)^0.60 (`ScaleManager::radiusToRenderUnits`, [scale-manager.md](scale-manager.md)).
+- Rotation: `angleAxis(3.13 deg, +Z)` — the axial tilt only. That tilted frame is inherited by moons and rings; the spin is applied to the sphere alone in `CelestialBody::render`, so children are never dragged round once per Jupiter day.
+- Spin: `2 pi / (9.925 h x 3600) x 3600` rad per simulated second (1 simulated hour per real second at 1x); negative period = retrograde.
 
-## Orbit
+## Motion
 
-Elliptical orbit (`CelestialBody::setOrbit`, see [orbital-motion.md](orbital-motion.md)): semi-major axis `8.964` render units, eccentricity `0.0489`, angular velocity `0.0218` rad/s, initial true anomaly `180` degrees, orbit center `(0.0, 0.0, -30.0)` (world (it's a scene root) coordinates). At start, `r = a(1-e^2)/(1+e*cos(angle0))` = `9.4023`, giving position `(-9.4023, 0, -30)`. This point moves every frame — it is the position *at startup*, not a fixed value.
+Date-driven, not animated: every frame `updateEphemerisPositions` samples `assets/trajectory/planets/jupiter_heliocentric.csv` (NASA/JPL Horizons state vectors, cubic Hermite interpolation) at the shared `SimulationClock` Julian Date and maps it with `Trajectory::mapHeliocentricToRender` — direction preserved, distance compressed to `12 x (r_AU / 0.387098)^0.55` ([mission-ephemeris.md](mission-ephemeris.md)). The same date places Voyager 2, so encounters line up by construction.
+
+Worked example (launch, JD 2443376.5): ecliptic `(0.8209, 5.0256, -0.0391)` AU, distance `5.0924` AU, scene axes `(x, z, y)`, render distance `49.509`, world position `(7.981, -0.380, 18.860)`.
+
+Its orbit guide is the osculating two-body ellipse through its 1987-07-15 Horizons state, mapped with the same law ([orbit-rings.md](orbit-rings.md)).
 
 ## Worked vertex example
 
-At the position above, with `spinAngle = 0` (so `rotation = tilt` only), two vertices from the shared unit-sphere data show what the transform chain actually does to a stored coordinate:
-
-- Local equator vertex `(1, 0, 0)` -> scale by `0.2667` -> `(0.2667, 0, 0)` -> rotate `3.13` degrees about +Z -> `(0.2663, 0.0146, 0)` -> translate by local position -> world `(-9.1361, 0.0146, -30)`
-- Local "north pole" vertex `(0, 1, 0)` -> scale -> `(0, 0.2667, 0)` -> rotate -> `(-0.0146, 0.2663, 0)` -> translate -> world `(-9.4169, 0.2663, -30)`
-
-(World here is already the final position, since this body has no parent.) This is why a body's stored `position` is its center, not any one vertex — every vertex is offset from it by the same scale/rotate/translate chain, computed once per frame in `Transform::localMatrix()` and narrowed to `float` only at GPU upload (bible section 12).
+Local equator vertex `(1, 0, 0)` -> scale `2.1046` -> tilt 3.13 deg about +Z -> `(2.1015, 0.1149, 0)` (spin 0) -> plus the body position. That sum is the world vertex. Every matrix is double precision until `Renderer::submit` subtracts the camera position and narrows to float.
 
 ## Physical data
 
-Source: NASA Planetary Fact Sheets (https://nssdc.gsfc.nasa.gov/planetary/factsheet/), standard reference values, not flight-grade ephemeris.
+Source: NASA Planetary Fact Sheets (https://nssdc.gsfc.nasa.gov/planetary/factsheet/); positions of planets from NASA/JPL Horizons.
 
-- Radius: 69,911 km
+- Radius: 69,911.0 km
 - Semi-major axis: 778,570,000 km
 - Eccentricity: 0.0489
 - Orbital period: 4,332.59 days
@@ -47,15 +49,16 @@ Source: NASA Planetary Fact Sheets (https://nssdc.gsfc.nasa.gov/planetary/factsh
 
 - Texture file: `assets/textures/bodies/jupiter.jpg` (2048x1024, loaded via `Texture2D::loadFromFile` → `stb_image` decode → `glTexImage2D`)
 - Source and credit: Solar System Scope free 2k texture pack, CC BY 4.0 (https://www.solarsystemscope.com/textures/)
-- UV coordinates come entirely from the shared sphere generator (`u = theta/2*pi`, `v = phi/pi`), computed independently of which texture file is bound — swapping `Jupiter`'s texture changes zero vertex data, which is the proof that texturing and geometry are decoupled pipeline stages (see [phase-2-rendering-pipeline.md](phase-2-rendering-pipeline.md)).
+- Shading: `Lit` (Sun point light, Lambert diffuse + Blinn-Phong specular strength 0.05, ambient 0.07) — [lighting.md](lighting.md). `K` toggles lighting off to show the raw texture.
+- UVs come from the shared sphere generator; swapping the texture changes no vertex data.
 
 ## Limitations
 
-- Uniform angular rate, not true Kepler equal-area timing (see [orbital-motion.md](orbital-motion.md), "Known simplifications").
-- No bump/normal map, atmosphere, or ring shading; diffuse color only.
+- Radius is power-law compressed (size order preserved, absolute ratios not); see [scale-manager.md](scale-manager.md).
+- Perfect sphere: no oblateness, no shadows cast onto rings or moons.
 
 ## Verification
 
-- Startup `[SCENE]` log line reports total body count and confirms all bodies share one mesh.
-- Startup `[ASSET]` log line confirms `assets/textures/bodies/jupiter.jpg` loaded and its pixel resolution.
-- Visual: `Jupiter` renders as a lit, textured sphere, visibly moving along its orbit over time; toggling `setVisible(false)` on it hides only this body.
+- Startup log: `[SCENE] 26 bodies share 1 sphere mesh (2145 vertices, 3968 triangles), 26 real texture maps loaded`.
+- Startup log: `[TRAJECTORY] loaded ... state vectors from assets/trajectory/planets/jupiter_heliocentric.csv`.
+- Visual: `Tab` until the HUD shows `CAMERA FOCUS: JUPITER`; the camera flies in on the day side and the label reads `JUPITER`. Wheel zooms to the surface, drag orbits, `W` leaves into free flight.

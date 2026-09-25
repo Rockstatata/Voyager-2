@@ -1,82 +1,76 @@
-# Planetary Rings (Saturn and Uranus)
+# Planetary rings (Saturn, Uranus, Jupiter, Neptune)
 
-## Current visible scope
+![Saturn's rings seen from Voyager 2 before closest approach](images/runtime/04_saturn_approach.jpg)
 
-Only Saturn and Uranus receive visible ring geometry. Jupiter's and Neptune's real dust rings are too faint and thin for this unlit, flat-color presentation; opaque annuli were misleadingly prominent, so those two systems are intentionally omitted.
+*Runtime capture: Saturn encounter, three hours before closest approach. The B ring is brightest, the Cassini Division is a real gap, and the rings are lit from both sides.*
 
-The exact annulus vertex equations, index order, normals, winding, and count formula are centralized in the [Procedural Mesh Construction Handbook](procedural-meshes.md). This page records the object-specific band radii, transforms, colors, and limitations.
-
-## Overview
-
-All four ring-bearing planets from bible section 26 ("Jupiter, Saturn, Uranus, and Neptune need ring support ... with Saturn's rings most developed") now have bands: Saturn and Uranus first (the two visually obvious ones), Jupiter and Neptune added the same session once the mechanism was verified working — both are real but famously faint dust rings, included for completeness rather than visual impact. Every band is a plain `SceneObject` child of its planet's `CelestialBody`.
+All four ring systems named in bible section 26 are present: 15 bands in total. The exact annulus vertex equations, index order, normals and winding are in the [Procedural Mesh Construction Handbook](procedural-meshes.md). This page records band radii, transforms, materials and limits.
 
 ## Geometry generation
 
-`RingGenerator::generate(innerRadius, outerRadius, radialSegments)` (`src/rendering/RingGenerator.*`) builds a flat annulus in the local XZ plane (`y = 0`): two concentric rings of vertices (inner, outer), connected into quads (2 triangles each). Built **double-sided** — the whole ring is generated twice, once with `normal = (0,1,0)` and CCW-from-above winding, once with `normal = (0,-1,0)` and reversed winding — because the free-fly camera can pass underneath the ring plane and this renderer has no per-mesh culling toggle; a single-sided ring would vanish from below.
+`RingGenerator::generate(inner, outer, 128)` builds a flat, double-sided annulus in the local XZ plane. It has 128 radial segments, and each face is generated twice with opposite normals and winding, so back-face culling never removes a ring seen from below. Each named band is its own `SceneObject` child of the planet. Real gaps, such as the Cassini Division, are therefore missing geometry, not a darker colour.
 
-The key design choice: **radii are given in units of the parent planet's own radius**, the same convention `UvSphereGenerator` uses for its unit sphere. A ring is added as a plain child with no explicit scale of its own — `worldMatrix = planet.worldMatrix() * ring.localMatrix()` already includes the planet's `transform().scale`, so the ring's rendered size automatically stays proportional to however large that planet is currently drawn (today's Phase-3 placeholder scale, or whatever Phase 4's `ScaleManager` computes later) without RingGenerator ever needing to know the planet's absolute render radius.
+Radii are in units of the planet's own radius, so a ring needs no scale of its own: `planet.worldMatrix()` supplies the planet's scale and tilt.
 
-**Each named ring is its own `RingGenerator::generate()` call and its own child `SceneObject`**, not one annulus. Two reasons: real ring systems have gaps (the Cassini Division has no ring material in it at all — that has to be an actual geometric gap, not a color change), and this codebase has no per-vertex color yet (`Vertex` is `position, normal, uv` only — see `phase-2-rendering-pipeline.md`), only per-`Material` flat color, so distinct bands need to be distinct objects to get distinct shades.
+## Transform
 
-## Vertex attributes / triangle construction
+A ring is a child of its `CelestialBody`. It inherits the planet's position, the display radius from its scale, and the axial tilt, which puts the rings in the equatorial plane: 26.7 degrees for Saturn and 97.8 degrees for Uranus. It does **not** inherit the planet's spin, which is applied only to the planet's own mesh ([orbital-motion.md](orbital-motion.md)).
 
-Same `Vertex{position, normal, uv}` layout as every other object in the scene.
+## Bands
 
-## Transform and real-world basis
+Radii are in km divided by the planet's radius. Opacity below 1 makes a band translucent.
 
-Radii (source: standard ring-system references, in km, divided by the planet's own real radius from its own `CelestialBodyData`). Each row is a separate band/`SceneObject`; a gap between two rows with no band is real (no geometry generated there), not a rendering artifact:
+**Saturn** (58,232 km):
 
-**Saturn** (radius 58,232 km) — 5 bands, real gap at the Cassini Division:
+| Band | Inner | Outer | Colour | Opacity |
+| --- | ---: | ---: | --- | ---: |
+| D | 1.110 | 1.236 | dim grey-brown | 0.35 |
+| C | 1.239 | 1.527 | medium | 0.70 |
+| B | 1.527 | 1.951 | brightest cream | 0.97 |
+| *Cassini Division* | 1.951 | 2.027 | *gap* | - |
+| A | 2.027 | 2.269 | tan | 0.90 |
+| F | 2.320 | 2.334 | thin, bright | 0.80 |
 
-| Band | Inner (km) | Outer (km) | innerUnits | outerUnits | Shade |
-| --- | ---: | ---: | ---: | ---: | --- |
-| D ring | 66,900 | 74,510 | 1.149 | 1.280 | faint |
-| C ring | 74,658 | 92,000 | 1.282 | 1.580 | medium |
-| B ring | 92,000 | 117,580 | 1.580 | 2.019 | brightest, widest |
-| *(Cassini Division — gap)* | 117,580 | 122,170 | 2.019 | 2.098 | — no band — |
-| A ring | 122,170 | 136,775 | 2.098 | 2.349 | medium |
-| F ring | 140,180 | 140,680 | 2.402 | 2.415 | thin, bright |
+**Uranus** (25,362 km). These are narrow, dark, carbon-rich rings. The table shows five of the 13 named rings:
 
-**Uranus** (radius 25,362 km) — 5 of its 13 named rings, all much narrower/darker (carbon-rich, not icy) than Saturn's:
+| Band | Inner | Outer | Opacity |
+| --- | ---: | ---: | ---: |
+| 6/5/4 group | 1.648 | 1.662 | 0.80 |
+| alpha | 1.750 | 1.760 | 0.80 |
+| beta | 1.786 | 1.796 | 0.80 |
+| gamma/eta/delta group | 1.860 | 1.876 | 0.80 |
+| epsilon | 2.000 | 2.020 | 0.90 |
 
-| Band | innerUnits | outerUnits | Shade |
-| --- | ---: | ---: | --- |
-| 6/5/4 group | 1.660 | 1.668 | dark charcoal |
-| alpha | 1.760 | 1.768 | dark charcoal |
-| beta | 1.797 | 1.805 | dark charcoal |
-| gamma/eta/delta group | 1.874 | 1.882 | dark charcoal |
-| epsilon | 2.013 | 2.025 | widest, brightest of the set |
+**Jupiter** (69,911 km). Tenuous dust:
 
-**Jupiter** (radius 69,911 km) — 3 bands, real rings but extremely faint dust, not ice like Saturn's:
+| Band | Inner | Outer | Opacity |
+| --- | ---: | ---: | ---: |
+| halo | 1.40 | 1.71 | 0.12 |
+| main | 1.72 | 1.81 | 0.28 |
 
-| Band | innerUnits | outerUnits | Shade |
-| --- | ---: | ---: | --- |
-| Halo ring | 1.431 | 1.752 | very faint dark |
-| Main ring | 1.752 | 1.845 | brightest of a faint set |
-| Gossamer rings (combined) | 1.845 | 2.900 | very faint |
+**Neptune** (24,622 km). Faint dust:
 
-**Neptune** (radius 24,622 km) — 3 bands, also faint dust rings:
+| Band | Inner | Outer | Opacity |
+| --- | ---: | ---: | ---: |
+| Galle | 1.69 | 1.73 | 0.18 |
+| Le Verrier | 2.14 | 2.16 | 0.30 |
+| Adams | 2.53 | 2.55 | 0.35 |
 
-| Band | innerUnits | outerUnits | Shade |
-| --- | ---: | ---: | --- |
-| Galle ring | 1.661 | 1.742 | faint |
-| Le Verrier + Lassell rings (combined) | 2.161 | 2.323 | faint |
-| Adams ring | 2.550 | 2.562 | faint (real ring has bright "arcs" — see Limitations) |
-
-Because a ring is a child of the planet's `CelestialBody`, it inherits that body's tilt+spin rotation the same way a moon would — but unlike a moon, this is **not** a limitation here: a full annulus is rotationally symmetric about its own axis, so spinning it about that same axis (the planet's Y-axis spin) produces zero visible change, frame to frame. Only the constant axial *tilt* matters, and that correctly orients the ring to the planet's equatorial plane, which is physically correct (real rings lie in their planet's equatorial plane).
+Moon orbits start at 3.85 parent radii ([scale-manager.md](scale-manager.md)), outside every band. Voyager's Saturn pass is drawn at 3.16 radii, just outside the F ring.
 
 ## Material mapping
 
-Flat color per band (see tables above) — no texture, no transparency (alpha blending isn't enabled in the renderer yet — that's shading-adjacent work, out of scope for this pass per current project direction: placement and behavior now, lighting/shading later).
+The bands use flat colour with no texture, and the `LitTwoSided` shading model ([lighting.md](lighting.md)). Diffuse lighting uses `|n·l|`, so both faces are lit as a translucent ring would be. Translucent bands are drawn after opaque geometry with alpha blending and no depth writes. The earlier decision to leave out Jupiter's and Neptune's rings came from opaque unlit annuli looking falsely prominent. With low opacity and lighting they now read as faint dust, as they should.
 
 ## Limitations
 
-- Uniform flat color per band, not continuously-varying real ring brightness/texture.
-- Opaque, not the real rings' partial transparency.
-- Only 5 bands each for Saturn/Uranus (not every one of Uranus's 13 named rings), 3 each for Jupiter/Neptune.
-- Neptune's Adams ring is rendered as a uniform band; the real ring has distinct brighter "arcs" around part of its circumference, which would need per-vertex color (this project has none yet — flat per-`Material` color only) to represent.
+- Brightness is flat within a band: there are no radial texture, spokes or Adams-ring arcs.
+- The planet casts no shadow on its rings.
+- Translucent bands are not depth-sorted against each other. Bands do not overlap, so this is invisible in practice.
 
 ## Verification
 
-- `[SCENE] ring systems attached: Saturn (5 bands, Cassini Division gap), Uranus (5 bands), Jupiter (3 bands), Neptune (3 bands)` startup log line.
-- Visual: fly to Saturn and confirm a visible gap between the B and A rings (Cassini Division); fly to Uranus and confirm five distinct thin dark bands rather than one solid disc; Jupiter and Neptune's bands are intentionally subtle (real rings), not missing.
+1. The startup log reads `[SCENE] ring systems attached: Saturn (5 bands, Cassini Division gap), Uranus (5), Jupiter (2 faint), Neptune (3 faint)`.
+2. Focus Saturn with `Tab`. Stars show through the Cassini Division and the rings are lit from above and below.
+3. Focus Uranus. Thin dark rings stand almost vertical, matching its tilt.
+4. Focus Jupiter and Neptune. Faint translucent rings are visible and do not hide the planet.

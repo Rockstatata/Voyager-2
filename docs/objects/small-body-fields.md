@@ -1,43 +1,47 @@
-# Asteroid Belt, Kuiper Belt, Oort Cloud
+# Asteroid belt, Kuiper belt, Oort cloud
 
-The low-poly sphere's exact vertices and triangles are derived in [uv-sphere.md](uv-sphere.md), while the generator-to-object map is summarized in the [Procedural Mesh Construction Handbook](procedural-meshes.md).
+![Asteroid belt rocks in the foreground of a Jupiter view](images/runtime/09_focus_jupiter.jpg)
+
+*Runtime capture: Jupiter's Focus view, with lit asteroid-belt rocks in the lower foreground.*
+
+The low-poly sphere's exact vertices and triangles are derived in [uv-sphere.md](uv-sphere.md). The instancing mechanism is explained in [instancing.md](instancing.md).
 
 ## Overview
 
-Three `InstancedField` objects (`asteroid_belt`, `kuiper_belt`, `oort_cloud`). Bible sections 27/28: "use the same principle as the asteroid belt" for the Kuiper belt, and don't let it dominate performance — all three share one mechanism, fully explained in [instancing.md](instancing.md). This document covers only what's specific to each field: where it sits and how many bodies it has.
+There are three `InstancedField` objects, `asteroid_belt`, `kuiper_belt` and `oort_cloud`. Each is one `glDrawElementsInstanced` call whatever its count, which avoids bible F9.
 
 ## Geometry generation
 
-All three share one CPU shape: `UvSphereGenerator::generate(6, 8)` — a deliberately low-poly sphere (63 vertices, 80 triangles) for a rock that's tiny and usually distant on screen; the full 32x64 sphere used for planets would waste GPU work nobody can see the benefit of, per the triangle-budget reasoning in [uv-sphere.md](uv-sphere.md). Each field uploads its **own** `Mesh` from this same CPU data — three small GPU uploads, not one shared `Mesh` — because `Mesh::setInstanceTransforms` stores the instance buffer on the `Mesh` object itself; sharing one `Mesh` across fields would mean the second field's `setInstanceTransforms` call overwrites the first field's instances.
+All three use `UvSphereGenerator::generate(6, 8)`: 63 vertices and 80 triangles. Each field uploads its own `Mesh` from that CPU data, because `Mesh::setInstanceTransforms` stores the instance buffer on the mesh.
 
-## Vertex attributes / triangle construction
+## Vertex attributes
 
-Standard `Vertex{position, normal, uv}`, same as every sphere in this project — see [uv-sphere.md](uv-sphere.md). Per-instance placement (not per-vertex) is covered in [instancing.md](instancing.md).
+Standard `Vertex{position, normal, uv}` per vertex, plus a per-instance world matrix at locations 3 to 6 with `glVertexAttribDivisor(loc, 1)`. The shared `model` uniform carries only the floating-origin shift, so the shader computes `model * instanceMatrix` ([lighting.md](lighting.md)).
 
-## Transform / placement
+## Placement
 
-All three fields are centered on the Sun's current world position (so they move together if the Sun's placement ever changes). Real placement reasoning: the actual asteroid belt sits between Mars and Jupiter, the Kuiper belt beyond Neptune — radii are tied to `ScaleManager`'s log-compressed planet distances (`scale-manager.md`): Mars ≈ 5.44, Jupiter ≈ 8.97, Neptune = 14.0 render units:
+Each field is centred on the Sun. Radii come from real AU bounds passed through `ScaleManager::distanceAuToRenderUnits` ([scale-manager.md](scale-manager.md)):
 
-| Field | Shape | Inner radius | Outer radius | Height jitter | Count | Seed |
-| --- | --- | ---: | ---: | ---: | ---: | ---: |
-| Asteroid belt | flat annulus | 5.9 | 8.5 (between Mars ≈5.44 and Jupiter ≈8.97) | ±0.15 | 2,500 | 101 |
-| Kuiper belt | flat annulus | 14.8 | 18.0 (beyond Neptune = 14.0) | ±0.20 | 1,500 | 202 |
-| Oort cloud | spherical shell | 25.0 | 40.0 | n/a (full 3D) | 800 | 303 |
+| Field | Shape | Real bounds | Render radii | Height jitter | Count | Rock scale | Seed |
+| --- | --- | --- | --- | ---: | ---: | --- | ---: |
+| Asteroid belt | annulus | 2.1-3.3 AU | 30.4-39.0 | ±0.6 | 4,000 | 0.012-0.05 | 101 |
+| Kuiper belt | annulus | 30-50 AU | 131-174 | ±3 | 3,000 | 0.06-0.20 | 202 |
+| Oort cloud | spherical shell | 2,000-5,000 AU | 1,323-2,189 | full 3D | 1,500 | 1.5-4.0 | 303 |
 
-Per-instance scale ranges: asteroid belt 0.006-0.020, Kuiper belt 0.008-0.024, Oort cloud 0.010-0.030 (render units, independent per axis — see instancing.md).
+The annulus radius is `inner + (outer - inner) * sqrt(u)`, which pushes samples outward roughly in proportion to area. The shell samples `cos(phi)` uniformly and uses `radius = cbrt(inner^3 + (outer^3 - inner^3) u)`, which is exactly uniform by volume. Every rock has independent per-axis scale and a random spin axis, so the stretched spheres read as irregular rocks. The fields are deterministic because each uses a fixed seed.
 
 ## Material mapping
 
-Flat color per field, no texture: asteroid belt warm grey-brown, Kuiper belt cool grey, Oort cloud pale blue-white (icy). No lighting — consistent with the rest of this pass.
+Flat colour, `Lit` shading. Rocks show a lit side and a dark side toward the Sun. The asteroid belt is warm grey-brown, the Kuiper belt cool grey and the Oort cloud pale icy blue.
 
 ## Limitations
 
-- Placement radii are pinned to `ScaleManager`'s current calibration constants, not literal AU distances.
-- Fixed distributions computed once at startup; the fields themselves don't orbit (unlike planets/moons — see `orbital-motion.md`), matching the real asteroid/Kuiper belts' comparatively slow bulk drift versus a single body's orbit.
-- "Irregular shape" is a stretched sphere, not real irregular geometry.
-- Oort cloud radius (20-32) and count (800) are illustrative, not derived from the real Oort cloud's actual (enormously larger, ~2,000-100,000 AU) scale — at real relative scale it would be far outside this scene entirely.
+- The fields are static: they do not orbit.
+- Counts and rock sizes are illustrative. The real belts are mostly empty space.
+- The rocks are stretched spheres, not true irregular shapes.
 
 ## Verification
 
-- `[SCENE] asteroid_belt: 2500 instances, 1 draw call` (and the same for the other two) at startup.
-- Visual: fly between Mars and Jupiter and confirm scattered small rocks, not a gap; fly beyond Neptune for the Kuiper belt; fly far out for the sparse Oort shell.
+1. The startup log shows `asteroid_belt: 4000 instances, 1 draw call`, and the same line for the Kuiper belt (3000) and the Oort cloud (1500).
+2. Fly between Mars and Jupiter. There are lit rocks, each with a dark side facing away from the Sun.
+3. Fly out past Neptune to the Kuiper belt, then zoom out with the wheel, press `Shift` and keep flying to reach the sparse Oort shell.

@@ -1,39 +1,71 @@
-# Scientific ratios and display scale
+# ScaleManager: presentation scale
 
-A literal one-scale model cannot show a 13 m spacecraft, kilometre-scale moons, and a 119 AU heliosphere in one useful OpenGL view. The final scene therefore uses two explicit mappings and does not claim that one screen is a literal photograph of the entire solar system.
+![Scientific overview from the H key](images/runtime/01_overview.jpg)
 
-## Exact celestial size ratios
+*Runtime capture, `H`: the whole compressed system at launch date. The planets are visible discs rather than sub-pixel points, and the order of orbits and sizes is real.*
 
-Every Sun, planet, moon, and local moon-orbit measurement uses one linear factor:
+A literal model cannot show a 13 m spacecraft, 25,000 km planets and a 119 AU heliosphere in one navigable view. `ScaleManager` (`src/scene/ScaleManager.*`) owns four explicit, monotonic mappings. The physical values in `CelestialBodyData` and in the Horizons tables are never modified. Only the rendered transforms use these mappings.
 
-```text
-celestialUnitsPerKm = 1.5 / 696,340
-renderRadius = physicalRadiusKm * celestialUnitsPerKm
-moonWorldOrbit = parentRenderRadius * max((moonSemiMajorAxisKm / parentRadiusKm)^0.70, 3.0)
-```
-
-This makes the Sun radius `1.5` while preserving the exact source ratios: Jupiter `0.15059`, Saturn `0.12544`, Uranus `0.05464`, Neptune `0.05304`, Earth `0.01372`, and the Moon `0.00374`. Ring radii are already expressed in parent-radius units, so their ratios remain exact. Moon orbit *display distances* use a documented 0.70 power compression: this preserves distance order and safe ring clearance while preventing physically correct but unreadably spread-out moon systems in the heliocentric overview.
-
-## Heliocentric overview spacing
-
-Planet and Voyager distances from the Sun use a separate monotonic compression:
+## 1. Body radii: power law around Earth
 
 ```text
-distanceAu = distanceKm / 149,597,870.7
-renderDistance = 3.0 * pow(distanceAu / 0.387098, 0.60)
+renderRadius = 0.50 * (radiusKm / 6371)^0.60
 ```
 
-This gives approximately Mercury `3.00`, Venus `4.36`, Earth `5.31`, Mars `6.82`, Jupiter `14.28`, Saturn `20.49`, Uranus `31.18`, and Neptune `40.77`. The exponent preserves physical order while keeping large, readable gaps between the outer planets. It is a documented overview compression, not a false claim of literal interplanetary scale.
+| Body | Radius (km) | Render radius |
+| --- | ---: | ---: |
+| Jupiter | 69,911 | 2.105 |
+| Saturn | 58,232 | 1.886 |
+| Uranus | 25,362 | 1.145 |
+| Neptune | 24,622 | 1.125 |
+| Earth | 6,371 | 0.500 |
+| Ganymede | 2,634 | 0.294 |
+| Mercury | 2,440 | 0.281 |
+| Moon | 1,737 | 0.229 |
+| Miranda | 236 | 0.069 |
 
-Asteroid, Kuiper, heliosphere, Oort-cloud, comet, planet, and Voyager-trajectory positions all pass through the same heliocentric mapping. The Oort cloud uses 2,000-5,000 AU and therefore remains outside the normal planetary overview instead of obscuring it.
+The exponent keeps every size comparison pointing the right way: Ganymede is larger than Titan, and Titan is larger than Mercury. It shrinks the 290:1 range between Jupiter and Miranda to 30:1, so moons and small planets stay visible beside giants. This replaces the earlier strictly linear scale, in which Earth was 0.014 units and effectively invisible, which is why the scene looked empty.
 
-## Voyager
+**The Sun is display-capped at 6.0 units.** The same law would give 8.4 units, crowding Mercury's 10.6-unit perihelion. It is still the largest body by a factor of 2.9.
 
-Voyager uses `0.0001` render unit per metre. Its 3.7 m dish is `0.00037` units and its 13 m boom is `0.0013` units, much smaller than Neptune's `0.05304` radius but still inspectable with the third-person camera. All internal spacecraft proportions remain linear.
+## 2. Heliocentric distance: power law around Mercury
 
-## Camera
+```text
+renderDistance = 12 * (distanceAu / 0.387098)^0.55
+```
 
-`Home` frames the compressed heliocentric overview. Bodies are intentionally small there because their mutual radius ratios are real. `Tab` focuses individual bodies. ThirdPerson uses a tighter clipping range for Voyager without changing object geometry.
+That gives Mercury 12.0, Venus 16.9, Earth 20.2, Mars 25.5, Jupiter 50.1, Saturn 70.1, Uranus 102.8, Neptune 131.5, the termination shock (84 AU) 231 and the heliopause (119 AU) 280. Planets, Voyager, belts, heliosphere circles and the comet all use this one law, through `Trajectory::mapHeliocentricToRender` for dated positions ([mission-ephemeris.md](mission-ephemeris.md)). `distanceScaleAtAu` returns its local derivative `0.55 * renderDistance / distanceAu`, which is the magnification at any radius.
+
+## 3. Moon orbits: parent-relative square root
+
+```text
+moonOrbit = parentRenderRadius * (1.6 + sqrt(semiMajorAxisKm / parentRadiusKm))
+```
+
+The mapping is monotonic, so every moon keeps its real order. The innermost moons land at about 3.9 parent radii (Tethys 3.85, Miranda 3.86, Io 4.06), outside Saturn's F ring at 2.33 and Uranus's epsilon ring at 2.02. Outer moons stay close enough to frame with their planet: Callisto is at 6.79 and Iapetus at 9.42 parent radii.
+
+### Parent-scale compensation
+
+A moon is a scene-graph child, and its world matrix is `planet.worldMatrix() * moon.localMatrix()`. The planet's matrix already contains the planet's scale, so a moon's local position and local scale are both divided by the parent's render radius:
+
+```text
+moon.localScale    = moonRenderRadius / parentRenderRadius
+moon.orbitRadius   = moonOrbit / parentRenderRadius         (in parent radii)
+```
+
+Skipping this division makes every moon too large by the parent's scale and places it at the wrong distance. Rings use the same convention: their radii are authored in planet radii, so they need no correction.
+
+## 4. Spacecraft: linear metres
+
+```text
+renderSize = metres * 0.002
+```
+
+All of Voyager's sourced dimensions share this one factor, so its internal proportions are exact: the 3.7 m dish is 0.0074 units and the 13 m magnetometer boom is 0.026 units. The probe is still tiny beside Neptune (radius 1.125). The chase camera and logarithmic depth ([lighting.md](lighting.md)) make it inspectable at any distance.
+
+## Honesty statement
+
+The overview is an educational diagram. Directions from the Sun, dates, body order, orbital order and moon order are real. Absolute distances and the ratio of radius to distance are compressed. The HUD always reports physical values: AU, km/s and km from the Horizons data.
 
 ## Regression check
 
@@ -41,6 +73,4 @@ Voyager uses `0.0001` render unit per metre. Its 3.7 m dish is `0.00037` units a
 .\scripts\verify_scene_layout.ps1
 ```
 
-The check verifies Sun/Jupiter/Earth size ratios, Saturn-ring/Tethys clearance, outer-planet spacing, Voyager/Neptune scale, J2000 planet phases, and all four historical encounter rows.
-
-`verify_navigation_and_motion.ps1` additionally checks that no looping historical playback, sparse crossing planet paths, uncompressed moon display distance, or missing mouse-orbit camera behavior is reintroduced.
+This script recomputes the mappings above. It checks size order, ring and moon clearance, planet spacing, the spacecraft scale against Neptune, the Horizons table format and the four flyby geometries.
