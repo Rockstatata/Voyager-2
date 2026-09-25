@@ -3,23 +3,25 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include <vector>
 
 #include "SceneObject.h"
 
 class Input;
 
-// Bible section 31/32 — the spacecraft. Its body meshes (bus/dish/booms) are
-// built and attached as children by Application; this class only owns
-// flight state (bible's "Voyager Dual-Mode Architecture", section 32-35).
+// Bible sections 31-35: one spacecraft, two flight modes, one model.
 //
-// Historical mode interpolates offline NASA/JPL Horizons samples. It is a
-// real heliocentric path. Application synchronizes the planets to the same
-// selected historical date; manual mode pauses that date while piloting stays
-// an independent inertial experience.
-// Manual mode is inertial: turning (yaw) changes only where the ship *faces*,
-// not its velocity — matching how a real thruster-driven spacecraft behaves
-// (no atmosphere to turn against), and distinguishing this from arcade flight.
+// Historical: Application samples the mission ephemeris at the simulation
+// clock's date and hands the render position here each frame
+// (setHistoricalState). Voyager2 never owns the date, so the planets and the
+// probe can never disagree about "when" it is (bible R2).
+//
+// Manual: a six-degree-of-freedom inertial spacecraft. Orientation is a
+// quaternion (bible F6: no Euler-angle drift or gimbal lock); yaw, pitch and
+// roll rotate about the ship's OWN axes. Thrust changes velocity, never
+// facing — no atmosphere to turn against — and X fires a braking burn.
+//
+// Local axes: +Z forward (flight direction, away from the dish), +Y up,
+// +X right.
 class Voyager2 : public SceneObject
 {
 public:
@@ -32,37 +34,35 @@ public:
 	void setFlightMode(FlightMode mode);
 	FlightMode flightMode() const { return m_mode; }
 
-	// Application calls this only while flightMode() == Manual, after reading
-	// Input itself — Voyager2 never polls GLFW directly (bible section 36).
+	// Application calls this only while flightMode() == Manual and the chase
+	// camera is active, after reading Input itself (bible section 36).
 	void applyManualControl(const Input& input, double dt);
-	void setHistoricalPath(std::vector<glm::dvec3> renderPositions,
-		std::vector<double> julianDates, double playbackSeconds);
-	void setHistoricalProgress(double normalizedProgress);
-	void setHistoricalJulianDate(double julianDate);
-	void setHistoricalTimeScale(double timeScale) { m_historicalTimeScale = timeScale; }
-	double historicalJulianDate() const;
-	const glm::dvec3& velocity() const { return m_velocity; }
 
-	glm::vec3 headingForward() const;
+	// Historical placement for this frame: position, direction of motion and
+	// render-space speed (units per real second). The heading eases toward the
+	// motion unless `snap` (a bookmark jump) asks for it immediately.
+	void setHistoricalState(const glm::dvec3& position, const glm::dvec3& motionDirection,
+		double renderSpeed, bool snap);
+
+	const glm::dvec3& velocity() const { return m_velocity; }
+	const glm::dquat& orientation() const { return m_orientation; }
+	glm::dvec3 forward() const { return m_orientation * glm::dvec3(0.0, 0.0, 1.0); }
+	glm::dvec3 up() const { return m_orientation * glm::dvec3(0.0, 1.0, 0.0); }
+	// Axis-aligned radius enclosing the whole model (booms included).
+	double boundingRadius() const { return m_boundingRadius; }
+	void setBoundingRadius(double radius) { m_boundingRadius = radius; }
 
 private:
 	FlightMode m_mode = FlightMode::Historical;
-	float m_yawDegrees = 90.0f;              // 90 deg => heading (1,0,0), facing +X
-	glm::dvec3 m_velocity{ 0.6, 0.0, 0.0 };  // render units/second
-	std::vector<glm::dvec3> m_historicalPath;
-	std::vector<double> m_historicalJulianDates;
-	double m_historicalProgress = 0.0;
-	double m_historicalPlaybackSeconds = 120.0;
-	double m_historicalStartJulianDate = 0.0;
-	double m_historicalEndJulianDate = 0.0;
-	double m_currentHistoricalJulianDate = 0.0;
-	double m_historicalTimeScale = 1.0;
+	glm::dquat m_orientation{ 1.0, 0.0, 0.0, 0.0 };
+	glm::dvec3 m_velocity{ 0.0 }; // render units per second
+	double m_boundingRadius = 0.03;
 
-	void updateHistoricalPosition();
-
-	static constexpr float kYawRateDegreesPerSecond = 60.0f;
-	static constexpr double kManualAccel = 1.2;
-	static constexpr double kManualMaxSpeed = 1.6;
+	static constexpr double kTurnRateRadiansPerSecond = 1.1;
+	static constexpr double kRollRateRadiansPerSecond = 1.6;
+	static constexpr double kManualAccel = 1.5;
+	static constexpr double kBoostMultiplier = 8.0;
+	static constexpr double kManualMaxSpeed = 12.0;
 };
 
 #endif

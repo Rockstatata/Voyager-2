@@ -26,6 +26,9 @@ namespace
 	{
 		auto material = std::make_shared<Material>();
 		material->baseColor = color;
+		// Painted and foil surfaces catch a modest Sun highlight.
+		material->specularStrength = 0.35f;
+		material->specularPower = 24.0f;
 		return material;
 	}
 

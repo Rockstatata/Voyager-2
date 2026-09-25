@@ -2,18 +2,24 @@
 
 #include <algorithm>
 #include <cmath>
-#include <utility>
 
 #include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "../core/Input.h"
 
 namespace
 {
-	glm::dvec3 headingFromYaw(float yawDegrees)
+	// Orientation whose +Z is `forward` and whose +Y is as close to world up
+	// as possible: the historical probe cruises level, without arbitrary roll.
+	glm::dquat orientationFromForward(const glm::dvec3& forward)
 	{
-		const float yawRadians = glm::radians(yawDegrees);
-		return glm::dvec3(std::sin(yawRadians), 0.0, std::cos(yawRadians));
+		glm::dvec3 upReference(0.0, 1.0, 0.0);
+		if (std::abs(glm::dot(forward, upReference)) > 0.999)
+			upReference = glm::dvec3(1.0, 0.0, 0.0);
+		const glm::dvec3 right = glm::normalize(glm::cross(upReference, forward));
+		const glm::dvec3 up = glm::cross(forward, right);
+		return glm::normalize(glm::quat_cast(glm::dmat3(right, up, forward)));
 	}
 }
 
@@ -21,142 +27,80 @@ void Voyager2::setFlightMode(FlightMode mode)
 {
 	if (mode == FlightMode::Manual && m_mode == FlightMode::Historical)
 	{
-		// Snap facing to match current velocity so the ship doesn't visibly
-		// "pop" to face a different way the instant manual control begins.
-		if (glm::length(m_velocity) > 0.0001)
-		{
-			const glm::dvec3 heading = glm::normalize(m_velocity);
-			m_yawDegrees = glm::degrees(static_cast<float>(std::atan2(heading.x, heading.z)));
-		}
+		// Keep facing, and keep a gentle drift along it so the hand-over is
+		// continuous rather than a sudden stop or a mission-speed rocket.
+		const double speed = std::min(glm::length(m_velocity), 0.25);
+		m_velocity = forward() * speed;
 	}
 	m_mode = mode;
 }
 
+void Voyager2::setHistoricalState(const glm::dvec3& position, const glm::dvec3& motionDirection,
+	double renderSpeed, bool snap)
+{
+	transform().position = position;
+	const double length = glm::length(motionDirection);
+	if (length <= 1e-12)
+		return;
+
+	const glm::dvec3 direction = motionDirection / length;
+	m_velocity = direction * renderSpeed;
+	// Heading eases toward the motion; the whip around a planet in a few
+	// hours of mission time is still a visible turn, not a snap.
+	const glm::dquat target = orientationFromForward(direction);
+	m_orientation = snap ? target : glm::normalize(glm::slerp(m_orientation, target, 0.2));
+}
+
 void Voyager2::update(double dt)
 {
-	if (m_mode == FlightMode::Historical && m_historicalPath.size() >= 2)
-	{
-		const double historicalDt = dt * m_historicalTimeScale;
-		const glm::dvec3 oldPosition = transform().position;
-		const double missionDays = m_historicalEndJulianDate - m_historicalStartJulianDate;
-		m_currentHistoricalJulianDate += historicalDt * missionDays / m_historicalPlaybackSeconds;
-		if (m_currentHistoricalJulianDate > m_historicalEndJulianDate)
-		{
-			// The mission is a timeline, not a looping animation. Holding the
-			// final date prevents every body and the probe from teleporting back
-			// to launch after the Neptune/interstellar section finishes.
-			m_currentHistoricalJulianDate = m_historicalEndJulianDate;
-		}
-		m_historicalProgress = (m_currentHistoricalJulianDate - m_historicalStartJulianDate) / missionDays;
-		updateHistoricalPosition();
-		const glm::dvec3 travel = transform().position - oldPosition;
-		if (glm::length(travel) > 1e-8 && historicalDt > 1e-9)
-		{
-			m_velocity = travel / historicalDt;
-			const glm::dvec3 heading = glm::normalize(travel);
-			m_yawDegrees = glm::degrees(static_cast<float>(std::atan2(heading.x, heading.z)));
-		}
-	}
-	else
-	{
+	if (m_mode == FlightMode::Manual)
 		transform().position += m_velocity * dt;
-	}
 
-	transform().rotation = glm::angleAxis(glm::radians(static_cast<double>(m_yawDegrees)),
-										   glm::dvec3(0.0, 1.0, 0.0));
-
+	transform().rotation = m_orientation;
 	SceneObject::update(dt);
-}
-
-void Voyager2::setHistoricalPath(std::vector<glm::dvec3> renderPositions,
-	std::vector<double> julianDates, double playbackSeconds)
-{
-	if (renderPositions.size() != julianDates.size() || renderPositions.size() < 2)
-		return;
-
-	m_historicalPath = std::move(renderPositions);
-	m_historicalJulianDates = std::move(julianDates);
-	m_historicalPlaybackSeconds = std::max(playbackSeconds, 1.0);
-	m_historicalStartJulianDate = m_historicalJulianDates.front();
-	m_historicalEndJulianDate = m_historicalJulianDates.back();
-	m_currentHistoricalJulianDate = m_historicalStartJulianDate;
-	m_historicalProgress = 0.0;
-	transform().position = m_historicalPath.front();
-}
-
-double Voyager2::historicalJulianDate() const
-{
-	return m_currentHistoricalJulianDate;
-}
-
-void Voyager2::setHistoricalProgress(double normalizedProgress)
-{
-	if (m_historicalPath.size() < 2 || m_historicalJulianDates.size() != m_historicalPath.size())
-		return;
-	setHistoricalJulianDate(glm::mix(m_historicalStartJulianDate,
-		m_historicalEndJulianDate, glm::clamp(normalizedProgress, 0.0, 1.0)));
-}
-
-void Voyager2::setHistoricalJulianDate(double julianDate)
-{
-	if (m_historicalPath.size() < 2 || m_historicalJulianDates.size() != m_historicalPath.size())
-		return;
-
-	m_currentHistoricalJulianDate = glm::clamp(julianDate,
-		m_historicalStartJulianDate, m_historicalEndJulianDate);
-	m_historicalProgress = (m_currentHistoricalJulianDate - m_historicalStartJulianDate) /
-		(m_historicalEndJulianDate - m_historicalStartJulianDate);
-	updateHistoricalPosition();
-}
-
-void Voyager2::updateHistoricalPosition()
-{
-	if (m_historicalPath.size() < 2 || m_historicalJulianDates.size() != m_historicalPath.size())
-		return;
-
-	const auto upper = std::upper_bound(m_historicalJulianDates.begin(), m_historicalJulianDates.end(),
-		m_currentHistoricalJulianDate);
-	if (upper == m_historicalJulianDates.begin())
-	{
-		transform().position = m_historicalPath.front();
-		return;
-	}
-	if (upper == m_historicalJulianDates.end())
-	{
-		transform().position = m_historicalPath.back();
-		return;
-	}
-
-	const std::size_t second = static_cast<std::size_t>(std::distance(m_historicalJulianDates.begin(), upper));
-	const std::size_t first = second - 1;
-	const double fraction = (m_currentHistoricalJulianDate - m_historicalJulianDates[first]) /
-		(m_historicalJulianDates[second] - m_historicalJulianDates[first]);
-	transform().position = glm::mix(m_historicalPath[first], m_historicalPath[second], fraction);
 }
 
 void Voyager2::applyManualControl(const Input& input, double dt)
 {
-	if (input.keyDown(GLFW_KEY_A) || input.keyDown(GLFW_KEY_LEFT))
-		m_yawDegrees += kYawRateDegreesPerSecond * static_cast<float>(dt);
-	if (input.keyDown(GLFW_KEY_D) || input.keyDown(GLFW_KEY_RIGHT))
-		m_yawDegrees -= kYawRateDegreesPerSecond * static_cast<float>(dt);
+	// Rotations about the ship's own axes: multiply on the right.
+	double yaw = 0.0;
+	double pitch = 0.0;
+	double roll = 0.0;
+	if (input.keyDown(GLFW_KEY_A)) yaw += 1.0;
+	if (input.keyDown(GLFW_KEY_D)) yaw -= 1.0;
+	if (input.keyDown(GLFW_KEY_R)) pitch -= 1.0; // nose up
+	if (input.keyDown(GLFW_KEY_F)) pitch += 1.0; // nose down
+	if (input.keyDown(GLFW_KEY_Q)) roll -= 1.0;
+	if (input.keyDown(GLFW_KEY_E)) roll += 1.0;
 
-	const glm::dvec3 heading = headingFromYaw(m_yawDegrees);
+	const glm::dquat turn =
+		glm::angleAxis(yaw * kTurnRateRadiansPerSecond * dt, glm::dvec3(0.0, 1.0, 0.0)) *
+		glm::angleAxis(pitch * kTurnRateRadiansPerSecond * dt, glm::dvec3(1.0, 0.0, 0.0)) *
+		glm::angleAxis(roll * kRollRateRadiansPerSecond * dt, glm::dvec3(0.0, 0.0, 1.0));
+	m_orientation = glm::normalize(m_orientation * turn);
+
+	double accel = kManualAccel;
+	if (input.keyDown(GLFW_KEY_LEFT_SHIFT) || input.keyDown(GLFW_KEY_RIGHT_SHIFT))
+		accel *= kBoostMultiplier;
+
 	if (input.keyDown(GLFW_KEY_W))
-		m_velocity += heading * kManualAccel * dt;
+		m_velocity += forward() * accel * dt;
 	if (input.keyDown(GLFW_KEY_S))
-		m_velocity -= heading * kManualAccel * dt;
+		m_velocity -= forward() * accel * dt;
 	if (input.keyDown(GLFW_KEY_SPACE))
-		m_velocity.y += kManualAccel * dt;
+		m_velocity += up() * accel * dt;
 	if (input.keyDown(GLFW_KEY_LEFT_CONTROL))
-		m_velocity.y -= kManualAccel * dt;
+		m_velocity -= up() * accel * dt;
+	if (input.keyDown(GLFW_KEY_X))
+	{
+		// Braking burn: opposes the current velocity without overshooting.
+		const double speed = glm::length(m_velocity);
+		const double reduction = std::min(speed, accel * 2.0 * dt);
+		if (speed > 1e-12)
+			m_velocity -= (m_velocity / speed) * reduction;
+	}
 
 	const double speed = glm::length(m_velocity);
 	if (speed > kManualMaxSpeed)
 		m_velocity = (m_velocity / speed) * kManualMaxSpeed;
-}
-
-glm::vec3 Voyager2::headingForward() const
-{
-	return glm::vec3(headingFromYaw(m_yawDegrees));
 }
