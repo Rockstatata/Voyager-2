@@ -92,6 +92,16 @@ void HudOverlay::render(TextRenderer& text, const HudView& view)
 		text.addShadowedText((width - TextRenderer::textWidth(view.captionDetail, pixel)) * 0.5f,
 			y + TextRenderer::lineHeight(big), view.captionDetail, pixel, kWhite);
 	}
+	if (view.hudVisible && !view.hints.empty() && !view.helpVisible)
+	{
+		const float margin = pixel * 6.0f;
+		const float y = static_cast<float>(view.height) - margin - TextRenderer::lineHeight(pixel) * 0.9f;
+		const float width = TextRenderer::textWidth(view.hints, pixel);
+		const float x = (static_cast<float>(view.width) - width) * 0.5f;
+		text.addRect(x - pixel * 4.0f, y - pixel * 3.0f, width + pixel * 8.0f, TextRenderer::lineHeight(pixel) + pixel * 1.0f,
+			glm::vec4(0.0f, 0.02f, 0.05f, 0.55f));
+		text.addText(x, y, view.hints, pixel, kDim);
+	}
 	if (!view.notice.empty())
 	{
 		const float margin = pixel * 6.0f;
@@ -344,7 +354,7 @@ void HudOverlay::renderEncounterBanner(TextRenderer& text, const HudView& view, 
 		const std::string title = upper(encounter.displayName) + " ENCOUNTER  " + clock.str();
 		const std::string detail = "CLOSEST APPROACH " + formatThousands(encounter.closestApproachKm) + " KM FROM CENTRE";
 		const float big = pixel * 1.5f;
-		const float bannerY = height - margin - TextRenderer::lineHeight(big) - TextRenderer::lineHeight(pixel) * 2.0f;
+		const float bannerY = height - margin - TextRenderer::lineHeight(big) - TextRenderer::lineHeight(pixel) * 3.0f;
 		text.addShadowedText((width - TextRenderer::textWidth(title, big)) * 0.5f, bannerY, title, big, kAccent);
 		text.addShadowedText((width - TextRenderer::textWidth(detail, pixel)) * 0.5f,
 			bannerY + TextRenderer::lineHeight(big), detail, pixel, kWhite);
@@ -354,37 +364,35 @@ void HudOverlay::renderEncounterBanner(TextRenderer& text, const HudView& view, 
 void HudOverlay::renderHelp(TextRenderer& text, const HudView& view, float pixel)
 {
 	const std::vector<std::string> help = {
-		"CONTROLS",
+		"CONTROLS   (F1 OR ESC CLOSES)",
 		"",
-		"FREE CAMERA (C TOGGLES FREE / CHASE)",
-		"  W A S D           FLY   (ANY FLY KEY LEAVES A LOCKED VIEW)",
-		"  SPACE/E  CTRL/Q   UP / DOWN",
-		"  MOUSE + RMB, OR M LOOK LOCK, OR ARROWS   LOOK",
-		"  WHEEL             CRUISE SPEED (ZOOM IN LOCKED VIEWS)",
-		"  SHIFT / ALT       FAST / FINE",
-		"  TAB / SHIFT+TAB   FLY TO NEXT / PREVIOUS BODY",
-		"  G                 RETURN TO SELECTED BODY",
-		"  H / HOME          WHOLE SOLAR SYSTEM OVERVIEW",
+		"MOUSE",
+		"  LEFT CLICK    SELECT: A WORLD FLIES INTO FOCUS, VOYAGER OPENS INSPECT",
+		"  RIGHT DRAG    LOOK (FREE FLIGHT) OR ORBIT (LOCKED VIEWS)   M LOCKS MOUSE-LOOK",
+		"  WHEEL         CRUISE SPEED (FREE FLIGHT) OR ZOOM (LOCKED VIEWS)",
+		"",
+		"CAMERA",
+		"  C CHASE VOYAGER / FREE FLIGHT   H OVERVIEW   G BACK TO SELECTION",
+		"  W A S D FLY   SPACE/E UP   CTRL/Q DOWN   SHIFT FAST   ALT FINE   ARROWS TURN",
+		"  TAB / SHIFT+TAB NEXT / PREVIOUS PLANET   [ ] PREVIOUS / NEXT MOON",
+		"",
+		"VOYAGER",
+		"  I INSPECT CLOSE-UP   , . PREVIOUS / NEXT COMPONENT",
+		"  V HISTORICAL / MANUAL PILOT (FROM THE CHASE VIEW)",
+		"  W/S THRUST  A/D YAW  R/F PITCH  Q/E ROLL  SPACE/CTRL UP/DOWN  X BRAKE",
 		"",
 		"MISSION",
 		"  1 LAUNCH  2 JUPITER  3 SATURN  4 URANUS  5 NEPTUNE  6 HELIOPAUSE",
-		"  P PAUSE   = / - SPEED   BACKSPACE RESET SPEED",
-		"  N ENCOUNTER SLOW-MOTION   T VOYAGER PATH   O ORBIT GUIDES",
+		"  P PAUSE   = / - SPEED   BACKSPACE RESET   N ENCOUNTER SLOW-MOTION",
 		"",
-		"VOYAGER (V: HISTORICAL / MANUAL, MANUAL NEEDS CHASE CAMERA)",
-		"  I INSPECT CLOSE-UP   , / . PREVIOUS / NEXT COMPONENT",
-		"  W/S THRUST   A/D YAW   R/F PITCH   Q/E ROLL",
-		"  SPACE/CTRL UP/DOWN   SHIFT BOOST   X BRAKE",
-		"",
-		"LIGHTING AND SHADING",
-		"  K LIGHTING ON/OFF   F3 SHADING: FLAT, GOURAUD, PHONG, BLINN-PHONG, TOON",
-		"  F4 RAY-TRACED SHADOWS: OFF, HARD, SOFT",
-		"  F5 HEADLAMP SPOTLIGHT   F6 FILL DIRECTIONAL LIGHT   F7 SUN 1/D2 FALLOFF",
-		"  F8 NORMAL AND SPECULAR MAPS",
+		"LIGHTING, SHADING AND RAY TRACING",
+		"  K LIGHTING   F3 SHADING: FLAT, GOURAUD, PHONG, BLINN-PHONG, TOON",
+		"  F4 RAY-TRACED SHADOWS: OFF, HARD, SOFT   F5 HEADLAMP SPOTLIGHT",
+		"  F6 FILL DIRECTIONAL LIGHT   F7 SUN 1/D2 FALLOFF   F8 NORMAL AND SPECULAR MAPS",
 		"  F9 RAY-TRACED VIEW   F10 RAY-TRACED REFLECTIONS",
 		"",
 		"DISPLAY",
-		"  L LABELS   F2 HUD   F12 SCREENSHOT   ESC QUIT",
+		"  L LABELS   O ORBITS   T VOYAGER PATH   F2 HUD   F12 SCREENSHOT   ESC TWICE QUIT",
 	};
 	const float line = TextRenderer::lineHeight(pixel);
 	float helpWidth = 0.0f;

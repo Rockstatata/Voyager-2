@@ -1,6 +1,7 @@
 #include "CameraController.h"
 
 #include <algorithm>
+#include <vector>
 #include <cmath>
 #include <iostream>
 #include <string>
@@ -156,9 +157,99 @@ void CameraController::focusBody(int index)
 
 void CameraController::focusNext(int direction)
 {
-	const int count = static_cast<int>(m_system.bodies().size());
-	if (count > 0)
-		focusBody(((m_focusIndex + direction) % count + count) % count);
+	// Major bodies only, in registration order (Sun, Mercury ... Pluto).
+	const auto& bodies = m_system.bodies();
+	std::vector<int> majors;
+	for (int i = 0; i < static_cast<int>(bodies.size()); ++i)
+	{
+		if (bodies[i]->data().type != BodyType::Moon)
+			majors.push_back(i);
+	}
+	if (majors.empty())
+		return;
+
+	// Start from the current body's system (a focused moon counts as its planet).
+	int current = -1;
+	if (const CelestialBody* focused = focusedBody())
+	{
+		const std::string& systemId = focused->data().type == BodyType::Moon ? focused->data().parentId : focused->data().id;
+		for (int i = 0; i < static_cast<int>(majors.size()); ++i)
+		{
+			if (bodies[majors[i]]->data().id == systemId)
+				current = i;
+		}
+	}
+	const int count = static_cast<int>(majors.size());
+	const int next = current < 0 ? (direction > 0 ? 0 : count - 1) : ((current + direction) % count + count) % count;
+	focusBody(majors[next]);
+}
+
+void CameraController::focusMoon(int direction)
+{
+	const CelestialBody* focused = focusedBody();
+	if (focused == nullptr)
+		return;
+	const std::string systemId = focused->data().type == BodyType::Moon ? focused->data().parentId : focused->data().id;
+
+	// The cycle is the planet itself followed by its moons in catalog order.
+	const auto& bodies = m_system.bodies();
+	std::vector<int> cycle;
+	for (int i = 0; i < static_cast<int>(bodies.size()); ++i)
+	{
+		if (bodies[i]->data().id == systemId || bodies[i]->data().parentId == systemId)
+			cycle.push_back(i);
+	}
+	if (cycle.size() < 2)
+		return; // no moons here
+	const int count = static_cast<int>(cycle.size());
+	const int current = static_cast<int>(std::find(cycle.begin(), cycle.end(), m_focusIndex) - cycle.begin());
+	focusBody(cycle[((current + direction) % count + count) % count]);
+}
+
+CameraController::Pick CameraController::pickAt(double pixelX, double pixelY, int width, int height,
+	float aspectRatio) const
+{
+	Pick pick;
+	if (width <= 0 || height <= 0)
+		return pick;
+
+	// The ray through this pixel, built from the same basis and field of
+	// view as the projection matrix (see raytrace.frag for the GPU twin).
+	const double ndcX = 2.0 * pixelX / width - 1.0;
+	const double ndcY = 1.0 - 2.0 * pixelY / height;
+	const double tanHalf = std::tan(glm::radians(static_cast<double>(m_camera.fieldOfView())) * 0.5);
+	const glm::dvec3 direction = glm::normalize(glm::dvec3(m_camera.forward()) +
+		ndcX * tanHalf * aspectRatio * glm::dvec3(m_camera.right()) + ndcY * tanHalf * glm::dvec3(m_camera.up()));
+	const glm::dvec3 eye = m_camera.position();
+	constexpr double kToleranceRadians = 0.021; // ~1.2 degrees
+
+	double bestDistance = 1e300;
+	auto consider = [&](const glm::dvec3& centre, double radius, int bodyIndex, bool voyager)
+	{
+		const glm::dvec3 toCentre = centre - eye;
+		const double distance = glm::length(toCentre);
+		if (distance <= radius || glm::dot(toCentre, direction) <= 0.0)
+			return;
+		// Angle between the ray and the centre, against the body's angular
+		// radius plus the click tolerance.
+		const double angle = std::acos(std::clamp(glm::dot(toCentre / distance, direction), -1.0, 1.0));
+		const double angularRadius = std::asin(std::min(radius / distance, 1.0));
+		if (angle > angularRadius + kToleranceRadians || distance >= bestDistance)
+			return;
+		bestDistance = distance;
+		pick.bodyIndex = bodyIndex;
+		pick.voyager = voyager;
+	};
+
+	const auto& bodies = m_system.bodies();
+	for (int i = 0; i < static_cast<int>(bodies.size()); ++i)
+	{
+		const glm::dmat4 world = bodies[i]->worldMatrix();
+		consider(glm::dvec3(world[3]), glm::length(glm::dvec3(world[0])), i, false);
+	}
+	if (m_voyager != nullptr)
+		consider(m_voyager->transform().position, m_voyager->boundingRadius(), -1, true);
+	return pick;
 }
 
 void CameraController::refocus()

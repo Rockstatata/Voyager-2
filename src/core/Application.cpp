@@ -34,9 +34,9 @@ bool Application::initialize(int argc, char** argv)
 
 	buildScene();
 
-	std::cout << "[APP] initialized. F1: full control list. Free camera: C, then WASD + mouse (RMB or M), "
-				 "Q/E or Ctrl/Space down/up, wheel speed, Shift fast, Alt fine. Tab: fly to a body. "
-				 "1-6: mission bookmarks. V: Historical/Manual. Esc quits." << std::endl;
+	std::cout << "[APP] initialized. F1: full control list. Click a world to fly there, I to inspect Voyager, "
+				 "C free flight (WASD + RMB), Tab planets, [ ] moons, F3-F10 lighting and ray tracing. "
+				 "1-6: mission bookmarks. V: Historical/Manual. Esc twice quits." << std::endl;
 
 	for (int i = 1; i + 1 < argc; ++i)
 	{
@@ -140,8 +140,19 @@ void Application::run()
 
 void Application::handleKeys()
 {
+	// Esc backs out first (help, then Inspect); quitting needs a second
+	// press within two seconds, so a stray key cannot end a demonstration.
 	if (m_input.keyPressed(GLFW_KEY_ESCAPE))
-		m_window.requestClose();
+	{
+		if (m_helpVisible)
+			m_helpVisible = false;
+		else if (m_cameraController.mode() == CameraController::Mode::Inspect)
+			m_cameraController.enterChase();
+		else if (m_quitArmedSeconds > 0.0)
+			m_window.requestClose();
+		else
+			m_quitArmedSeconds = 2.0;
+	}
 	if (m_input.keyPressed(GLFW_KEY_F1))
 		m_helpVisible = !m_helpVisible;
 	if (m_input.keyPressed(GLFW_KEY_F2))
@@ -162,6 +173,22 @@ void Application::handleKeys()
 	{
 		const bool backward = m_input.keyDown(GLFW_KEY_LEFT_SHIFT) || m_input.keyDown(GLFW_KEY_RIGHT_SHIFT);
 		m_cameraController.focusNext(backward ? -1 : 1);
+	}
+	if (m_input.keyPressed(GLFW_KEY_RIGHT_BRACKET) || m_input.keyPressed(GLFW_KEY_PAGE_DOWN))
+		m_cameraController.focusMoon(1);
+	if (m_input.keyPressed(GLFW_KEY_LEFT_BRACKET) || m_input.keyPressed(GLFW_KEY_PAGE_UP))
+		m_cameraController.focusMoon(-1);
+
+	// Click to select: a world flies into Focus, Voyager opens Inspect.
+	if (m_input.mouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && !m_input.cursorCaptured())
+	{
+		const glm::dvec2 mouse = m_input.mousePosition();
+		const CameraController::Pick pick = m_cameraController.pickAt(mouse.x, mouse.y,
+			m_window.width(), m_window.height(), m_window.aspectRatio());
+		if (pick.voyager)
+			m_cameraController.inspect(-1);
+		else if (pick.bodyIndex >= 0)
+			m_cameraController.focusBody(pick.bodyIndex);
 	}
 	if (m_input.keyPressed(GLFW_KEY_G))
 		m_cameraController.refocus();
@@ -215,11 +242,9 @@ void Application::handleKeys()
 		clock.setPaused(!clock.paused());
 		std::cout << "[APP] simulation " << (clock.paused() ? "paused" : "resumed") << std::endl;
 	}
-	if (m_input.keyPressed(GLFW_KEY_EQUAL) || m_input.keyPressed(GLFW_KEY_RIGHT_BRACKET) ||
-		m_input.keyPressed(GLFW_KEY_KP_ADD))
+	if (m_input.keyPressed(GLFW_KEY_EQUAL) || m_input.keyPressed(GLFW_KEY_KP_ADD))
 		m_simulationSpeed = std::min(m_simulationSpeed * 2.0, 64.0);
-	if (m_input.keyPressed(GLFW_KEY_MINUS) || m_input.keyPressed(GLFW_KEY_LEFT_BRACKET) ||
-		m_input.keyPressed(GLFW_KEY_KP_SUBTRACT))
+	if (m_input.keyPressed(GLFW_KEY_MINUS) || m_input.keyPressed(GLFW_KEY_KP_SUBTRACT))
 		m_simulationSpeed = std::max(m_simulationSpeed / 2.0, 1.0 / 64.0);
 	if (m_input.keyPressed(GLFW_KEY_BACKSPACE))
 	{
@@ -253,6 +278,7 @@ void Application::jumpToBookmark(int index)
 
 void Application::update(double deltaTime)
 {
+	m_quitArmedSeconds = std::max(0.0, m_quitArmedSeconds - deltaTime);
 	handleKeys();
 
 	CelestialBody::setSimulationTimeScale(m_mission.clock().paused() ? 0.0 : m_simulationSpeed);
@@ -274,6 +300,25 @@ void Application::update(double deltaTime)
 		refreshWindowTitle();
 		m_titleRefreshTimer = 0.0;
 	}
+}
+
+std::string Application::keyHints() const
+{
+	// One line of the keys that matter in the current situation; F1 has all.
+	switch (m_cameraController.mode())
+	{
+		case CameraController::Mode::FreeFly:
+			return "WASD FLY  SPACE/CTRL UP/DOWN  RMB LOOK  WHEEL SPEED  CLICK A WORLD TO FLY THERE  C CHASE  F1 ALL KEYS";
+		case CameraController::Mode::Focus:
+			return "RMB ORBIT  WHEEL ZOOM  TAB NEXT PLANET  [ ] MOONS  WASD FREE FLIGHT  C CHASE  F1 ALL KEYS";
+		case CameraController::Mode::Inspect:
+			return ", . NEXT COMPONENT  RMB ORBIT  WHEEL ZOOM  ESC OR I BACK TO CHASE  F9 RAY-TRACE";
+		default:
+			break;
+	}
+	if (m_voyager->flightMode() == Voyager2::FlightMode::Manual)
+		return "W/S THRUST  A/D YAW  R/F PITCH  Q/E ROLL  X BRAKE  SHIFT BOOST  V HISTORICAL  I INSPECT";
+	return "1-6 MISSION  P PAUSE  = - SPEED  V PILOT  I INSPECT VOYAGER  RMB ORBIT  WHEEL ZOOM  F1 ALL KEYS";
 }
 
 void Application::refreshWindowTitle()
@@ -318,6 +363,9 @@ void Application::render()
 	view.hudVisible = m_hudVisible;
 	view.helpVisible = m_helpVisible;
 	view.extraLines = m_lighting.statusLines();
+	view.hints = keyHints();
+	if (m_quitArmedSeconds > 0.0)
+		view.notice = "PRESS ESC AGAIN TO QUIT";
 	if (m_cameraController.mode() == CameraController::Mode::Inspect)
 	{
 		const int component = m_cameraController.inspectedComponent();

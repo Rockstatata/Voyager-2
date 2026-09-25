@@ -35,6 +35,8 @@ struct HudView
 	// Centred caption above the bottom edge (Inspect mode component facts).
 	std::string caption;
 	std::string captionDetail;
+	// Context key hints along the bottom edge.
+	std::string hints;
 };
 
 // Everything drawn in screen space (bible section 39): body labels, the

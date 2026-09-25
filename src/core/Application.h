@@ -54,6 +54,7 @@ private:
 	void update(double deltaTime);
 	void render();
 	void refreshWindowTitle();
+	std::string keyHints() const;
 	void jumpToBookmark(int index);
 	// kind: "tour", "bodies" or "shading".
 	void startCaptureTour(const std::string& directory, const std::string& kind);
@@ -88,6 +89,7 @@ private:
 	bool m_hudVisible = true;
 	bool m_helpVisible = false;
 	bool m_screenshotRequested = false;
+	double m_quitArmedSeconds = 0.0; // Esc must be pressed twice to quit
 	int m_screenshotCounter = 0;
 	double m_simulationSpeed = 1.0;
 	double m_titleRefreshTimer = 0.0;

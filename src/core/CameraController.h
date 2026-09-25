@@ -32,7 +32,10 @@ public:
 
 	void goToOverview();
 	void focusBody(int index);
+	// Steps through the Sun, planets and Pluto (moons are skipped).
 	void focusNext(int direction);
+	// Steps through the focused planet and its moons: planet, moon 1, ...
+	void focusMoon(int direction);
 	void refocus();
 	void enterChase();
 	void enterFreeFly() { m_mode = Mode::FreeFly; }
@@ -47,6 +50,16 @@ public:
 	int focusIndex() const { return m_focusIndex; }
 	const CelestialBody* focusedBody() const;
 	bool mouseLookLatched() const { return m_mouseLookLatched; }
+
+	// Mouse picking: casts a ray through a pixel and returns what it selects.
+	// Tiny, distant worlds get a tolerance of ~1.2 degrees so they can be
+	// clicked at all. Voyager wins when it is the nearer candidate.
+	struct Pick
+	{
+		int bodyIndex = -1;    // into SolarSystem::bodies(), -1 if none
+		bool voyager = false;
+	};
+	Pick pickAt(double pixelX, double pixelY, int width, int height, float aspectRatio) const;
 
 	// Distance from `point` to the nearest body or spacecraft surface.
 	double nearestSurfaceDistance(const glm::dvec3& point) const;
