@@ -30,6 +30,8 @@ public:
 
 	glm::dvec2 mousePosition() const { return m_mousePosition; }
 	glm::dvec2 mouseDelta() const { return m_mouseDelta; }
+	// Mouse-wheel notches since the previous update(); positive = away from user.
+	double scrollDelta() const { return m_scrollDelta; }
 
 	// Cursor capture, for mouse-look. Re-centring on capture avoids the jump
 	// a stale cursor position would otherwise cause on the first frame.
@@ -39,6 +41,11 @@ public:
 private:
 	static constexpr int kKeyCount = 512;     // GLFW_KEY_LAST is 348
 	static constexpr int kMouseButtonCount = 8;
+
+	// GLFW reports the wheel only through a callback; it accumulates here
+	// and is consumed once per update(). One window, so one accumulator.
+	static void scrollCallback(GLFWwindow* window, double xOffset, double yOffset);
+	static inline double s_pendingScroll = 0.0;
 
 	static bool validKey(int key) { return key >= 0 && key < kKeyCount; }
 	static bool validButton(int button) { return button >= 0 && button < kMouseButtonCount; }
@@ -52,6 +59,7 @@ private:
 
 	glm::dvec2 m_mousePosition{ 0.0 };
 	glm::dvec2 m_mouseDelta{ 0.0 };
+	double m_scrollDelta = 0.0;
 	bool m_cursorCaptured = false;
 	bool m_hasMouseSample = false;
 };

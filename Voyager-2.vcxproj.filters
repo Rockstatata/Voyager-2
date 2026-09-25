@@ -60,6 +60,18 @@
     <ClCompile Include="src\core\Window.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
+    <ClCompile Include="src\rendering\BitmapFont.cpp">
+      <Filter>src\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\TextRenderer.cpp">
+      <Filter>src\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\MissionEphemeris.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\SimulationClock.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
     <ClCompile Include="src\rendering\Camera.cpp">
       <Filter>src\rendering</Filter>
     </ClCompile>
@@ -146,6 +158,18 @@
     <ClInclude Include="src\core\Window.h">
       <Filter>src\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\rendering\BitmapFont.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\TextRenderer.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\MissionEphemeris.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\SimulationClock.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
     <ClInclude Include="src\rendering\Camera.h">
       <Filter>src\rendering</Filter>
     </ClInclude>
@@ -228,5 +252,7 @@
   <ItemGroup>
     <None Include="default.frag" />
     <None Include="default.vert" />
+    <None Include="hud.frag" />
+    <None Include="hud.vert" />
   </ItemGroup>
 </Project>

@@ -30,3 +30,6 @@ desktop.ini
 
 # Keep Libraries/ tracked: glad, GLFW, glm and glfw3.lib are part of the
 # instructor starter project and must travel with the repo.
+
+# F12 screenshots
+captures/

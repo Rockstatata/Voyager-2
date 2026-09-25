@@ -160,6 +160,8 @@
     <ClCompile Include="src\core\Time.cpp" />
     <ClCompile Include="src\core\Window.cpp" />
     <ClCompile Include="src\rendering\Camera.cpp" />
+    <ClCompile Include="src\rendering\BitmapFont.cpp" />
+    <ClCompile Include="src\rendering\TextRenderer.cpp" />
 	<ClCompile Include="src\rendering\BoxGenerator.cpp" />
     <ClCompile Include="src\rendering\CircleGenerator.cpp" />
     <ClCompile Include="src\rendering\CylinderGenerator.cpp" />
@@ -172,6 +174,8 @@
     <ClCompile Include="src\rendering\UvSphereGenerator.cpp" />
     <ClCompile Include="src\scene\CelestialBody.cpp" />
     <ClCompile Include="src\scene\InstancedField.cpp" />
+    <ClCompile Include="src\scene\MissionEphemeris.cpp" />
+    <ClCompile Include="src\scene\SimulationClock.cpp" />
     <ClCompile Include="src\scene\ScaleManager.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\scene\SceneObject.cpp" />
@@ -183,6 +187,8 @@
   <ItemGroup>
     <None Include="default.frag" />
     <None Include="default.vert" />
+    <None Include="hud.frag" />
+    <None Include="hud.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EBO.h" />
@@ -194,6 +200,8 @@
     <ClInclude Include="src\core\Time.h" />
     <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\rendering\Camera.h" />
+    <ClInclude Include="src\rendering\BitmapFont.h" />
+    <ClInclude Include="src\rendering\TextRenderer.h" />
 	<ClInclude Include="src\rendering\BoxGenerator.h" />
     <ClInclude Include="src\rendering\Material.h" />
     <ClInclude Include="src\rendering\Mesh.h" />
@@ -211,6 +219,8 @@
     <ClInclude Include="src\scene\CelestialBody.h" />
     <ClInclude Include="src\scene\CelestialBodyData.h" />
     <ClInclude Include="src\scene\InstancedField.h" />
+    <ClInclude Include="src\scene\MissionEphemeris.h" />
+    <ClInclude Include="src\scene\SimulationClock.h" />
     <ClInclude Include="src\scene\ScaleManager.h" />
     <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\scene\SceneObject.h" />

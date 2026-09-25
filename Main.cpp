@@ -2,11 +2,11 @@
 
 // Entry point only. Everything else belongs to Application
 // (bible section 51, failure mode F1: "everything in main.cpp").
-int main()
+int main(int argc, char** argv)
 {
 	Application app;
 
-	if (!app.initialize())
+	if (!app.initialize(argc, argv))
 		return -1;
 
 	app.run();

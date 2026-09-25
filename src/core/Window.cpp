@@ -47,6 +47,8 @@ bool Window::create(int width, int height, const std::string& title)
 	}
 
 	glfwMakeContextCurrent(m_window);
+	// Vsync: steady frame pacing for camera motion and no wasted GPU time.
+	glfwSwapInterval(1);
 
 	// GLAD must load only once a context is current.
 	if (!gladLoadGL())

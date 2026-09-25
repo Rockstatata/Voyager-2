@@ -11,6 +11,14 @@ void Input::attach(GLFWwindow* window)
 	m_previousMouseButtons.fill(false);
 	m_hasMouseSample = false;
 	m_mouseDelta = glm::dvec2(0.0);
+	s_pendingScroll = 0.0;
+	if (window != nullptr)
+		glfwSetScrollCallback(window, &Input::scrollCallback);
+}
+
+void Input::scrollCallback(GLFWwindow*, double, double yOffset)
+{
+	s_pendingScroll += yOffset;
 }
 
 void Input::update()
@@ -36,6 +44,9 @@ void Input::update()
 	m_mouseDelta = m_hasMouseSample ? (position - m_mousePosition) : glm::dvec2(0.0);
 	m_mousePosition = position;
 	m_hasMouseSample = true;
+
+	m_scrollDelta = s_pendingScroll;
+	s_pendingScroll = 0.0;
 }
 
 bool Input::keyDown(int key) const
