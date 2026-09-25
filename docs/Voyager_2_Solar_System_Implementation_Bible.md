@@ -2737,13 +2737,13 @@ Manual control is easier to validate than historical ephemeris and directly sati
 
 - [x] `VoyagerController` (control logic lives directly in `Voyager2::applyManualControl` instead of a separate controller class — functionally equivalent, different class split)
 - [x] `ManualFlightController` (same as above)
-- [x] quaternion orientation (`angleAxis` yaw quaternion)
+- [x] quaternion orientation (full 6-DOF `m_orientation * turn`, no Euler state)
 - [x] forward thrust (`W`/`S`, along current facing, inertial)
 - [x] yaw (`A`/`D` or arrow keys)
-- [ ] pitch (ship deliberately stays level — no pitch control — matching the flat `y=0` body layout; see docs/objects/voyager-2.md)
-- [ ] roll (not implemented)
+- [x] pitch (`R`/`F`, about the ship's own +X axis)
+- [x] roll (`Q`/`E`, about the ship's own +Z axis)
 - [x] optional strafing (`Space`/`Left Ctrl` vertical thrust)
-- [ ] velocity damping (deliberately absent — no atmosphere to damp against, matches real inertial spacecraft flight; see docs/objects/voyager-2.md)
+- [x] velocity damping (explicit `X` braking burn; passive drag stays absent because space has none)
 - [x] chase camera (ThirdPerson mode)
 
 Success:
@@ -2775,12 +2775,12 @@ Voyager automatically follows a visible trajectory and manual/historical switchi
 
 # Phase 11 — Official trajectory / synchronized ephemeris
 
-- [ ] obtain NASA/JPL SPICE kernels
-- [ ] build offline preprocessing utility/script
-- [x] export sampled Horizons trajectory CSV
+- [x] obtain NASA/JPL SPICE-derived data (Horizons API serves the SPICE solutions; kernels themselves not needed offline)
+- [x] build offline preprocessing utility/script (`scripts/fetch_horizons.ps1`)
+- [x] export sampled Horizons trajectory CSV (11,002 state vectors, 1-minute at each closest approach)
 - [x] verify coordinate frame (ECLIPTIC X/Y -> scene X/Z, ECLIPTIC Z -> scene Y)
-- [ ] sample celestial ephemeris or derive synchronized body positions
-- [ ] verify flyby proximity
+- [x] sample celestial ephemeris or derive synchronized body positions (all 9 planets, Hermite-interpolated on one `SimulationClock`)
+- [x] verify flyby proximity (`verify_scene_layout.ps1`: within 0.5 % and 1 minute of published closest approaches)
 
 Success:
 
@@ -2795,13 +2795,13 @@ Voyager meets each giant planet near the correct historical mission date.
 - [x] heliosphere / termination-shock wireframe placeholder
 - [x] heliopause wireframe marker
 - [x] interstellar-space representation (heliopause exterior + starfield)
-- [ ] labels
+- [x] labels (depth-sorted, occlusion-tested body names; see docs/objects/hud-overlay.md)
 
 ---
 
 # Phase 13 — UI / presentation controls
 
-- [x] minimal HUD (native window-title telemetry; no text shader)
+- [x] HUD (project-authored 5x7 font, screen-space text shader; date, rate, telemetry, encounter banner, F1 help)
 - [x] selected object
 - [x] mode display
 - [x] historical Julian Date
@@ -2816,15 +2816,15 @@ Voyager meets each giant planet near the correct historical mission date.
 
 Only after object architecture is stable.
 
-- [ ] inspect supplied shader interfaces
-- [ ] map shader uniforms to `Material`
-- [ ] Sun emissive behavior
-- [ ] planet lighting
-- [ ] normal/specular support if provided
-- [ ] ring blending
-- [ ] space background
-- [ ] shadows if required
-- [ ] final visual polishing
+- [x] inspect supplied shader interfaces (none supplied; project uniforms documented in docs/objects/lighting.md so instructor shaders can map onto them)
+- [x] map shader uniforms to `Material` (`shading`, `specularStrength`, `specularPower`, `opacity`)
+- [x] Sun emissive behavior (unlit Sun + two additive glow shells)
+- [x] planet lighting (Sun point light, Lambert + Blinn-Phong; `K` toggles)
+- [x] normal/specular support if provided (specular per material; no normal maps supplied)
+- [x] ring blending (translucent two-sided rings)
+- [x] space background (three camera-centred star layers)
+- [ ] shadows if required (not required; documented limitation)
+- [x] final visual polishing (floating origin, logarithmic depth, larger display radii)
 
 ---
 
@@ -2871,7 +2871,7 @@ Use this section as the actual lab gate.
 - [x] planetary orbit lines
 - [x] simulation clock (pause/speed controller; date-based ephemeris remains Phase 10–11)
 - [x] mission bookmarks (1-6)
-- [ ] labels
+- [x] labels
 - [x] heliosphere/termination-shock placeholder (three-axis wire boundary)
 - [x] heliopause placeholder (three-axis wire boundary)
 - [x] multiple cameras (ThirdPerson, Focus, FreeFly)
@@ -3665,24 +3665,24 @@ Do not add all planets before these three objects prove that the architecture is
 - [x] mode switch
 - [x] chase camera
 - [ ] forward camera
-- [ ] teleport/reset/rejoin behavior
+- [x] teleport/reset/rejoin behavior (bookmarks teleport; `V` back to Historical rejoins the dated path)
 
 ## Time / astronomy
 
 - [x] simulation clock
 - [x] mission bookmarks
 - [x] planet position model
-- [ ] SPICE preprocessing
+- [x] SPICE preprocessing (via Horizons API, `scripts/fetch_horizons.ps1`)
 - [x] trajectory CSV
-- [ ] synchronized historical ephemeris
+- [x] synchronized historical ephemeris
 
 ## Large world
 
 - [x] physical-vs-render positions
 - [x] scale manager
 - [x] educational scale
-- [ ] local encounter scale
-- [ ] floating origin
+- [x] local encounter scale (flyby clearance, docs/objects/mission-ephemeris.md)
+- [x] floating origin
 
 ## UI
 
@@ -3704,10 +3704,10 @@ Do not add all planets before these three objects prove that the architecture is
 ## Final graphics
 
 - [ ] instructor shaders
-- [ ] lighting
-- [ ] Sun material
-- [ ] ring transparency
-- [ ] planet material polish
+- [x] lighting
+- [x] Sun material
+- [x] ring transparency
+- [x] planet material polish (per-material specular)
 - [ ] post-processing if allowed
 - [x] final screenshots/demo
 
@@ -3732,6 +3732,11 @@ Use this table whenever we make a significant architecture change.
 | D011 | 2026-09-21 | Reverse D010 for surface textures only: use credited real imagery while keeping every mesh self-authored | User explicitly permits textures/assets as reference and requires self-made objects, not self-photographed planet surfaces | Assets/materials; geometry remains procedural |
 | D012 | 2026-09-21 | Rebuild Voyager through `VoyagerModelBuilder` instead of importing NASA's downloadable mesh | Meets the course authorship rule while restoring real proportions and recognizable hardware | Voyager geometry/documentation |
 | D013 | 2026-09-21 | Vendor sparse NASA/JPL Horizons vectors and interpolate them offline | Historical path is auditable and works on lab machines without network access | Trajectory/data/runtime |
+| D014 | 2026-09-24 | Replace sparse tracks with dense Horizons state vectors for all planets and Voyager, cubic-Hermite interpolated on one `SimulationClock` | Flybys must happen at the real time and side; planets must not be animated by a private clock | MissionEphemeris, SimulationClock |
+| D015 | 2026-09-24 | Compose encounter-window Voyager rows as planet + planet-centred vectors | Horizons' heliocentric Voyager and planet solutions disagree by ~13,600 km at Neptune | Trajectory data |
+| D016 | 2026-09-24 | Power-law body radii (Earth 0.5, exponent 0.6) and a display-capped Sun instead of one linear radius factor | The linear scale made planets sub-pixel and the scene look empty; size order is kept | ScaleManager/all bodies |
+| D017 | 2026-09-24 | Floating origin plus logarithmic depth | Lets one frame hold 2 cm spacecraft struts and the Oort cloud without per-mode clip planes | Renderer/shaders |
+| D018 | 2026-09-24 | Implement Sun lighting on the existing Material seam (supersedes D005's deferral) | No instructor shaders were supplied; readable day/night sides were needed | Material, shaders |
 
 Add entries below rather than deleting old decisions. If a decision is reversed, add a new decision referencing the old one.
 
@@ -3770,6 +3775,37 @@ What we intended to implement.
 ```
 
 This will make it much easier to continue implementation without forgetting why code was structured a certain way.
+
+## Session 2026-09-24
+
+### Goal
+Finish the remaining phases: synchronized ephemeris and verified flybys (11), labels (12), HUD (13) and lighting (14); give the teacher full camera autonomy; make the bodies larger on screen.
+
+### Files changed
+- New: `src/scene/MissionEphemeris.*`, `src/scene/SimulationClock.*`, `src/rendering/BitmapFont.*`, `src/rendering/TextRenderer.*`, `hud.vert`, `hud.frag`, `scripts/fetch_horizons.ps1`, `docs/objects/{mission-ephemeris,lighting,hud-overlay}.md`
+- Rewritten: `Application`, `Camera`, `Voyager2`, `Renderer`, `ScaleManager`, `Trajectory`, `default.vert/.frag`, all trajectory CSVs, both verify scripts, every object doc
+
+### Completed
+- [x] Dense Horizons ephemeris for 9 planets + Voyager; closest approaches within 0.5 % / 1 minute of NASA's values
+- [x] Encounter slow-motion, bookmarks at each closest approach, flyby-facing chase camera
+- [x] Free flight with adaptive + wheel speed, Focus fly-to on all 26 bodies, orbit/zoom rigs, 6-DOF manual flight
+- [x] Sun lighting, glow, translucent rings, floating origin, logarithmic depth
+- [x] HUD, labels, help overlay, screenshot and scripted capture tours
+
+### Problems found
+- Heliocentric Voyager vs heliocentric Neptune from Horizons disagree by ~13,600 km (D015).
+- Without vsync, frame-count capture waits finished before camera transitions.
+
+### Decisions made
+- D014-D018.
+
+### Current build state
+- Builds: Yes (Debug and Release x64, no warnings from new code)
+- Runs: Yes; `verify_scene_layout.ps1` and `verify_navigation_and_motion.ps1` pass
+- Known errors: none
+
+### Next exact task
+Optional polish: shadows, date-synchronized moons, instructor shader swap-in when supplied.
 
 ---
 
