@@ -339,8 +339,12 @@ void HudOverlay::renderHelp(TextRenderer& text, const HudView& view, float pixel
 		"  W/S THRUST   A/D YAW   R/F PITCH   Q/E ROLL",
 		"  SPACE/CTRL UP/DOWN   SHIFT BOOST   X BRAKE",
 		"",
+		"LIGHTING AND SHADING",
+		"  K LIGHTING ON/OFF   F3 SHADING: FLAT, GOURAUD, PHONG, BLINN-PHONG, TOON",
+		"  F5 HEADLAMP SPOTLIGHT   F6 FILL DIRECTIONAL LIGHT   F7 SUN 1/D2 FALLOFF",
+		"",
 		"DISPLAY",
-		"  L LABELS   K SUN LIGHTING   F2 HUD   F12 SCREENSHOT   ESC QUIT",
+		"  L LABELS   F2 HUD   F12 SCREENSHOT   ESC QUIT",
 	};
 	const float line = TextRenderer::lineHeight(pixel);
 	float helpWidth = 0.0f;

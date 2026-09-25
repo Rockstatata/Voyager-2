@@ -8,6 +8,7 @@
 #include "CameraController.h"
 #include "CaptureTour.h"
 #include "Input.h"
+#include "LightingController.h"
 #include "Time.h"
 #include "Window.h"
 #include "../rendering/Camera.h"
@@ -40,7 +41,8 @@ public:
 
 	// Creates the window/context and loads GPU resources. `--capture <dir>`
 	// runs the scripted screenshot tour and exits; `--capture-bodies <dir>`
-	// shoots one Focus view per body. Returns false if initialization failed.
+	// shoots one Focus view per body and `--capture-shading <dir>` one view
+	// per shading technique and light. Returns false if initialization failed.
 	bool initialize(int argc = 0, char** argv = nullptr);
 
 	void run();
@@ -52,7 +54,8 @@ private:
 	void render();
 	void refreshWindowTitle();
 	void jumpToBookmark(int index);
-	void startCaptureTour(const std::string& directory, bool everyBody);
+	// kind: "tour", "bodies" or "shading".
+	void startCaptureTour(const std::string& directory, const std::string& kind);
 
 	Window m_window;
 	Input m_input;
@@ -69,6 +72,7 @@ private:
 	SolarSystem m_solarSystem{ m_scene.group("bodies") };
 	MissionController m_mission;
 	CameraController m_cameraController{ m_camera, m_solarSystem, m_mission };
+	LightingController m_lighting;
 	HudOverlay m_hud;
 	CaptureTour m_captureTour;
 

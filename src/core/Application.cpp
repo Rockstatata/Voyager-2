@@ -40,8 +40,12 @@ bool Application::initialize(int argc, char** argv)
 	for (int i = 1; i + 1 < argc; ++i)
 	{
 		const std::string option = argv[i];
-		if (option == "--capture" || option == "--capture-bodies")
-			startCaptureTour(argv[i + 1], option == "--capture-bodies");
+		if (option == "--capture")
+			startCaptureTour(argv[i + 1], "tour");
+		else if (option == "--capture-bodies")
+			startCaptureTour(argv[i + 1], "bodies");
+		else if (option == "--capture-shading")
+			startCaptureTour(argv[i + 1], "shading");
 	}
 
 	m_initialized = true;
@@ -156,11 +160,7 @@ void Application::handleKeys()
 
 	if (m_input.keyPressed(GLFW_KEY_L))
 		m_labelsVisible = !m_labelsVisible;
-	if (m_input.keyPressed(GLFW_KEY_K))
-	{
-		m_renderer.setLightingEnabled(!m_renderer.lightingEnabled());
-		std::cout << "[APP] Sun lighting " << (m_renderer.lightingEnabled() ? "on" : "off") << std::endl;
-	}
+	m_lighting.handleKeys(m_input);
 	if (m_input.keyPressed(GLFW_KEY_O))
 	{
 		SceneObject& guides = m_scene.group("orbit_guides");
@@ -253,7 +253,8 @@ void Application::refreshWindowTitle()
 
 void Application::render()
 {
-	m_renderer.setLight(m_sunPosition, glm::vec3(1.0f, 0.98f, 0.94f));
+	m_renderer.setLighting(m_lighting.build(m_sunPosition, m_camera,
+		m_cameraController.nearestSurfaceDistance(m_camera.position())));
 	m_renderer.beginFrame(m_camera, m_window.aspectRatio());
 	for (const auto& layer : m_backgroundLayers)
 		m_renderer.submitBackground(*layer->mesh(), *layer->material());
@@ -273,13 +274,14 @@ void Application::render()
 	view.labelsVisible = m_labelsVisible;
 	view.hudVisible = m_hudVisible;
 	view.helpVisible = m_helpVisible;
+	view.extraLines = m_lighting.statusLines();
 	m_hud.render(m_text, view);
 }
 
-void Application::startCaptureTour(const std::string& directory, bool everyBody)
+void Application::startCaptureTour(const std::string& directory, const std::string& kind)
 {
 	std::vector<CaptureTour::Shot> shots;
-	if (everyBody)
+	if (kind == "bodies")
 	{
 		// One Focus view per registered body, for the per-object documents.
 		for (int i = 0; i < static_cast<int>(m_solarSystem.bodies().size()); ++i)
@@ -309,6 +311,56 @@ void Application::startCaptureTour(const std::string& directory, bool everyBody)
 		m_mission.freezeBefore(planet, days);
 	};
 	auto pause = [this]() { m_mission.clock().setPaused(true); };
+
+	if (kind == "shading")
+	{
+		// The same Moon and Voyager views under every technique and light.
+		const std::array<ShadingTechnique, 5> techniques = {
+			ShadingTechnique::Flat, ShadingTechnique::Gouraud, ShadingTechnique::Phong,
+			ShadingTechnique::BlinnPhong, ShadingTechnique::Toon };
+		const std::array<const char*, 5> names = { "flat", "gouraud", "phong", "blinn_phong", "toon" };
+		for (std::size_t i = 0; i < techniques.size(); ++i)
+		{
+			const ShadingTechnique technique = techniques[i];
+			shots.push_back({ std::string("earth_") + names[i] + ".bmp", i == 0 ? 3.0 : 0.4,
+				[=, this]()
+				{
+					m_lighting.setTechnique(technique);
+					if (i == 0)
+					{
+						pause();
+						focusById("earth");
+					}
+				} });
+		}
+		for (std::size_t i = 0; i < techniques.size(); ++i)
+		{
+			const ShadingTechnique technique = techniques[i];
+			shots.push_back({ std::string("voyager_") + names[i] + ".bmp", i == 0 ? 3.0 : 0.4,
+				[=, this]()
+				{
+					if (i == 0)
+						beforeEncounter(1, "jupiter", 0.25);
+					m_lighting.setTechnique(technique);
+				} });
+		}
+		shots.push_back({ "light_headlamp.bmp", 3.0, [=, this]()
+		{
+			m_lighting.setTechnique(ShadingTechnique::BlinnPhong);
+			m_lighting.setHeadlamp(true);
+			pause();
+			focusById("moon");
+		} });
+		shots.push_back({ "light_fill.bmp", 0.6, [=, this]() { m_lighting.setHeadlamp(false); m_lighting.setFill(true); } });
+		shots.push_back({ "light_falloff.bmp", 3.0, [=, this]()
+		{
+			m_lighting.setFill(false);
+			m_lighting.setSunFalloff(true);
+			m_cameraController.goToOverview();
+		} });
+		m_captureTour.start(directory, std::move(shots));
+		return;
+	}
 
 	shots = {
 		{ "01_overview.bmp", 1.4, [=, this]() { pause(); m_cameraController.goToOverview(); } },

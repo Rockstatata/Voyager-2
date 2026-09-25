@@ -19,6 +19,7 @@ $clock = Read-Source 'src\scene\SimulationClock.cpp'
 $body = Read-Source 'src\scene\CelestialBody.cpp'
 $renderer = Read-Source 'src\rendering\Renderer.cpp'
 $fragment = Read-Source 'shaders/scene.frag'
+$lightingModel = Read-Source 'shaders/lighting.glsl'
 $failures = [System.Collections.Generic.List[string]]::new()
 
 function Require([bool]$condition, [string]$message) {
@@ -48,7 +49,10 @@ Require ($voyager -match 'm_orientation \* turn') 'Manual rotations are not abou
 
 # Rendering: floating origin, log depth, lighting.
 Require ($renderer -match 'relative\[3\] -= glm::dvec4\(m_origin, 0\.0\)') 'Model matrices are not camera-relative.'
-Require ($fragment -match 'gl_FragDepth' -and $fragment -match 'lightPosition') 'Logarithmic depth or Sun lighting is missing.'
+Require ($fragment -match 'gl_FragDepth') 'Logarithmic depth is missing.'
+foreach ($technique in @('SHADING_FLAT', 'SHADING_GOURAUD', 'SHADING_PHONG', 'SHADING_BLINN_PHONG', 'SHADING_TOON', 'LIGHT_DIRECTIONAL', 'LIGHT_POINT', 'LIGHT_SPOT')) {
+	Require ($lightingModel -match $technique) "Lighting model is missing $technique."
+}
 
 if ($failures.Count -gt 0) {
 	$failures | ForEach-Object { Write-Error "[NAVIGATION] $_" -ErrorAction Continue }

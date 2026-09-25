@@ -1,9 +1,15 @@
 #version 330 core
 
+#include "lighting.glsl"
+
 in vec3 normal;
 in vec2 texCoord;
 in vec3 relativePosition;
 in float logDepthW;
+in vec3 gouraudSunDiffuse;
+in vec3 gouraudSunSpecular;
+in vec3 gouraudOtherDiffuse;
+in vec3 gouraudOtherSpecular;
 
 out vec4 FragColor;
 
@@ -13,20 +19,13 @@ uniform int useTexture;
 
 // Material shading model: 0 unlit, 1 lit, 2 lit two-sided, 3 additive glow.
 uniform int shadingModel;
-uniform float specularStrength;
-uniform float specularPower;
 uniform float opacity;
-
-// The Sun is the only light: a point source at its centre (camera-relative).
-uniform vec3 lightPosition;
-uniform vec3 lightColor;
 uniform int lightingEnabled;
+uniform float ambientStrength;
 
 // Logarithmic depth: 2 / log2(far + 1). Keeps centimetre and thousand-unit
 // geometry in one depth buffer without z-fighting.
 uniform float logDepthCoefficient;
-
-const float kAmbient = 0.07;
 
 void main()
 {
@@ -52,24 +51,41 @@ void main()
 		return;
 	}
 
-	vec3 toLight = normalize(lightPosition - relativePosition);
-	float lambert = dot(surfaceNormal, toLight);
-	if (shadingModel == 2)
+	bool twoSided = shadingModel == 2;
+	if (shadingTechnique == SHADING_FLAT)
 	{
-		lambert = abs(lambert);
-		if (dot(surfaceNormal, viewDirection) < 0.0)
-			surfaceNormal = -surfaceNormal;
+		// One normal per triangle: the plane through the screen-space
+		// derivatives of the position, oriented like the interpolated normal.
+		vec3 faceNormal = normalize(cross(dFdx(relativePosition), dFdy(relativePosition)));
+		surfaceNormal = dot(faceNormal, surfaceNormal) < 0.0 ? -faceNormal : faceNormal;
 	}
-	float diffuse = max(lambert, 0.0);
+	if (twoSided && dot(surfaceNormal, viewDirection) < 0.0)
+		surfaceNormal = -surfaceNormal;
 
-	// Blinn-Phong highlight only on the lit side.
-	float specular = 0.0;
-	if (diffuse > 0.0 && specularStrength > 0.0)
+	LightTerms terms;
+	if (shadingTechnique == SHADING_GOURAUD)
 	{
-		vec3 halfway = normalize(toLight + viewDirection);
-		specular = specularStrength * pow(max(dot(surfaceNormal, halfway), 0.0), specularPower);
+		terms.sunDiffuse = gouraudSunDiffuse;
+		terms.sunSpecular = gouraudSunSpecular;
+		terms.otherDiffuse = gouraudOtherDiffuse;
+		terms.otherSpecular = gouraudOtherSpecular;
+	}
+	else
+	{
+		terms = evaluateLights(surfaceNormal, viewDirection, relativePosition, twoSided, shadingTechnique);
 	}
 
-	vec3 lit = color * (kAmbient + diffuse * lightColor) + specular * lightColor;
+	vec3 diffuse = terms.sunDiffuse + terms.otherDiffuse;
+	vec3 specular = terms.sunSpecular + terms.otherSpecular;
+	vec3 lit = color * (ambientStrength + diffuse) + specular;
+
+	if (shadingTechnique == SHADING_TOON)
+	{
+		// Ink outline: darken where the surface turns away from the eye.
+		float rim = dot(surfaceNormal, viewDirection);
+		if (rim < 0.22)
+			lit *= 0.15;
+	}
+
 	FragColor = vec4(lit, albedo.a * opacity);
 }

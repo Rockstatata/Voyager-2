@@ -30,6 +30,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\LightingController.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
     <ClCompile Include="src\rendering\ShaderProgram.cpp">
       <Filter>src\rendering</Filter>
     </ClCompile>
@@ -167,6 +170,12 @@
 	</ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\Lighting.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\LightingController.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
     <ClInclude Include="src\rendering\ShaderProgram.h">
       <Filter>src\rendering</Filter>
     </ClInclude>
@@ -315,6 +324,7 @@
   <ItemGroup>
     <None Include="shaders\hud.frag" />
     <None Include="shaders\hud.vert" />
+    <None Include="shaders\lighting.glsl" />
     <None Include="shaders\scene.frag" />
     <None Include="shaders\scene.vert" />
   </ItemGroup>

@@ -148,6 +148,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\LightingController.cpp" />
     <ClCompile Include="src\rendering\ShaderProgram.cpp" />
     <ClCompile Include="src\ui\HudOverlay.cpp" />
     <ClCompile Include="src\core\CaptureTour.cpp" />
@@ -197,10 +198,13 @@
   <ItemGroup>
     <None Include="shaders\hud.frag" />
     <None Include="shaders\hud.vert" />
+    <None Include="shaders\lighting.glsl" />
     <None Include="shaders\scene.frag" />
     <None Include="shaders\scene.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\Lighting.h" />
+    <ClInclude Include="src\core\LightingController.h" />
     <ClInclude Include="src\rendering\ShaderProgram.h" />
     <ClInclude Include="src\ui\HudOverlay.h" />
     <ClInclude Include="src\core\CaptureTour.h" />

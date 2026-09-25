@@ -12,19 +12,36 @@ std::shared_ptr<Material> MaterialLibrary::surface(const std::string& texturePat
 		material->baseColor = glm::vec3(1.0f);
 	}
 
+	// How each surface class answers the Sun: specular strength is the
+	// fraction of light mirrored, power the tightness of the highlight.
 	if (preset == "emissive")
 	{
 		material->shading = ShadingModel::Unlit; // the light source itself
 	}
 	else if (preset == "ocean")
 	{
-		material->specularStrength = 0.18f;
-		material->specularPower = 32.0f;
+		material->specularStrength = 0.30f; // sun glint on water
+		material->specularPower = 48.0f;
 	}
-	else if (preset == "gas" || preset == "cloud")
+	else if (preset == "ice")
 	{
-		material->specularStrength = 0.05f;
-		material->specularPower = 12.0f;
+		material->specularStrength = 0.22f; // bright, fairly sharp
+		material->specularPower = 36.0f;
+	}
+	else if (preset == "gas")
+	{
+		material->specularStrength = 0.06f; // soft cloud-top sheen
+		material->specularPower = 10.0f;
+	}
+	else if (preset == "cloud")
+	{
+		material->specularStrength = 0.10f; // thick haze: broad and dull
+		material->specularPower = 6.0f;
+	}
+	else
+	{
+		material->specularStrength = 0.03f; // rocky regolith: almost matte
+		material->specularPower = 8.0f;
 	}
 	return material;
 }
