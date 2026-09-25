@@ -90,6 +90,39 @@ std::shared_ptr<Material> MaterialLibrary::glow(const glm::vec3& color, float op
 	return material;
 }
 
+MaterialLibrary::Atlas MaterialLibrary::loadAtlas(const std::string& path, float relief)
+{
+	Atlas atlas;
+	std::vector<unsigned char> pixels;
+	if (!Texture2D::decodeFile(path, atlas.width, atlas.height, pixels))
+		return atlas;
+	atlas.albedo = std::make_shared<Texture2D>();
+	atlas.albedo->uploadRgba(atlas.width, atlas.height, pixels, path);
+	atlas.normals = std::make_shared<Texture2D>();
+	atlas.normals->uploadRgba(atlas.width, atlas.height,
+		SurfaceMaps::normalMapFromAlbedo(pixels, atlas.width, atlas.height, relief), path + " [normal]");
+	return atlas;
+}
+
+std::shared_ptr<Material> MaterialLibrary::spacecraftTextured(const Atlas& atlas, const glm::vec4& pixelRect,
+	const glm::vec3& tint, float specular, float power)
+{
+	auto material = spacecraft(tint, specular, power);
+	if (atlas.albedo == nullptr || atlas.width <= 0 || atlas.height <= 0)
+		return material; // falls back to the flat tint
+	material->albedoTexture = atlas.albedo;
+	material->normalTexture = atlas.normals;
+	material->normalStrength = 0.8f;
+	// Pixel rectangle -> UV window. Images load bottom-up (v = 0 is the
+	// bottom row), so the top pixel edge becomes the larger v.
+	const float u0 = pixelRect.x / atlas.width;
+	const float u1 = pixelRect.z / atlas.width;
+	const float v0 = 1.0f - pixelRect.w / atlas.height;
+	const float v1 = 1.0f - pixelRect.y / atlas.height;
+	material->uvTransform = glm::vec4(u0, v0, u1 - u0, v1 - v0);
+	return material;
+}
+
 std::shared_ptr<Material> MaterialLibrary::spacecraft(const glm::vec3& color, float specular, float power)
 {
 	auto material = std::make_shared<Material>();

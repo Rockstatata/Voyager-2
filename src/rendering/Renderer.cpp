@@ -53,6 +53,7 @@ void Renderer::applyMaterial(const Material& material)
 	glUniform1f(m_program.uniform("specularStrength"), material.specularStrength);
 	glUniform1f(m_program.uniform("specularPower"), material.specularPower);
 	glUniform1f(m_program.uniform("opacity"), material.opacity);
+	glUniform4fv(m_program.uniform("uvTransform"), 1, &material.uvTransform[0]);
 
 	const bool hasTexture = material.albedoTexture != nullptr && material.albedoTexture->valid();
 	glUniform1i(m_program.uniform("useTexture"), hasTexture ? 1 : 0);

@@ -139,18 +139,29 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 	result.spacecraft = std::make_unique<Voyager2>("voyager2");
 	Voyager2& voyager = *result.spacecraft;
 
-	// Surface finishes (specular strength, highlight power). Multi-layer
-	// insulation foil is bright and mirror-like; paint is matte.
-	const auto whitePaint = MaterialLibrary::spacecraft(glm::vec3(0.93f, 0.93f, 0.90f), 0.20f, 16.0f);
-	const auto goldFoil = MaterialLibrary::spacecraft(glm::vec3(0.83f, 0.60f, 0.18f), 0.75f, 70.0f);
-	const auto darkGoldFoil = MaterialLibrary::spacecraft(glm::vec3(0.45f, 0.30f, 0.09f), 0.55f, 50.0f);
-	const auto blackBlanket = MaterialLibrary::spacecraft(glm::vec3(0.05f, 0.055f, 0.065f), 0.10f, 8.0f);
-	const auto aluminium = MaterialLibrary::spacecraft(glm::vec3(0.62f, 0.64f, 0.67f), 0.55f, 40.0f);
-	const auto darkMetal = MaterialLibrary::spacecraft(glm::vec3(0.17f, 0.18f, 0.20f), 0.35f, 30.0f);
-	const auto lens = MaterialLibrary::spacecraft(glm::vec3(0.02f, 0.03f, 0.05f), 0.90f, 120.0f);
+	// Surface finishes: photographs of real Voyager hardware from NASA's
+	// public-domain texture atlas (assets/textures/spacecraft/README.md),
+	// each part showing one rectangle of it, plus the specular response of
+	// that finish. Rectangles are (left, top, right, bottom) atlas pixels.
+	// Multi-layer insulation foil is bright and mirror-like; paint is matte.
+	const MaterialLibrary::Atlas atlas =
+		MaterialLibrary::loadAtlas("assets/textures/spacecraft/voyager_nasa_atlas.png", 1.4f);
+	auto finish = [&atlas](const glm::vec4& rect, const glm::vec3& tint, float specular, float power)
+	{
+		return MaterialLibrary::spacecraftTextured(atlas, rect, tint, specular, power);
+	};
+	const auto whitePaint = finish({ 225, 835, 352, 958 }, glm::vec3(1.0f), 0.20f, 16.0f);
+	const auto goldFoil = finish({ 390, 710, 490, 818 }, glm::vec3(1.15f), 0.75f, 70.0f);
+	const auto darkGoldFoil = finish({ 390, 710, 490, 818 }, glm::vec3(0.62f), 0.55f, 50.0f);
+	const auto blackBlanket = finish({ 8, 8, 212, 160 }, glm::vec3(1.0f), 0.12f, 10.0f);
+	const auto aluminium = finish({ 978, 20, 1010, 560 }, glm::vec3(1.1f), 0.55f, 40.0f);
+	const auto darkMetal = finish({ 150, 492, 232, 626 }, glm::vec3(0.45f), 0.35f, 30.0f);
+	const auto lens = finish({ 298, 672, 360, 736 }, glm::vec3(1.0f), 0.90f, 120.0f);
 	const auto copper = MaterialLibrary::spacecraft(glm::vec3(0.72f, 0.36f, 0.12f), 0.60f, 48.0f);
-	const auto radiatorBlue = MaterialLibrary::spacecraft(glm::vec3(0.35f, 0.48f, 0.55f), 0.30f, 24.0f);
-	const auto recordGold = MaterialLibrary::spacecraft(glm::vec3(0.90f, 0.72f, 0.30f), 0.85f, 90.0f);
+	const auto radiatorBlue = finish({ 480, 356, 640, 536 }, glm::vec3(1.0f), 0.30f, 24.0f);
+	const auto recordGold = finish({ 8, 172, 234, 396 }, glm::vec3(1.1f), 0.85f, 90.0f);
+	const auto louvres = finish({ 278, 122, 448, 280 }, glm::vec3(1.0f), 0.60f, 50.0f);
+	const auto calibrationPanel = finish({ 470, 20, 630, 220 }, glm::vec3(1.0f), 0.15f, 12.0f);
 
 	const ScaleManager scale;
 	auto units = [&scale](double metres)
@@ -218,7 +229,7 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 			{
 				addBox("voyager2_louvre_" + std::to_string(face) + "_" + std::to_string(louvre),
 					outward * (apothem + units(0.03)) + glm::dvec3(0.0, 0.0, louvre * units(0.09)),
-					{ units(0.012), faceWidth * 0.6, units(0.05) }, aluminium, facing);
+					{ units(0.012), faceWidth * 0.6, units(0.05) }, louvres, facing);
 			}
 		}
 	}
@@ -308,7 +319,7 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 	const double targetAngle = glm::radians(5.5 * 36.0);
 	const glm::dvec3 targetOutward(std::cos(targetAngle), std::sin(targetAngle), 0.0);
 	addBox("voyager2_calibration_target", targetOutward * (apothem + units(0.04)),
-		{ units(0.03), units(0.42), units(0.34) }, whitePaint, glm::angleAxis(targetAngle, glm::dvec3(0.0, 0.0, 1.0)));
+		{ units(0.03), units(0.42), units(0.34) }, calibrationPanel, glm::angleAxis(targetAngle, glm::dvec3(0.0, 0.0, 1.0)));
 	component("Optical calibration target", "Flat plate of known colour the cameras photograph to calibrate themselves.",
 		targetOutward * apothem, 0.5);
 

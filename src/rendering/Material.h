@@ -33,6 +33,11 @@ struct Material
 	std::shared_ptr<Texture2D> normalTexture;
 	std::shared_ptr<Texture2D> specularTexture;
 	float normalStrength = 1.0f;
+
+	// Texture-atlas window: the mesh's own 0..1 UVs are mapped to
+	// uv * (z, w) + (x, y), so one atlas image serves many parts
+	// (Voyager's NASA hardware photographs). Identity = (0, 0, 1, 1).
+	glm::vec4 uvTransform{ 0.0f, 0.0f, 1.0f, 1.0f };
 };
 
 #endif

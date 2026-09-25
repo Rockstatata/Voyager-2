@@ -30,6 +30,7 @@ uniform mat4 view;
 uniform mat4 proj;
 uniform int useInstancing;
 uniform int shadingModel;
+uniform vec4 uvTransform; // atlas window: offset xy, scale zw
 uniform float specularStrength;
 uniform float specularPower;
 
@@ -45,7 +46,7 @@ void main()
     logDepthW = 1.0 + gl_Position.w;
     gl_PointSize = 2.0;
     normal = mat3(transpose(inverse(effectiveModel))) * aNormal;
-    texCoord = aTexCoord;
+    texCoord = aTexCoord * uvTransform.zw + uvTransform.xy;
 
     gouraudSunDiffuse = vec3(0.0);
     gouraudSunSpecular = vec3(0.0);
