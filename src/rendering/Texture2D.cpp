@@ -63,20 +63,28 @@ bool Texture2D::uploadRgba(int width, int height,
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	m_debugName = debugName;
-	std::cout << "[ASSET] generated texture uploaded: " << debugName << " ("
+	std::cout << "[ASSET] texture uploaded: " << debugName << " ("
 			  << m_width << "x" << m_height << ")" << std::endl;
 	return true;
 }
 
 bool Texture2D::loadFromFile(const std::string& path)
 {
+	int width = 0;
+	int height = 0;
+	std::vector<unsigned char> pixels;
+	if (!decodeFile(path, width, height, pixels))
+		return false;
+	return uploadRgba(width, height, pixels, path);
+}
+
+bool Texture2D::decodeFile(const std::string& path, int& width, int& height, std::vector<unsigned char>& pixels)
+{
 	// Real photo maps are stored top-row-first in the file but OpenGL's (0,0)
 	// texel is the bottom-left, so flip on load to keep our UV convention
 	// (v=0 at the sphere's north pole row) matching the pixel rows.
 	stbi_set_flip_vertically_on_load(true);
 
-	int width = 0;
-	int height = 0;
 	int sourceChannels = 0;
 	unsigned char* decoded = stbi_load(path.c_str(), &width, &height, &sourceChannels, 4);
 	if (decoded == nullptr)
@@ -86,10 +94,9 @@ bool Texture2D::loadFromFile(const std::string& path)
 		return false;
 	}
 
-	const std::vector<unsigned char> pixels(decoded, decoded + (static_cast<std::size_t>(width) * height * 4));
+	pixels.assign(decoded, decoded + (static_cast<std::size_t>(width) * height * 4));
 	stbi_image_free(decoded);
-
-	return uploadRgba(width, height, pixels, path);
+	return true;
 }
 
 void Texture2D::bind(GLuint textureUnit) const

@@ -24,6 +24,10 @@ public:
 	// Path is relative to the working directory, same rule as Shader (project root).
 	bool loadFromFile(const std::string& path);
 
+	// Decodes an image file to RGBA8 without uploading it, for CPU-side
+	// processing (SurfaceMaps). Rows are bottom-up, matching the upload.
+	static bool decodeFile(const std::string& path, int& width, int& height, std::vector<unsigned char>& pixels);
+
 	void bind(GLuint textureUnit = 0) const;
 
 	bool valid() const { return m_id != 0; }

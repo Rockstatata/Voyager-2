@@ -25,6 +25,14 @@ struct Material
 	float specularStrength = 0.0f;
 	float specularPower = 32.0f;
 	float opacity = 1.0f;
+
+	// Lighting maps (texture units 1 and 2), derived from the albedo by
+	// SurfaceMaps: a tangent-space normal map that bends the lighting normal
+	// for craters and ridges, and a specular map that scales the highlight
+	// per texel (water glints, land does not).
+	std::shared_ptr<Texture2D> normalTexture;
+	std::shared_ptr<Texture2D> specularTexture;
+	float normalStrength = 1.0f;
 };
 
 #endif

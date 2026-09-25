@@ -344,9 +344,18 @@ void Application::startCaptureTour(const std::string& directory, const std::stri
 					m_lighting.setTechnique(technique);
 				} });
 		}
-		shots.push_back({ "light_headlamp.bmp", 3.0, [=, this]()
+		shots.push_back({ "maps_moon_on.bmp", 3.0, [=, this]()
 		{
 			m_lighting.setTechnique(ShadingTechnique::BlinnPhong);
+			pause();
+			focusById("moon");
+		} });
+		shots.push_back({ "maps_moon_off.bmp", 0.4, [=, this]() { m_lighting.setSurfaceMaps(false); } });
+		shots.push_back({ "maps_earth_on.bmp", 3.0, [=, this]() { m_lighting.setSurfaceMaps(true); focusById("earth"); } });
+		shots.push_back({ "maps_earth_off.bmp", 0.4, [=, this]() { m_lighting.setSurfaceMaps(false); } });
+		shots.push_back({ "light_headlamp.bmp", 3.0, [=, this]()
+		{
+			m_lighting.setSurfaceMaps(true);
 			m_lighting.setHeadlamp(true);
 			pause();
 			focusById("moon");

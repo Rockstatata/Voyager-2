@@ -148,6 +148,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendering\SurfaceMaps.cpp" />
     <ClCompile Include="src\core\LightingController.cpp" />
     <ClCompile Include="src\rendering\ShaderProgram.cpp" />
     <ClCompile Include="src\ui\HudOverlay.cpp" />
@@ -203,6 +204,7 @@
     <None Include="shaders\scene.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\SurfaceMaps.h" />
     <ClInclude Include="src\rendering\Lighting.h" />
     <ClInclude Include="src\core\LightingController.h" />
     <ClInclude Include="src\rendering\ShaderProgram.h" />

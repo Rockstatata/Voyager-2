@@ -39,6 +39,7 @@ struct LightingState
 	bool enabled = true;
 	ShadingTechnique technique = ShadingTechnique::BlinnPhong;
 	float ambient = 0.07f;
+	bool surfaceMaps = true; // normal and specular maps (F8)
 	// Light 0 is always the Sun; only it casts shadows.
 	std::array<Light, kMaxLights> lights{};
 };

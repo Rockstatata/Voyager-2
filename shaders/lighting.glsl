@@ -51,7 +51,8 @@ float toonBand(float lambert)
 
 // n: unit normal facing the viewer's side for two-sided sheets.
 // v: unit vector to the eye.  p: camera-relative surface position.
-LightTerms evaluateLights(vec3 n, vec3 v, vec3 p, bool twoSided, int technique)
+// specularScale: per-texel specular map value (1 without a map).
+LightTerms evaluateLights(vec3 n, vec3 v, vec3 p, bool twoSided, int technique, float specularScale)
 {
 	LightTerms terms;
 	terms.sunDiffuse = vec3(0.0);
@@ -97,7 +98,7 @@ LightTerms evaluateLights(vec3 n, vec3 v, vec3 p, bool twoSided, int technique)
 			diffuse = lambert > 0.0 ? toonBand(diffuse) : 0.0;
 
 		float specular = 0.0;
-		if (lambert > 0.0 && specularStrength > 0.0)
+		if (lambert > 0.0 && specularStrength * specularScale > 0.0)
 		{
 			if (technique == SHADING_PHONG || technique == SHADING_GOURAUD)
 			{
@@ -114,7 +115,7 @@ LightTerms evaluateLights(vec3 n, vec3 v, vec3 p, bool twoSided, int technique)
 				if (technique == SHADING_TOON)
 					specular = step(0.5, specular);
 			}
-			specular *= specularStrength;
+			specular *= specularStrength * specularScale;
 		}
 
 		vec3 radiance = lights[i].color * attenuation;

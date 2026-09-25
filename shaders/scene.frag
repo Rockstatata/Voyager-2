@@ -17,6 +17,14 @@ uniform vec3 baseColor;
 uniform sampler2D albedoTexture;
 uniform int useTexture;
 
+// Lighting maps (units 1 and 2) and their master switch (F8).
+uniform sampler2D normalMap;
+uniform sampler2D specularMap;
+uniform int useNormalMap;
+uniform int useSpecularMap;
+uniform float normalStrength;
+uniform int surfaceMapsEnabled;
+
 // Material shading model: 0 unlit, 1 lit, 2 lit two-sided, 3 additive glow.
 uniform int shadingModel;
 uniform float opacity;
@@ -26,6 +34,26 @@ uniform float ambientStrength;
 // Logarithmic depth: 2 / log2(far + 1). Keeps centimetre and thousand-unit
 // geometry in one depth buffer without z-fighting.
 uniform float logDepthCoefficient;
+
+// Normal mapping without stored tangents: the tangent frame is rebuilt per
+// pixel from screen-space derivatives of position and UV (Schueler, 2006),
+// so the shared sphere's vertex format stays position/normal/UV.
+vec3 perturbNormal(vec3 n, vec3 p, vec2 uv)
+{
+	vec3 dp1 = dFdx(p);
+	vec3 dp2 = dFdy(p);
+	vec2 duv1 = dFdx(uv);
+	vec2 duv2 = dFdy(uv);
+	vec3 dp2perp = cross(dp2, n);
+	vec3 dp1perp = cross(n, dp1);
+	vec3 tangent = dp2perp * duv1.x + dp1perp * duv2.x;
+	vec3 bitangent = dp2perp * duv1.y + dp1perp * duv2.y;
+	float scale = inversesqrt(max(max(dot(tangent, tangent), dot(bitangent, bitangent)), 1e-20));
+	mat3 tbn = mat3(tangent * scale, bitangent * scale, n);
+	vec3 mapped = texture(normalMap, uv).xyz * 2.0 - 1.0;
+	mapped.xy *= normalStrength;
+	return normalize(tbn * mapped);
+}
 
 void main()
 {
@@ -62,6 +90,11 @@ void main()
 	if (twoSided && dot(surfaceNormal, viewDirection) < 0.0)
 		surfaceNormal = -surfaceNormal;
 
+	bool mapsOn = surfaceMapsEnabled != 0 && shadingTechnique != SHADING_GOURAUD;
+	if (mapsOn && useNormalMap != 0 && shadingTechnique != SHADING_FLAT)
+		surfaceNormal = perturbNormal(surfaceNormal, relativePosition, texCoord);
+	float specularScale = (mapsOn && useSpecularMap != 0) ? texture(specularMap, texCoord).r : 1.0;
+
 	LightTerms terms;
 	if (shadingTechnique == SHADING_GOURAUD)
 	{
@@ -72,7 +105,7 @@ void main()
 	}
 	else
 	{
-		terms = evaluateLights(surfaceNormal, viewDirection, relativePosition, twoSided, shadingTechnique);
+		terms = evaluateLights(surfaceNormal, viewDirection, relativePosition, twoSided, shadingTechnique, specularScale);
 	}
 
 	vec3 diffuse = terms.sunDiffuse + terms.otherDiffuse;

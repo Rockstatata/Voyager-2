@@ -36,6 +36,8 @@ void Renderer::beginFrame(const Camera& camera, float aspectRatio)
 	glUniformMatrix4fv(m_program.uniform("view"), 1, GL_FALSE, &view[0][0]);
 	glUniformMatrix4fv(m_program.uniform("proj"), 1, GL_FALSE, &proj[0][0]);
 	glUniform1i(m_program.uniform("albedoTexture"), 0);
+	glUniform1i(m_program.uniform("normalMap"), 1);
+	glUniform1i(m_program.uniform("specularMap"), 2);
 	glUniform1f(m_program.uniform("logDepthCoefficient"), 2.0f / std::log2(kFarPlane + 1.0f));
 	uploadLights();
 }
@@ -45,6 +47,7 @@ void Renderer::uploadLights()
 	glUniform1i(m_program.uniform("lightingEnabled"), m_lighting.enabled ? 1 : 0);
 	glUniform1i(m_program.uniform("shadingTechnique"), static_cast<int>(m_lighting.technique));
 	glUniform1f(m_program.uniform("ambientStrength"), m_lighting.ambient);
+	glUniform1i(m_program.uniform("surfaceMapsEnabled"), m_lighting.surfaceMaps ? 1 : 0);
 
 	for (int i = 0; i < kMaxLights; ++i)
 	{
@@ -78,6 +81,16 @@ void Renderer::applyMaterial(const Material& material)
 	glUniform1i(m_program.uniform("useTexture"), hasTexture ? 1 : 0);
 	if (hasTexture)
 		material.albedoTexture->bind(0);
+
+	const bool hasNormalMap = material.normalTexture != nullptr && material.normalTexture->valid();
+	glUniform1i(m_program.uniform("useNormalMap"), hasNormalMap ? 1 : 0);
+	glUniform1f(m_program.uniform("normalStrength"), material.normalStrength);
+	if (hasNormalMap)
+		material.normalTexture->bind(1);
+	const bool hasSpecularMap = material.specularTexture != nullptr && material.specularTexture->valid();
+	glUniform1i(m_program.uniform("useSpecularMap"), hasSpecularMap ? 1 : 0);
+	if (hasSpecularMap)
+		material.specularTexture->bind(2);
 }
 
 void Renderer::submit(const Mesh& mesh, const Material& material, const glm::dmat4& worldMatrix)

@@ -20,7 +20,8 @@ class Input;
 class LightingController
 {
 public:
-	// K master switch, F3 technique, F5 headlamp, F6 fill, F7 Sun falloff.
+	// K master switch, F3 technique, F5 headlamp, F6 fill, F7 Sun falloff,
+	// F8 lighting maps.
 	void handleKeys(const Input& input);
 
 	// Rebuilds the per-frame state. `surfaceDistance` scales the headlamp's
@@ -31,6 +32,7 @@ public:
 	void setHeadlamp(bool on) { m_headlamp = on; }
 	void setFill(bool on) { m_fill = on; }
 	void setSunFalloff(bool on) { m_sunFalloff = on; }
+	void setSurfaceMaps(bool on) { m_surfaceMaps = on; }
 	ShadingTechnique technique() const { return m_technique; }
 	std::vector<std::string> statusLines() const;
 
@@ -40,6 +42,7 @@ private:
 	bool m_headlamp = false;
 	bool m_fill = false;
 	bool m_sunFalloff = false;
+	bool m_surfaceMaps = true;
 };
 
 #endif
