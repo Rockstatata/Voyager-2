@@ -12,6 +12,7 @@
 #include "Time.h"
 #include "Window.h"
 #include "../rendering/Camera.h"
+#include "../rendering/RayTracer.h"
 #include "../rendering/Renderer.h"
 #include "../rendering/TextRenderer.h"
 #include "../scene/MissionController.h"
@@ -62,6 +63,7 @@ private:
 	Time m_time;
 	Camera m_camera;
 	Renderer m_renderer;
+	RayTracer m_rayTracer;
 	TextRenderer m_text;
 	Scene m_scene;
 
@@ -81,6 +83,7 @@ private:
 	std::vector<std::unique_ptr<SceneObject>> m_backgroundLayers; // camera-centred stars
 
 	const glm::dvec3 m_sunPosition{ 0.0, 0.0, -30.0 };
+	bool m_rayTraced = false;      // F9: ray-traced view of bodies and rings
 	bool m_labelsVisible = true;
 	bool m_hudVisible = true;
 	bool m_helpVisible = false;

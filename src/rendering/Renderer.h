@@ -72,8 +72,6 @@ private:
 	};
 
 	void applyMaterial(const Material& material);
-	void uploadLights();
-	void uploadTraceScene(ShaderProgram& program) const;
 
 	ShaderProgram m_program;
 	glm::vec4 m_clearColor{ 0.0f, 0.0f, 0.0f, 1.0f };

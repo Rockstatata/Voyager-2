@@ -30,6 +30,8 @@ uniform mat4 view;
 uniform mat4 proj;
 uniform int useInstancing;
 uniform int shadingModel;
+uniform float specularStrength;
+uniform float specularPower;
 
 void main()
 {
@@ -56,7 +58,8 @@ void main()
         bool twoSided = shadingModel == 2;
         if (twoSided && dot(n, v) < 0.0)
             n = -n;
-        LightTerms terms = evaluateLights(n, v, relative.xyz, twoSided, SHADING_GOURAUD, 1.0);
+        LightTerms terms = evaluateLights(n, v, relative.xyz, twoSided, SHADING_GOURAUD,
+            specularStrength, specularPower);
         gouraudSunDiffuse = terms.sunDiffuse;
         gouraudSunSpecular = terms.sunSpecular;
         gouraudOtherDiffuse = terms.otherDiffuse;

@@ -30,6 +30,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendering\LightingUniforms.cpp">
+      <Filter>src\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\RayTracer.cpp">
+      <Filter>src\rendering</Filter>
+    </ClCompile>
     <ClCompile Include="src\rendering\SurfaceMaps.cpp">
       <Filter>src\rendering</Filter>
     </ClCompile>
@@ -173,6 +179,12 @@
 	</ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\LightingUniforms.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\RayTracer.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
     <ClInclude Include="src\rendering\RayTraceScene.h">
       <Filter>src\rendering</Filter>
     </ClInclude>
@@ -334,7 +346,9 @@
     <None Include="shaders\hud.frag" />
     <None Include="shaders\hud.vert" />
     <None Include="shaders\lighting.glsl" />
+    <None Include="shaders\raytrace.frag" />
     <None Include="shaders\raytrace.glsl" />
+    <None Include="shaders\raytrace.vert" />
     <None Include="shaders\scene.frag" />
     <None Include="shaders\scene.vert" />
   </ItemGroup>

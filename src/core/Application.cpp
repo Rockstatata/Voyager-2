@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <filesystem>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -28,7 +29,7 @@ bool Application::initialize(int argc, char** argv)
 
 	m_input.attach(m_window.handle());
 
-	if (!m_renderer.initialize() || !m_text.initialize())
+	if (!m_renderer.initialize() || !m_text.initialize() || !m_rayTracer.initialize())
 		return false;
 
 	buildScene();
@@ -46,6 +47,8 @@ bool Application::initialize(int argc, char** argv)
 			startCaptureTour(argv[i + 1], "bodies");
 		else if (option == "--capture-shading")
 			startCaptureTour(argv[i + 1], "shading");
+		else if (option == "--capture-raytrace")
+			startCaptureTour(argv[i + 1], "raytrace");
 	}
 
 	m_initialized = true;
@@ -60,6 +63,11 @@ void Application::buildScene()
 		BodyCatalog::loadBodies("assets/data/celestial_bodies.csv"),
 		BodyCatalog::loadRingBands("assets/data/ring_bands.csv"),
 		m_sphereMesh, m_sunPosition);
+
+	std::vector<std::string> texturePaths;
+	for (const CelestialBody* body : m_solarSystem.bodies())
+		texturePaths.push_back(body->data().texturePath);
+	m_rayTracer.setTexturePaths(std::move(texturePaths));
 
 	m_mission.load(m_solarSystem, m_sunPosition, BodyCatalog::loadBookmarks("assets/data/mission_bookmarks.csv"));
 
@@ -161,6 +169,13 @@ void Application::handleKeys()
 	if (m_input.keyPressed(GLFW_KEY_L))
 		m_labelsVisible = !m_labelsVisible;
 	m_lighting.handleKeys(m_input);
+	if (m_input.keyPressed(GLFW_KEY_F9))
+	{
+		m_rayTraced = !m_rayTraced;
+		std::cout << "[APP] render mode: " << (m_rayTraced ? "ray-traced" : "raster") << std::endl;
+	}
+	if (m_input.keyPressed(GLFW_KEY_F10))
+		m_rayTracer.setMaxBounces(m_rayTracer.maxBounces() == 0 ? 1 : 0);
 	if (m_input.keyPressed(GLFW_KEY_O))
 	{
 		SceneObject& guides = m_scene.group("orbit_guides");
@@ -260,7 +275,16 @@ void Application::render()
 	m_renderer.beginFrame(m_camera, m_window.aspectRatio());
 	for (const auto& layer : m_backgroundLayers)
 		m_renderer.submitBackground(*layer->mesh(), *layer->material());
+
+	// Ray-traced view: the bodies group (spheres, rings, Sun glow) is left
+	// out of the raster pass and traced instead; everything else is still
+	// rasterised and composites with it through the depth buffer.
+	SceneObject& bodies = m_scene.group("bodies");
+	bodies.setVisible(!m_rayTraced);
 	m_scene.render(m_renderer);
+	bodies.setVisible(true);
+	if (m_rayTraced)
+		m_rayTracer.render(m_camera, m_window.aspectRatio(), m_traceScene, m_renderer.lighting(), Renderer::kFarPlane);
 	m_renderer.endFrame();
 
 	HudView view;
@@ -277,6 +301,9 @@ void Application::render()
 	view.hudVisible = m_hudVisible;
 	view.helpVisible = m_helpVisible;
 	view.extraLines = m_lighting.statusLines();
+	view.extraLines.push_back(m_rayTraced
+		? std::string("RENDER RAY-TRACED (F9)  REFLECTIONS ") + (m_rayTracer.maxBounces() > 0 ? "ON" : "OFF") + " (F10)"
+		: std::string("RENDER RASTER (F9 RAY-TRACE)"));
 	m_hud.render(m_text, view);
 }
 
@@ -313,6 +340,24 @@ void Application::startCaptureTour(const std::string& directory, const std::stri
 		m_mission.freezeBefore(planet, days);
 	};
 	auto pause = [this]() { m_mission.clock().setPaused(true); };
+
+	if (kind == "raytrace")
+	{
+		// Matching raster / ray-traced pairs of the same frozen views.
+		auto pair = [&](const std::string& name, double settle, std::function<void()> setup)
+		{
+			shots.push_back({ name + "_raster.bmp", settle, [=, this]() { m_rayTraced = false; setup(); } });
+			shots.push_back({ name + "_traced.bmp", 0.5, [this]() { m_rayTraced = true; } });
+		};
+		pair("saturn", 3.0, [=, this]() { pause(); focusById("saturn"); });
+		pair("jupiter_system", 3.0, [=, this]() { pause(); focusById("jupiter"); });
+		pair("earth", 3.0, [=, this]() { pause(); focusById("earth"); });
+		pair("voyager_jupiter", 3.0, [=, this]() { beforeEncounter(1, "jupiter", 0.25); });
+		pair("voyager_saturn", 3.0, [=, this]() { beforeEncounter(2, "saturn", 0.12); });
+		pair("overview", 1.5, [=, this]() { pause(); m_cameraController.goToOverview(); });
+		m_captureTour.start(directory, std::move(shots));
+		return;
+	}
 
 	if (kind == "shading")
 	{

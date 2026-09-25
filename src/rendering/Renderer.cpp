@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Camera.h"
+#include "LightingUniforms.h"
 
 bool Renderer::initialize()
 {
@@ -40,68 +41,9 @@ void Renderer::beginFrame(const Camera& camera, float aspectRatio)
 	glUniform1i(m_program.uniform("normalMap"), 1);
 	glUniform1i(m_program.uniform("specularMap"), 2);
 	glUniform1f(m_program.uniform("logDepthCoefficient"), 2.0f / std::log2(kFarPlane + 1.0f));
-	uploadLights();
-	uploadTraceScene(m_program);
-}
-
-void Renderer::uploadTraceScene(ShaderProgram& program) const
-{
-	const int sphereCount = std::min(static_cast<int>(m_traceScene.spheres.size()), RayTraceScene::kMaxSpheres);
-	glUniform1i(program.uniform("sphereCount"), sphereCount);
-	for (int i = 0; i < sphereCount; ++i)
-	{
-		const TraceSphere& sphere = m_traceScene.spheres[i];
-		const glm::vec4 packed(glm::vec3(sphere.center - m_origin), static_cast<float>(sphere.radius));
-		const std::string index = "[" + std::to_string(i) + "]";
-		glUniform4fv(program.uniform("spheres" + index), 1, &packed[0]);
-		glUniform1i(program.uniform("sphereEmissive" + index), sphere.emissive ? 1 : 0);
-	}
-
-	const int ringCount = std::min(static_cast<int>(m_traceScene.rings.size()), RayTraceScene::kMaxRings);
-	glUniform1i(program.uniform("ringCount"), ringCount);
-	for (int i = 0; i < ringCount; ++i)
-	{
-		const TraceRing& ring = m_traceScene.rings[i];
-		const glm::vec4 center(glm::vec3(ring.center - m_origin), static_cast<float>(ring.innerRadius));
-		const glm::vec4 normal(ring.normal, static_cast<float>(ring.outerRadius));
-		const std::string index = "[" + std::to_string(i) + "]";
-		glUniform4fv(program.uniform("ringCenters" + index), 1, &center[0]);
-		glUniform4fv(program.uniform("ringNormals" + index), 1, &normal[0]);
-		glUniform1f(program.uniform("ringOpacity" + index), ring.opacity);
-		glUniform3fv(program.uniform("ringColors" + index), 1, &ring.color[0]);
-	}
-
-	const glm::vec3 sunCenter(m_traceScene.sunPosition - m_origin);
-	glUniform3fv(program.uniform("sunCenter"), 1, &sunCenter[0]);
-	glUniform1f(program.uniform("sunLightRadius"), static_cast<float>(m_traceScene.sunLightRadius));
-	glUniform1i(program.uniform("shadowMode"), m_lighting.enabled ? static_cast<int>(m_lighting.shadows) : 0);
-}
-
-void Renderer::uploadLights()
-{
-	glUniform1i(m_program.uniform("lightingEnabled"), m_lighting.enabled ? 1 : 0);
-	glUniform1i(m_program.uniform("shadingTechnique"), static_cast<int>(m_lighting.technique));
-	glUniform1f(m_program.uniform("ambientStrength"), m_lighting.ambient);
-	glUniform1i(m_program.uniform("surfaceMapsEnabled"), m_lighting.surfaceMaps ? 1 : 0);
-
-	for (int i = 0; i < kMaxLights; ++i)
-	{
-		const Light& light = m_lighting.lights[i];
-		const std::string prefix = "lights[" + std::to_string(i) + "].";
-		// Camera-relative, computed in double before narrowing.
-		const glm::vec3 relativePosition(light.position - m_origin);
-		const glm::vec3 radiance = light.color * light.intensity;
-		const glm::vec3 direction = glm::length(light.direction) > 0.0f ? glm::normalize(light.direction)
-			: glm::vec3(0.0f, -1.0f, 0.0f);
-		glUniform1i(m_program.uniform(prefix + "type"), static_cast<int>(light.type));
-		glUniform1i(m_program.uniform(prefix + "enabled"), light.enabled ? 1 : 0);
-		glUniform3fv(m_program.uniform(prefix + "position"), 1, &relativePosition[0]);
-		glUniform3fv(m_program.uniform(prefix + "direction"), 1, &direction[0]);
-		glUniform3fv(m_program.uniform(prefix + "color"), 1, &radiance[0]);
-		glUniform3fv(m_program.uniform(prefix + "attenuation"), 1, &light.attenuation[0]);
-		glUniform1f(m_program.uniform(prefix + "innerCutoff"), light.innerCutoffCos);
-		glUniform1f(m_program.uniform(prefix + "outerCutoff"), light.outerCutoffCos);
-	}
+	LightingUniforms::uploadLights(m_program, m_lighting, m_origin);
+	LightingUniforms::uploadTraceScene(m_program, m_traceScene,
+		m_lighting.enabled ? m_lighting.shadows : ShadowMode::Off, m_origin);
 }
 
 void Renderer::applyMaterial(const Material& material)
@@ -184,6 +126,7 @@ void Renderer::endFrame()
 
 	// Halos and translucent sheets: depth-tested against the opaque scene but
 	// never written, so they cannot hide each other or what lies behind.
+	m_program.use(); // the ray tracer may have bound its own program
 	glEnable(GL_BLEND);
 	glDepthMask(GL_FALSE);
 	glUniform1i(m_program.uniform("useInstancing"), 0);

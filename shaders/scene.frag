@@ -29,6 +29,8 @@ uniform int surfaceMapsEnabled;
 // Material shading model: 0 unlit, 1 lit, 2 lit two-sided, 3 additive glow.
 uniform int shadingModel;
 uniform float opacity;
+uniform float specularStrength;
+uniform float specularPower;
 uniform int lightingEnabled;
 uniform float ambientStrength;
 
@@ -106,7 +108,8 @@ void main()
 	}
 	else
 	{
-		terms = evaluateLights(surfaceNormal, viewDirection, relativePosition, twoSided, shadingTechnique, specularScale);
+		terms = evaluateLights(surfaceNormal, viewDirection, relativePosition, twoSided, shadingTechnique,
+			specularStrength * specularScale, specularPower);
 	}
 
 	// Ray-traced shadow: one shadow ray per pixel toward the Sun, tested
