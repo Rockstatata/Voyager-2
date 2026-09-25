@@ -77,6 +77,7 @@ private:
 	CameraController m_cameraController{ m_camera, m_solarSystem, m_mission };
 	LightingController m_lighting;
 	RayTraceScene m_traceScene; // rebuilt every frame, reused storage
+	std::shared_ptr<TriangleBvh> m_voyagerBvh; // Voyager's triangles for ray tracing
 	HudOverlay m_hud;
 	CaptureTour m_captureTour;
 

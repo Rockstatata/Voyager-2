@@ -44,6 +44,11 @@ void Renderer::beginFrame(const Camera& camera, float aspectRatio)
 	LightingUniforms::uploadLights(m_program, m_lighting, m_origin);
 	LightingUniforms::uploadTraceScene(m_program, m_traceScene,
 		m_lighting.enabled ? m_lighting.shadows : ShadowMode::Off, m_origin);
+	if (m_tracedMesh != nullptr)
+		m_tracedMesh->bind(m_program, m_tracedMeshWorld, m_origin, m_tracedMeshRadius,
+			m_lighting.enabled && m_lighting.shadows != ShadowMode::Off);
+	else
+		glUniform1i(m_program.uniform("meshEnabled"), 0);
 }
 
 void Renderer::applyMaterial(const Material& material)
@@ -54,6 +59,7 @@ void Renderer::applyMaterial(const Material& material)
 	glUniform1f(m_program.uniform("specularPower"), material.specularPower);
 	glUniform1f(m_program.uniform("opacity"), material.opacity);
 	glUniform4fv(m_program.uniform("uvTransform"), 1, &material.uvTransform[0]);
+	glUniform1i(m_program.uniform("selfShadowing"), material.selfShadowing && m_tracedMesh != nullptr ? 1 : 0);
 
 	const bool hasTexture = material.albedoTexture != nullptr && material.albedoTexture->valid();
 	glUniform1i(m_program.uniform("useTexture"), hasTexture ? 1 : 0);

@@ -20,6 +20,7 @@
 #include "../rendering/MaterialLibrary.h"
 #include "../rendering/Mesh.h"
 #include "../rendering/ParabolicDishGenerator.h"
+#include "../rendering/TriangleBvh.h"
 
 namespace
 {
@@ -170,11 +171,15 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 	};
 	auto fl = [](double value) { return static_cast<float>(value); };
 
-	auto add = [&](std::unique_ptr<SceneObject> part, std::size_t triangles)
+	// Adds a part to the spacecraft AND its triangles (in the spacecraft's
+	// local frame) to the ray tracer's triangle list.
+	result.traceMesh = std::make_shared<TriangleBvh>();
+	auto add = [&](std::unique_ptr<SceneObject> part, const MeshData& data)
 	{
+		result.traceMesh->addMesh(data, part->transform().localMatrix(), part->material());
 		voyager.addChild(std::move(part));
 		++result.visiblePartCount;
-		result.renderedTriangleCount += triangles;
+		result.renderedTriangleCount += data.indices.size() / 3;
 	};
 	// Component registry for Inspect mode: a name, a one-line fact and the
 	// point (in metres, spacecraft frame) the camera should orbit.
@@ -189,7 +194,7 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 	auto addBox = [&](const std::string& name, const glm::dvec3& position, const glm::dvec3& dimensions,
 		const std::shared_ptr<Material>& material, const glm::dquat& rotation = glm::dquat(1.0, 0.0, 0.0, 0.0))
 	{
-		add(makePart(name, unitBox, material, position, rotation, dimensions), unitBoxData.indices.size() / 3);
+		add(makePart(name, unitBox, material, position, rotation, dimensions), unitBoxData);
 	};
 	// A cylinder (or frustum) centred at `centre` whose axis points along `axis`.
 	auto addCylinder = [&](const std::string& name, const glm::dvec3& centre, const glm::dvec3& axis,
@@ -197,7 +202,7 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 		const std::shared_ptr<Material>& material)
 	{
 		const MeshData data = CylinderGenerator::generate(fl(bottomRadius), fl(topRadius), fl(length), segments);
-		add(makePart(name, upload(data), material, centre, rotateYTo(axis)), data.indices.size() / 3);
+		add(makePart(name, upload(data), material, centre, rotateYTo(axis)), data);
 	};
 
 	// ------------------------------------------------------------------
@@ -207,7 +212,7 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 	const double busDepth = units(0.47);
 	const MeshData busData = CylinderGenerator::generate(fl(busRadius), fl(busRadius), fl(busDepth), 10);
 	add(makePart("voyager2_bus", upload(busData), darkMetal, glm::dvec3(0.0),
-		glm::angleAxis(glm::radians(90.0), glm::dvec3(1.0, 0.0, 0.0))), busData.indices.size() / 3);
+		glm::angleAxis(glm::radians(90.0), glm::dvec3(1.0, 0.0, 0.0))), busData);
 
 	// Ten electronics bays, one per face, each covered by a thermal blanket.
 	// Face k has its centre at angle (k + 0.5) * 36 degrees and sits at the
@@ -246,7 +251,7 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 			busDepth * 0.5 + units(0.32));
 		appendRod(feet, root, tip, units(0.025), 6);
 	}
-	add(makePart("voyager2_adapter_feet", upload(feet), aluminium), feet.indices.size() / 3);
+	add(makePart("voyager2_adapter_feet", upload(feet), aluminium), feet);
 
 	// ------------------------------------------------------------------
 	// Antenna stack along -Z: parabolic HGA, X-band feed, frequency-selective
@@ -254,25 +259,40 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 	// ------------------------------------------------------------------
 	const double dishRadius = units(3.7) * 0.5;
 	const double dishDepth = units(0.38);
-	const double dishRimZ = -busDepth * 0.5 - units(0.10);
+	// The bowl's vertex sits 4 cm in front of the bus face, so the reflector
+	// is mounted ON the bus rather than the bus poking through its bowl.
+	const double dishRimZ = -busDepth * 0.5 - dishDepth - units(0.04);
 	const glm::dvec3 minusZ(0.0, 0.0, -1.0);
 	const MeshData dishData = ParabolicDishGenerator::generate(fl(dishRadius), fl(dishDepth), fl(units(0.045)), 64, 12);
 	add(makePart("voyager2_high_gain_antenna", upload(dishData), whitePaint, glm::dvec3(0.0, 0.0, dishRimZ),
-		glm::angleAxis(glm::radians(-90.0), glm::dvec3(1.0, 0.0, 0.0))), dishData.indices.size() / 3);
+		glm::angleAxis(glm::radians(-90.0), glm::dvec3(1.0, 0.0, 0.0))), dishData);
 	component("High-gain antenna", "3.7 m parabolic reflector; X- and S-band link to Earth, boresight along -Z.",
 		glm::dvec3(0.0, 0.0, dishRimZ), 2.2);
 
 	// Radial ribs on the back of the dish (the reflector's support frame).
+	// Each rib follows the paraboloid's back face: at fraction x of the
+	// radius the surface is dishDepth * (1 - x^2) behind the rim, so six
+	// short rods bend along it instead of one straight rod cutting through
+	// the bowl.
 	MeshData ribs;
+	const double ribClearance = units(0.06);
+	auto backOfDish = [&](double fraction, const glm::dvec3& radial)
+	{
+		return radial * (dishRadius * fraction) +
+			glm::dvec3(0.0, 0.0, dishRimZ + dishDepth * (1.0 - fraction * fraction) + ribClearance);
+	};
 	for (int rib = 0; rib < 12; ++rib)
 	{
 		const double angle = glm::two_pi<double>() * rib / 12.0;
 		const glm::dvec3 radial(std::cos(angle), std::sin(angle), 0.0);
-		const glm::dvec3 hub = glm::dvec3(0.0, 0.0, dishRimZ + dishDepth * 0.9);
-		const glm::dvec3 rim = radial * (dishRadius * 0.97) + glm::dvec3(0.0, 0.0, dishRimZ + units(0.03));
-		appendRod(ribs, hub, rim, units(0.02), 5);
+		for (int piece = 0; piece < 6; ++piece)
+		{
+			const double from = 0.12 + 0.85 * piece / 6.0;
+			const double to = 0.12 + 0.85 * (piece + 1) / 6.0;
+			appendRod(ribs, backOfDish(from, radial), backOfDish(to, radial), units(0.02), 5);
+		}
 	}
-	add(makePart("voyager2_hga_ribs", upload(ribs), aluminium), ribs.indices.size() / 3);
+	add(makePart("voyager2_hga_ribs", upload(ribs), aluminium), ribs);
 
 	const double xFeedZ = dishRimZ - units(0.42);
 	const double subreflectorZ = dishRimZ - units(0.74);
@@ -294,7 +314,7 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 			dishRimZ + dishDepth * 0.35);
 		appendRod(feedSupports, rimPoint, glm::dvec3(0.0, 0.0, subreflectorZ), units(0.018), 6);
 	}
-	add(makePart("voyager2_hga_feed_supports", upload(feedSupports), aluminium), feedSupports.indices.size() / 3);
+	add(makePart("voyager2_hga_feed_supports", upload(feedSupports), aluminium), feedSupports);
 
 	// Sun sensor on the dish rim, looking along the boresight.
 	const glm::dvec3 sunSensor(0.0, dishRadius * 0.93, dishRimZ - units(0.06));
@@ -340,7 +360,7 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 		magnetometerDirection, units(0.2), units(0.2), units(0.6), 16, darkGoldFoil);
 	const MeshData magnetometerTruss = buildTriangularTruss(magnetometerStart + magnetometerDirection * units(0.6),
 		magnetometerEnd, units(0.055), 26, units(0.010));
-	add(makePart("voyager2_magnetometer_boom", upload(magnetometerTruss), aluminium), magnetometerTruss.indices.size() / 3);
+	add(makePart("voyager2_magnetometer_boom", upload(magnetometerTruss), aluminium), magnetometerTruss);
 	for (double station : { 0.9, 1.4 })
 		addBox("voyager2_high_field_magnetometer", magnetometerStart + magnetometerDirection * units(station),
 			glm::dvec3(units(0.14)), whitePaint, rotateYTo(magnetometerDirection));
@@ -361,7 +381,7 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 	const double rtgBoomLength = units(3.7);
 	const MeshData rtgTruss = buildTriangularTruss(rtgStart, rtgStart + rtgDirection * rtgBoomLength,
 		units(0.05), 9, units(0.013));
-	add(makePart("voyager2_rtg_boom", upload(rtgTruss), aluminium), rtgTruss.indices.size() / 3);
+	add(makePart("voyager2_rtg_boom", upload(rtgTruss), aluminium), rtgTruss);
 
 	MeshData rtgAssembly;
 	MeshData rtgCaps;
@@ -393,8 +413,8 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 			appendTransformed(rtgAssembly, unitBoxData, finTransform);
 		}
 	}
-	add(makePart("voyager2_three_rtgs", upload(rtgAssembly), darkMetal), rtgAssembly.indices.size() / 3);
-	add(makePart("voyager2_rtg_flanges", upload(rtgCaps), aluminium), rtgCaps.indices.size() / 3);
+	add(makePart("voyager2_three_rtgs", upload(rtgAssembly), darkMetal), rtgAssembly);
+	add(makePart("voyager2_rtg_flanges", upload(rtgCaps), aluminium), rtgCaps);
 	component("Radioisotope generators", "Three plutonium-238 RTGs in tandem; about 470 W at launch, still powering Voyager today.",
 		rtgStart + rtgDirection * (rtgBoomLength + units(0.9)), 1.6);
 
@@ -406,7 +426,7 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 	const glm::dvec3 scienceDirection = glm::normalize(glm::dvec3(3.0, 0.30, 0.15));
 	const glm::dvec3 scienceEnd = scienceStart + scienceDirection * units(3.0);
 	const MeshData scienceTruss = buildTriangularTruss(scienceStart, scienceEnd, units(0.05), 7, units(0.013));
-	add(makePart("voyager2_science_boom", upload(scienceTruss), aluminium), scienceTruss.indices.size() / 3);
+	add(makePart("voyager2_science_boom", upload(scienceTruss), aluminium), scienceTruss);
 
 	// Plasma Science: a cylinder with sensor cups looking out along the boom.
 	const glm::dvec3 plasma = scienceStart + scienceDirection * units(0.9) + glm::dvec3(0.0, units(0.22), 0.0);
@@ -482,7 +502,7 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 		units(0.012), 6);
 	appendRod(plasmaAntennas, antennaRoot, antennaRoot + glm::normalize(glm::dvec3(0.75, -1.0, -0.15)) * units(10.0),
 		units(0.012), 6);
-	add(makePart("voyager2_plasma_wave_antennas", upload(plasmaAntennas), aluminium), plasmaAntennas.indices.size() / 3);
+	add(makePart("voyager2_plasma_wave_antennas", upload(plasmaAntennas), aluminium), plasmaAntennas);
 	addBox("voyager2_pra_root", antennaRoot, { units(0.22), units(0.14), units(0.18) }, goldFoil);
 	component("Radio and plasma wave antennas", "Two 10 m whips in a V: they heard lightning at Uranus and plasma waves at the heliopause.",
 		antennaRoot, 1.2);
@@ -507,7 +527,7 @@ VoyagerModelBuildResult VoyagerModelBuilder::build()
 			const glm::dvec3 position = radial * (busRadius + units(0.14)) + tangent * (tangentSign * units(0.06))
 				+ glm::dvec3(0.0, 0.0, axialSign * units(0.12));
 			add(makePart("voyager2_thruster_" + std::to_string(cluster * 4 + nozzle), thrusterMesh, copper, position,
-				radialRotation), thrusterData.indices.size() / 3);
+				radialRotation), thrusterData);
 		}
 	}
 	component("Attitude thrusters", "Sixteen small hydrazine thrusters in four clusters; they turn the craft and trimmed its trajectory.",

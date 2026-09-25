@@ -75,6 +75,8 @@ void Application::buildScene()
 
 	VoyagerModelBuildResult model = VoyagerModelBuilder::build();
 	m_voyager = model.spacecraft.get();
+	m_voyagerBvh = model.traceMesh;
+	m_voyagerBvh->build();
 	// 13 m magnetometer boom tip to RTG boom tip, with margin.
 	m_voyager->setBoundingRadius(ScaleManager().spacecraftSizeToRenderUnits(9.0));
 	m_scene.group("spacecraft").addChild(std::move(model.spacecraft));
@@ -334,6 +336,8 @@ void Application::render()
 		m_cameraController.nearestSurfaceDistance(m_camera.position())));
 	m_solarSystem.buildTraceScene(m_traceScene, m_sunPosition);
 	m_renderer.setTraceScene(m_traceScene);
+	m_renderer.setTracedMesh(m_voyagerBvh.get(), m_voyager->worldMatrix(), m_voyager->boundingRadius());
+	m_rayTracer.setTracedMesh(m_voyagerBvh.get(), m_voyager->worldMatrix(), m_voyager->boundingRadius());
 	m_renderer.beginFrame(m_camera, m_window.aspectRatio());
 	for (const auto& layer : m_backgroundLayers)
 		m_renderer.submitBackground(*layer->mesh(), *layer->material());
@@ -342,9 +346,12 @@ void Application::render()
 	// out of the raster pass and traced instead; everything else is still
 	// rasterised and composites with it through the depth buffer.
 	SceneObject& bodies = m_scene.group("bodies");
+	SceneObject& spacecraft = m_scene.group("spacecraft");
 	bodies.setVisible(!m_rayTraced);
+	spacecraft.setVisible(!m_rayTraced);   // traced as triangles instead
 	m_scene.render(m_renderer);
 	bodies.setVisible(true);
+	spacecraft.setVisible(true);
 	if (m_rayTraced)
 		m_rayTracer.render(m_camera, m_window.aspectRatio(), m_traceScene, m_renderer.lighting(), Renderer::kFarPlane);
 	m_renderer.endFrame();
@@ -457,6 +464,8 @@ void Application::startCaptureTour(const std::string& directory, const std::stri
 		pair("voyager_jupiter", 3.0, [=, this]() { beforeEncounter(1, "jupiter", 0.25); });
 		pair("voyager_saturn", 3.0, [=, this]() { beforeEncounter(2, "saturn", 0.12); });
 		pair("overview", 1.5, [=, this]() { pause(); m_cameraController.goToOverview(); });
+		pair("voyager_inspect", 3.0, [=, this]() { jumpToBookmark(0); pause(); m_cameraController.inspect(-1); });
+		pair("voyager_dish", 3.0, [=, this]() { m_cameraController.inspect(1); });
 		m_captureTour.start(directory, std::move(shots));
 		return;
 	}

@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <memory>
 
+class TriangleBvh;
 class Voyager2;
 
 struct VoyagerModelBuildResult
@@ -11,6 +12,8 @@ struct VoyagerModelBuildResult
 	std::unique_ptr<Voyager2> spacecraft;
 	std::size_t visiblePartCount = 0;
 	std::size_t renderedTriangleCount = 0;
+	// Every visible triangle in the spacecraft's frame, for ray tracing.
+	std::shared_ptr<TriangleBvh> traceMesh;
 };
 
 // Owns the procedural construction recipe for the spacecraft's visible

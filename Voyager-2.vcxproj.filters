@@ -30,6 +30,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendering\TriangleBvh.cpp">
+      <Filter>src\rendering</Filter>
+    </ClCompile>
     <ClCompile Include="src\rendering\LightingUniforms.cpp">
       <Filter>src\rendering</Filter>
     </ClCompile>
@@ -179,6 +182,9 @@
 	</ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\TriangleBvh.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
     <ClInclude Include="src\rendering\LightingUniforms.h">
       <Filter>src\rendering</Filter>
     </ClInclude>
@@ -349,6 +355,7 @@
     <None Include="shaders\raytrace.frag" />
     <None Include="shaders\raytrace.glsl" />
     <None Include="shaders\raytrace.vert" />
+    <None Include="shaders\raytrace_mesh.glsl" />
     <None Include="shaders\scene.frag" />
     <None Include="shaders\scene.vert" />
   </ItemGroup>

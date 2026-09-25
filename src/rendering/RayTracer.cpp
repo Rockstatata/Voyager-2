@@ -110,6 +110,11 @@ void RayTracer::render(const Camera& camera, float aspectRatio, const RayTraceSc
 	LightingUniforms::uploadTraceScene(m_program, scene,
 		lighting.enabled ? lighting.shadows : ShadowMode::Off, origin);
 
+	if (m_tracedMesh != nullptr)
+		m_tracedMesh->bind(m_program, m_tracedMeshWorld, origin, m_tracedMeshRadius, true);
+	else
+		glUniform1i(m_program.uniform("meshEnabled"), 0);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D_ARRAY, m_atlas);
 

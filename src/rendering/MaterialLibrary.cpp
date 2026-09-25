@@ -129,5 +129,6 @@ std::shared_ptr<Material> MaterialLibrary::spacecraft(const glm::vec3& color, fl
 	material->baseColor = color;
 	material->specularStrength = specular;
 	material->specularPower = power;
+	material->selfShadowing = true;
 	return material;
 }

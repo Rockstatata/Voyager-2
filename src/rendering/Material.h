@@ -38,6 +38,9 @@ struct Material
 	// uv * (z, w) + (x, y), so one atlas image serves many parts
 	// (Voyager's NASA hardware photographs). Identity = (0, 0, 1, 1).
 	glm::vec4 uvTransform{ 0.0f, 0.0f, 1.0f, 1.0f };
+
+	// Traces shadow rays through the spacecraft's BVH (self-shadowing).
+	bool selfShadowing = false;
 };
 
 #endif

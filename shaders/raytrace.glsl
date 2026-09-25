@@ -3,6 +3,8 @@
 // Used by scene.frag for ray-traced shadows and by raytrace.frag for the
 // fully ray-traced view. All positions are camera-relative.
 
+#include "raytrace_mesh.glsl"
+
 #define MAX_SPHERES 32
 #define MAX_RINGS 16
 #define PI 3.14159265358979
@@ -69,8 +71,9 @@ float discCoverage(float r1, float r2, float separation)
 }
 
 // Shadow ray from surface point p toward the Sun. Returns the fraction of
-// sunlight that arrives (1 = fully lit, 0 = umbra).
-float sunVisibility(vec3 p)
+// sunlight that arrives (1 = fully lit, 0 = umbra). With testMesh the ray is
+// also traced through Voyager's BVH, so its dish can shade its own bus.
+float sunVisibility(vec3 p, bool testMesh)
 {
 	if (shadowMode == 0)
 		return 1.0;
@@ -111,6 +114,14 @@ float sunVisibility(vec3 p)
 			float separation = acos(clamp(dot(toCentre / centreDistance, direction), -1.0, 1.0));
 			visibility *= 1.0 - discCoverage(sunAngle, occluderAngle, separation);
 		}
+	}
+
+	if (testMesh && visibility > 0.0)
+	{
+		// Any triangle between the point and the Sun blocks it completely
+		// (the spacecraft is tiny next to the Sun's disc: a hard shadow).
+		if (intersectMesh(p, direction, 0.0, sunDistance, true).t > 0.0)
+			return 0.0;
 	}
 
 	for (int i = 0; i < MAX_RINGS; ++i)

@@ -10,6 +10,7 @@
 #include "Mesh.h"
 #include "RayTraceScene.h"
 #include "ShaderProgram.h"
+#include "TriangleBvh.h"
 
 class Camera;
 
@@ -38,6 +39,13 @@ public:
 	// Spheres and ring bands the shadow rays are traced against.
 	void setTraceScene(const RayTraceScene& scene) { m_traceScene = scene; }
 	const RayTraceScene& traceScene() const { return m_traceScene; }
+	// Triangle mesh (Voyager) the shadow rays also trace, and its placement.
+	void setTracedMesh(const TriangleBvh* bvh, const glm::dmat4& worldMatrix, double boundingRadius)
+	{
+		m_tracedMesh = bvh;
+		m_tracedMeshWorld = worldMatrix;
+		m_tracedMeshRadius = boundingRadius;
+	}
 	const LightingState& lighting() const { return m_lighting; }
 
 	// Clears the frame and uploads camera matrices and lights.
@@ -78,6 +86,9 @@ private:
 	glm::dvec3 m_origin{ 0.0 };
 	LightingState m_lighting;
 	RayTraceScene m_traceScene;
+	const TriangleBvh* m_tracedMesh = nullptr;
+	glm::dmat4 m_tracedMeshWorld{ 1.0 };
+	double m_tracedMeshRadius = 0.0;
 	std::vector<DeferredDraw> m_deferred;
 };
 

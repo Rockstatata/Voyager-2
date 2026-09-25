@@ -148,6 +148,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendering\TriangleBvh.cpp" />
     <ClCompile Include="src\rendering\LightingUniforms.cpp" />
     <ClCompile Include="src\rendering\RayTracer.cpp" />
     <ClCompile Include="src\rendering\SurfaceMaps.cpp" />
@@ -205,10 +206,12 @@
     <None Include="shaders\raytrace.frag" />
     <None Include="shaders\raytrace.glsl" />
     <None Include="shaders\raytrace.vert" />
+    <None Include="shaders\raytrace_mesh.glsl" />
     <None Include="shaders\scene.frag" />
     <None Include="shaders\scene.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\TriangleBvh.h" />
     <ClInclude Include="src\rendering\LightingUniforms.h" />
     <ClInclude Include="src\rendering\RayTracer.h" />
     <ClInclude Include="src\rendering\RayTraceScene.h" />

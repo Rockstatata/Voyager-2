@@ -26,6 +26,13 @@ uniform int sphereLayer[MAX_SPHERES];     // albedo layer in the atlas
 uniform vec3 sphereMaterial[MAX_SPHERES]; // specular strength, power, reflectivity
 uniform vec3 ringColors[MAX_RINGS];
 
+// Voyager's material palette (TriangleBvh::bind).
+uniform sampler2D meshAtlas;
+uniform vec3 meshMaterialColor[MAX_MESH_MATERIALS];
+uniform vec2 meshMaterialSpecular[MAX_MESH_MATERIALS];   // strength, power
+uniform vec4 meshMaterialUv[MAX_MESH_MATERIALS];         // atlas window
+uniform int meshMaterialTextured[MAX_MESH_MATERIALS];
+
 const int MAX_LAYERS = 4;          // translucent ring layers one ray may cross
 const float SURFACE_EPSILON = 1e-4;
 
@@ -52,7 +59,9 @@ vec3 lightSurface(vec3 albedo, vec3 p, vec3 n, vec3 v, bool twoSided, float spec
 	if (lightingEnabled == 0)
 		return albedo;
 	LightTerms terms = evaluateLights(n, v, p, twoSided, SHADING_BLINN_PHONG, specularStrength, specularPower);
-	float sunlight = sunVisibility(p);  // the shadow ray
+	// The shadow ray, traced through spheres, rings and Voyager's triangles;
+	// it starts just above the surface so it cannot hit its own triangle.
+	float sunlight = sunVisibility(p + n * 2e-5, true);
 	return albedo * (ambientStrength + terms.sunDiffuse * sunlight + terms.otherDiffuse) +
 		terms.sunSpecular * sunlight + terms.otherSpecular;
 }
@@ -66,6 +75,8 @@ struct RayResult
 	float transmittance;
 	float firstT;        // distance to the first thing hit, -1 on a miss
 	int sphere;          // opaque sphere index, -1 if none
+	bool mesh;           // the opaque hit is on Voyager
+	float reflectivity;  // of the opaque hit
 	vec3 point;
 	vec3 normal;
 	float opaqueWeight;  // transmittance in front of the opaque hit
@@ -78,6 +89,8 @@ RayResult castRay(vec3 origin, vec3 direction)
 	result.transmittance = 1.0;
 	result.firstT = -1.0;
 	result.sphere = -1;
+	result.mesh = false;
+	result.reflectivity = 0.0;
 	result.point = vec3(0.0);
 	result.normal = vec3(0.0);
 	result.opaqueWeight = 0.0;
@@ -114,6 +127,35 @@ RayResult castRay(vec3 origin, vec3 direction)
 				hitSphere = -1;
 			}
 		}
+		// Voyager's triangles, nearer than any sphere or ring found so far.
+		MeshHit meshHit = intersectMesh(rayOrigin, direction, SURFACE_EPSILON * 0.01, nearest, false);
+		if (meshHit.t > 0.0)
+		{
+			vec3 p = rayOrigin + direction * meshHit.t;
+			if (result.firstT < 0.0)
+				result.firstT = travelled + meshHit.t;
+			vec3 n;
+			vec2 uv;
+			int material;
+			meshSurface(meshHit, n, uv, material);
+			if (dot(n, direction) > 0.0)
+				n = -n;           // thin parts are seen from both sides
+			vec3 albedo = meshMaterialColor[material];
+			if (meshMaterialTextured[material] != 0)
+				albedo *= texture(meshAtlas, uv * meshMaterialUv[material].zw + meshMaterialUv[material].xy).rgb;
+			vec2 specular = meshMaterialSpecular[material];
+			vec3 shaded = lightSurface(albedo, p, n, -direction, false, specular.x, specular.y);
+			result.opaqueWeight = result.transmittance;
+			result.color += result.transmittance * shaded;
+			result.transmittance = 0.0;
+			result.mesh = true;
+			// Polished foil and metal mirror a little of the scene.
+			result.reflectivity = specular.x * 0.3;
+			result.point = p;
+			result.normal = n;
+			break;
+		}
+
 		if (hitSphere < 0 && hitRing < 0)
 			break;
 
@@ -145,6 +187,7 @@ RayResult castRay(vec3 origin, vec3 direction)
 		result.color += result.transmittance * shaded;
 		result.transmittance = 0.0;
 		result.sphere = hitSphere;
+		result.reflectivity = sphereEmissive[hitSphere] != 0 ? 0.0 : sphereMaterial[hitSphere].z;
 		result.point = p;
 		result.normal = n;
 		break;
@@ -163,15 +206,14 @@ void main()
 	RayResult primary = castRay(vec3(0.0), direction);
 
 	// Whitted reflection: one mirror bounce off reflective (icy, ocean) worlds.
-	if (primary.sphere >= 0 && maxBounces > 0 && sphereEmissive[primary.sphere] == 0)
+	if ((primary.sphere >= 0 || primary.mesh) && maxBounces > 0 && primary.reflectivity > 0.0)
 	{
-		float reflectivity = sphereMaterial[primary.sphere].z;
-		if (reflectivity > 0.0)
-		{
-			vec3 bounceDirection = reflect(direction, primary.normal);
-			RayResult bounce = castRay(primary.point + primary.normal * SURFACE_EPSILON * 10.0, bounceDirection);
-			primary.color += primary.opaqueWeight * reflectivity * bounce.color;
-		}
+		// Whitted reflection: one mirror bounce off reflective surfaces
+		// (icy moons, oceans, Voyager's foil and polished metal).
+		vec3 bounceDirection = reflect(direction, primary.normal);
+		float bias = primary.mesh ? 2e-5 : SURFACE_EPSILON * 10.0;
+		RayResult bounce = castRay(primary.point + primary.normal * bias, bounceDirection);
+		primary.color += primary.opaqueWeight * primary.reflectivity * bounce.color;
 	}
 
 	// Solar glow: how close the primary ray passes to the Sun's centre.

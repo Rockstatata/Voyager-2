@@ -9,6 +9,7 @@
 #include "Lighting.h"
 #include "RayTraceScene.h"
 #include "ShaderProgram.h"
+#include "TriangleBvh.h"
 
 class Camera;
 
@@ -41,6 +42,14 @@ public:
 	void render(const Camera& camera, float aspectRatio, const RayTraceScene& scene,
 		const LightingState& lighting, float farPlane);
 
+	// Voyager's triangles, traced by the same pass (see TriangleBvh).
+	void setTracedMesh(const TriangleBvh* bvh, const glm::dmat4& worldMatrix, double boundingRadius)
+	{
+		m_tracedMesh = bvh;
+		m_tracedMeshWorld = worldMatrix;
+		m_tracedMeshRadius = boundingRadius;
+	}
+
 	// Reflection bounces per primary ray (0 = shadow rays only).
 	void setMaxBounces(int bounces) { m_maxBounces = bounces; }
 	int maxBounces() const { return m_maxBounces; }
@@ -54,6 +63,9 @@ private:
 	bool m_atlasBuilt = false;
 	std::vector<std::string> m_texturePaths;
 	int m_maxBounces = 1;
+	const TriangleBvh* m_tracedMesh = nullptr;
+	glm::dmat4 m_tracedMeshWorld{ 1.0 };
+	double m_tracedMeshRadius = 0.0;
 
 	static constexpr int kAtlasWidth = 1024;
 	static constexpr int kAtlasHeight = 512;

@@ -31,6 +31,7 @@ uniform int shadingModel;
 uniform float opacity;
 uniform float specularStrength;
 uniform float specularPower;
+uniform int selfShadowing; // spacecraft parts: trace shadow rays through Voyager's BVH
 uniform int lightingEnabled;
 uniform float ambientStrength;
 
@@ -114,7 +115,11 @@ void main()
 
 	// Ray-traced shadow: one shadow ray per pixel toward the Sun, tested
 	// against every body sphere and ring band (raytrace.glsl).
-	float sunlight = sunVisibility(relativePosition);
+	// Spacecraft parts start the ray a hair above their own surface (the
+	// "shadow bias") so a triangle cannot shadow itself.
+	float sunlight = selfShadowing != 0
+		? sunVisibility(relativePosition + normalize(normal) * 2e-5, true)
+		: sunVisibility(relativePosition, false);
 	vec3 diffuse = terms.sunDiffuse * sunlight + terms.otherDiffuse;
 	vec3 specular = terms.sunSpecular * sunlight + terms.otherSpecular;
 	vec3 lit = color * (ambientStrength + diffuse) + specular;
