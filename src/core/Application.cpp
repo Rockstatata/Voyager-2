@@ -51,6 +51,8 @@ bool Application::initialize(int argc, char** argv)
 			startCaptureTour(argv[i + 1], "raytrace");
 		else if (option == "--capture-voyager")
 			startCaptureTour(argv[i + 1], "voyager");
+		else if (option == "--benchmark")
+			startBenchmark(argv[i + 1]);
 	}
 
 	m_initialized = true;
@@ -60,6 +62,9 @@ bool Application::initialize(int argc, char** argv)
 void Application::buildScene()
 {
 	m_sphereMesh = std::make_shared<Mesh>(UvSphereGenerator::generate(32, 64));
+	m_sphereMeshMedium = std::make_shared<Mesh>(UvSphereGenerator::generate(16, 32));
+	m_sphereMeshLow = std::make_shared<Mesh>(UvSphereGenerator::generate(8, 16));
+	CelestialBody::setSphereLods(m_sphereMesh.get(), m_sphereMeshMedium.get(), m_sphereMeshLow.get());
 
 	SolarSystemBuilder::build(m_solarSystem,
 		BodyCatalog::loadBodies("assets/data/celestial_bodies.csv"),
@@ -118,7 +123,9 @@ void Application::run()
 		m_input.update();
 
 		update(m_time.deltaTime());
+		m_benchmark.beginGpu();
 		render();
+		m_benchmark.endGpu();
 
 		if (m_screenshotRequested)
 		{
@@ -131,6 +138,8 @@ void Application::run()
 		}
 		if (m_captureTour.active() &&
 			!m_captureTour.afterRender(m_time.deltaTime(), m_window.width(), m_window.height()))
+			m_window.requestClose();
+		if (m_benchmark.active() && !m_benchmark.afterFrame(m_time.deltaTime(), m_renderer.stats()))
 			m_window.requestClose();
 
 		m_window.swapBuffers();
@@ -272,6 +281,37 @@ void Application::handleKeys()
 	}
 }
 
+void Application::startBenchmark(const std::string& outputPath)
+{
+	auto focusById = [this](const char* id)
+	{
+		const auto& bodies = m_solarSystem.bodies();
+		for (int i = 0; i < static_cast<int>(bodies.size()); ++i)
+		{
+			if (bodies[i]->data().id == id)
+				m_cameraController.focusBody(i);
+		}
+	};
+	auto pause = [this]() { m_mission.clock().setPaused(true); };
+	auto raster = [this]() { m_rayTraced = false; };
+
+	// The same views every run, covering each expensive path: the whole
+	// system, Voyager close up (self-shadowing), ringed planets (shadow
+	// rays through rings) and the ray-traced view.
+	std::vector<Benchmark::View> views = {
+		{ "overview", [=, this]() { raster(); pause(); m_cameraController.goToOverview(); } },
+		{ "launch_chase", [=, this]() { raster(); jumpToBookmark(0); pause(); } },
+		{ "jupiter_focus", [=, this]() { raster(); pause(); focusById("jupiter"); } },
+		{ "saturn_focus", [=, this]() { raster(); pause(); focusById("saturn"); } },
+		{ "voyager_inspect", [=, this]() { raster(); jumpToBookmark(0); pause(); m_cameraController.inspect(-1); } },
+		{ "voyager_dish_closeup", [=, this]() { raster(); m_cameraController.inspect(1); } },
+		{ "saturn_raytraced", [=, this]() { pause(); focusById("saturn"); m_rayTraced = true; } },
+		{ "voyager_raytraced", [=, this]() { jumpToBookmark(0); pause(); m_cameraController.inspect(-1); m_rayTraced = true; } },
+	};
+	m_window.setVsync(false);
+	m_benchmark.start(outputPath, std::move(views));
+}
+
 void Application::jumpToBookmark(int index)
 {
 	if (m_mission.jumpToBookmark(index) != nullptr)
@@ -336,9 +376,25 @@ void Application::render()
 		m_cameraController.nearestSurfaceDistance(m_camera.position())));
 	m_solarSystem.buildTraceScene(m_traceScene, m_sunPosition);
 	m_renderer.setTraceScene(m_traceScene);
-	m_renderer.setTracedMesh(m_voyagerBvh.get(), m_voyager->worldMatrix(), m_voyager->boundingRadius());
 	m_rayTracer.setTracedMesh(m_voyagerBvh.get(), m_voyager->worldMatrix(), m_voyager->boundingRadius());
 	m_renderer.beginFrame(m_camera, m_window.aspectRatio());
+
+	// Voyager's self-shadows: a depth pass from the Sun, only while the craft
+	// is on screen and big enough (within 200 bounding radii) to show them.
+	const double voyagerRadius = m_voyager->boundingRadius();
+	const glm::dvec3 voyagerPosition = m_voyager->transform().position;
+	if (!m_rayTraced && m_renderer.isVisible(voyagerPosition, voyagerRadius) &&
+		glm::length(voyagerPosition - m_camera.position()) < voyagerRadius * 200.0)
+	{
+		m_shadowCasters.clear();
+		for (const auto& part : m_voyager->children())
+		{
+			if (part->mesh() != nullptr && part->visible())
+				m_shadowCasters.push_back({ part->mesh().get(), part->worldMatrix() });
+		}
+		m_renderer.renderShadowMap(m_shadowCasters, voyagerPosition, voyagerRadius, m_sunPosition,
+			m_window.width(), m_window.height());
+	}
 	for (const auto& layer : m_backgroundLayers)
 		m_renderer.submitBackground(*layer->mesh(), *layer->material());
 

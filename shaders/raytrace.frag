@@ -54,14 +54,15 @@ vec3 sphereAlbedo(int index, vec3 worldNormal)
 	return textureGrad(albedoAtlas, vec3(uv, float(sphereLayer[index])), dx, dy).rgb;
 }
 
-vec3 lightSurface(vec3 albedo, vec3 p, vec3 n, vec3 v, bool twoSided, float specularStrength, float specularPower)
+vec3 lightSurface(vec3 albedo, vec3 p, vec3 n, vec3 v, bool twoSided, float specularStrength, float specularPower,
+	bool meshShadow)
 {
 	if (lightingEnabled == 0)
 		return albedo;
 	LightTerms terms = evaluateLights(n, v, p, twoSided, SHADING_BLINN_PHONG, specularStrength, specularPower);
 	// The shadow ray, traced through spheres, rings and Voyager's triangles;
 	// it starts just above the surface so it cannot hit its own triangle.
-	float sunlight = sunVisibility(p + n * 2e-5, true);
+	float sunlight = sunVisibility(p + n * 2e-5, meshShadow);
 	return albedo * (ambientStrength + terms.sunDiffuse * sunlight + terms.otherDiffuse) +
 		terms.sunSpecular * sunlight + terms.otherSpecular;
 }
@@ -82,7 +83,10 @@ struct RayResult
 	float opaqueWeight;  // transmittance in front of the opaque hit
 };
 
-RayResult castRay(vec3 origin, vec3 direction)
+// withMesh: also trace Voyager's triangles. Reflection rays pass false: they
+// see planets and rings, but not the craft reflected in itself, which halves
+// the cost of the bounce (docs/guide/11-performance.md).
+RayResult castRay(vec3 origin, vec3 direction, bool withMesh)
 {
 	RayResult result;
 	result.color = vec3(0.0);
@@ -128,7 +132,10 @@ RayResult castRay(vec3 origin, vec3 direction)
 			}
 		}
 		// Voyager's triangles, nearer than any sphere or ring found so far.
-		MeshHit meshHit = intersectMesh(rayOrigin, direction, SURFACE_EPSILON * 0.01, nearest, false);
+		MeshHit meshHit;
+		meshHit.t = -1.0;
+		if (withMesh)
+			meshHit = intersectMesh(rayOrigin, direction, SURFACE_EPSILON * 0.01, nearest, false);
 		if (meshHit.t > 0.0)
 		{
 			vec3 p = rayOrigin + direction * meshHit.t;
@@ -144,7 +151,7 @@ RayResult castRay(vec3 origin, vec3 direction)
 			if (meshMaterialTextured[material] != 0)
 				albedo *= texture(meshAtlas, uv * meshMaterialUv[material].zw + meshMaterialUv[material].xy).rgb;
 			vec2 specular = meshMaterialSpecular[material];
-			vec3 shaded = lightSurface(albedo, p, n, -direction, false, specular.x, specular.y);
+			vec3 shaded = lightSurface(albedo, p, n, -direction, false, specular.x, specular.y, true);
 			result.opaqueWeight = result.transmittance;
 			result.color += result.transmittance * shaded;
 			result.transmittance = 0.0;
@@ -169,7 +176,7 @@ RayResult castRay(vec3 origin, vec3 direction)
 			vec3 n = ringNormals[hitRing].xyz;
 			if (dot(n, direction) > 0.0)
 				n = -n;
-			vec3 shaded = lightSurface(ringColors[hitRing], p, n, -direction, true, 0.0, 8.0);
+			vec3 shaded = lightSurface(ringColors[hitRing], p, n, -direction, true, 0.0, 8.0, withMesh);
 			float opacity = ringOpacity[hitRing];
 			result.color += result.transmittance * opacity * shaded;
 			result.transmittance *= 1.0 - opacity;
@@ -182,7 +189,8 @@ RayResult castRay(vec3 origin, vec3 direction)
 		vec3 n = normalize(p - spheres[hitSphere].xyz);
 		vec3 albedo = sphereAlbedo(hitSphere, n);
 		vec3 shaded = sphereEmissive[hitSphere] != 0 ? albedo * 1.25
-			: lightSurface(albedo, p, n, -direction, false, sphereMaterial[hitSphere].x, sphereMaterial[hitSphere].y);
+			: lightSurface(albedo, p, n, -direction, false, sphereMaterial[hitSphere].x, sphereMaterial[hitSphere].y,
+				withMesh);
 		result.opaqueWeight = result.transmittance;
 		result.color += result.transmittance * shaded;
 		result.transmittance = 0.0;
@@ -203,7 +211,7 @@ void main()
 	vec3 direction = normalize(cameraForward + ndc.x * tanHalfFov * aspectRatio * cameraRight +
 		ndc.y * tanHalfFov * cameraUp);
 
-	RayResult primary = castRay(vec3(0.0), direction);
+	RayResult primary = castRay(vec3(0.0), direction, true);
 
 	// Whitted reflection: one mirror bounce off reflective (icy, ocean) worlds.
 	if ((primary.sphere >= 0 || primary.mesh) && maxBounces > 0 && primary.reflectivity > 0.0)
@@ -212,7 +220,7 @@ void main()
 		// (icy moons, oceans, Voyager's foil and polished metal).
 		vec3 bounceDirection = reflect(direction, primary.normal);
 		float bias = primary.mesh ? 2e-5 : SURFACE_EPSILON * 10.0;
-		RayResult bounce = castRay(primary.point + primary.normal * bias, bounceDirection);
+		RayResult bounce = castRay(primary.point + primary.normal * bias, bounceDirection, false);
 		primary.color += primary.opaqueWeight * primary.reflectivity * bounce.color;
 	}
 

@@ -45,6 +45,14 @@ public:
 
 	GLsizei indexCount() const { return m_indexCount; }
 	GLsizei vertexCount() const { return m_vertexCount; }
+	GLsizei instanceCount() const { return m_instanceCount; }
+	// Triangles one draw() (or drawInstanced()) produces; 0 for lines/points.
+	long long triangleCount(bool instanced = false) const
+	{
+		if (m_primitiveMode != PrimitiveMode::Triangles)
+			return 0;
+		return static_cast<long long>(m_indexCount / 3) * (instanced ? m_instanceCount : 1);
+	}
 
 private:
 	GLenum glPrimitive() const;

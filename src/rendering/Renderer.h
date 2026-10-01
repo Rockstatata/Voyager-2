@@ -10,7 +10,8 @@
 #include "Mesh.h"
 #include "RayTraceScene.h"
 #include "ShaderProgram.h"
-#include "TriangleBvh.h"
+#include "ShadowMap.h"
+#include "../core/Benchmark.h"
 
 class Camera;
 
@@ -39,17 +40,21 @@ public:
 	// Spheres and ring bands the shadow rays are traced against.
 	void setTraceScene(const RayTraceScene& scene) { m_traceScene = scene; }
 	const RayTraceScene& traceScene() const { return m_traceScene; }
-	// Triangle mesh (Voyager) the shadow rays also trace, and its placement.
-	void setTracedMesh(const TriangleBvh* bvh, const glm::dmat4& worldMatrix, double boundingRadius)
-	{
-		m_tracedMesh = bvh;
-		m_tracedMeshWorld = worldMatrix;
-		m_tracedMeshRadius = boundingRadius;
-	}
 	const LightingState& lighting() const { return m_lighting; }
 
-	// Clears the frame and uploads camera matrices and lights.
+	// Clears the frame and uploads camera matrices and lights. Also extracts
+	// the six view-frustum planes used by isVisible().
 	void beginFrame(const Camera& camera, float aspectRatio);
+
+	// Frustum culling: false when a bounding sphere (world space) lies wholly
+	// outside the view, so its draw can be skipped.
+	bool isVisible(const glm::dvec3& centre, double radius) const;
+
+	// Draws the shadow casters (Voyager's parts) into the shadow map from the
+	// Sun, then restores the scene program. Call after beginFrame(); materials
+	// with selfShadowing then sample it (docs/guide/11-performance.md).
+	void renderShadowMap(const std::vector<ShadowMap::Caster>& casters, const glm::dvec3& centre,
+		double radius, const glm::dvec3& sunPosition, int viewportWidth, int viewportHeight);
 
 	// Per-object draw. Geometry, appearance and placement remain independent.
 	// Glow and translucent materials are queued and drawn in endFrame().
@@ -69,7 +74,12 @@ public:
 	void setClearColor(const glm::vec4& color) { m_clearColor = color; }
 	const glm::dvec3& origin() const { return m_origin; }
 
+	// Draw calls and triangles submitted since beginFrame (benchmark, HUD).
+	const RenderStats& stats() const { return m_stats; }
+
 	static constexpr float kFarPlane = 1.0e6f;
+	static constexpr int kShadowMapSize = 2048;
+	static constexpr GLuint kShadowMapUnit = 6;
 
 private:
 	struct DeferredDraw
@@ -80,16 +90,37 @@ private:
 	};
 
 	void applyMaterial(const Material& material);
+	void cacheUniformLocations();
+
+	// Per-draw uniform locations, looked up once after the program links
+	// instead of hashing a name string on every draw call.
+	struct DrawUniforms
+	{
+		GLint model = -1;
+		GLint useInstancing = -1;
+		GLint baseColor = -1;
+		GLint shadingModel = -1;
+		GLint specularStrength = -1;
+		GLint specularPower = -1;
+		GLint opacity = -1;
+		GLint uvTransform = -1;
+		GLint selfShadowing = -1;
+		GLint useTexture = -1;
+		GLint useNormalMap = -1;
+		GLint normalStrength = -1;
+		GLint useSpecularMap = -1;
+	};
+	DrawUniforms m_draw;
 
 	ShaderProgram m_program;
 	glm::vec4 m_clearColor{ 0.0f, 0.0f, 0.0f, 1.0f };
 	glm::dvec3 m_origin{ 0.0 };
 	LightingState m_lighting;
 	RayTraceScene m_traceScene;
-	const TriangleBvh* m_tracedMesh = nullptr;
-	glm::dmat4 m_tracedMeshWorld{ 1.0 };
-	double m_tracedMeshRadius = 0.0;
+	ShadowMap m_shadowMap;
+	glm::vec4 m_frustum[6]{};   // camera-relative planes: xyz normal (inward), w offset
 	std::vector<DeferredDraw> m_deferred;
+	RenderStats m_stats;
 };
 
 #endif

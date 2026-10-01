@@ -100,6 +100,12 @@ float sunVisibility(vec3 p, bool testMesh)
 		float along = dot(toCentre, direction);
 		if (along <= 0.0 || along >= sunDistance)
 			continue;             // behind the point or beyond the Sun
+		// Cheap reject before any trigonometry: the occluder's centre must
+		// lie within its radius plus the penumbra's spread at that distance
+		// of the line to the Sun, or it cannot hide any of the Sun's disc.
+		float reach = radius + along * sunLightRadius / max(sunDistance - sunLightRadius, 1e-6) * 1.05;
+		if (dot(toCentre, toCentre) - along * along > reach * reach)
+			continue;
 
 		if (shadowMode == 1)
 		{

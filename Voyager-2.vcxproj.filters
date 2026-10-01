@@ -51,6 +51,9 @@
     <ClCompile Include="src\ui\HudOverlay.cpp">
       <Filter>src\ui</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\Benchmark.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
     <ClCompile Include="src\core\CaptureTour.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
@@ -138,6 +141,9 @@
     <ClCompile Include="src\rendering\CylinderGenerator.cpp">
       <Filter>src\rendering</Filter>
     </ClCompile>
+    <ClCompile Include="src\rendering\ShadowMap.cpp">
+      <Filter>src\rendering</Filter>
+    </ClCompile>
     <ClCompile Include="src\rendering\Renderer.cpp">
       <Filter>src\rendering</Filter>
     </ClCompile>
@@ -208,6 +214,9 @@
     </ClInclude>
     <ClInclude Include="src\ui\HudOverlay.h">
       <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Benchmark.h">
+      <Filter>src\core</Filter>
     </ClInclude>
     <ClInclude Include="src\core\CaptureTour.h">
       <Filter>src\core</Filter>
@@ -293,6 +302,9 @@
     <ClInclude Include="src\rendering\CylinderGenerator.h">
       <Filter>src\rendering</Filter>
     </ClInclude>
+    <ClInclude Include="src\rendering\ShadowMap.h">
+      <Filter>src\rendering</Filter>
+    </ClInclude>
     <ClInclude Include="src\rendering\Renderer.h">
       <Filter>src\rendering</Filter>
     </ClInclude>
@@ -358,5 +370,7 @@
     <None Include="shaders\raytrace_mesh.glsl" />
     <None Include="shaders\scene.frag" />
     <None Include="shaders\scene.vert" />
+    <None Include="shaders\shadow.vert" />
+    <None Include="shaders\shadow.frag" />
   </ItemGroup>
 </Project>

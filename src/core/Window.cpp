@@ -117,3 +117,8 @@ float Window::aspectRatio() const
 		return 1.0f;
 	return (float)m_width / (float)m_height;
 }
+
+void Window::setVsync(bool enabled)
+{
+	glfwSwapInterval(enabled ? 1 : 0);
+}

@@ -10,7 +10,7 @@
 //                 (n0, u0) (n1, v0) (n2, u1) (v1, u2, v2, -)
 
 #define MAX_MESH_MATERIALS 16
-#define BVH_STACK 32
+#define BVH_STACK 32   // ordered traversal holds at most depth + 1 = 25 entries (tree depth 24); a larger array costs GPU registers
 
 uniform int meshEnabled;
 uniform samplerBuffer bvhNodes;
@@ -36,6 +36,18 @@ bool intersectBox(vec3 origin, vec3 inverseDirection, vec3 boxMin, vec3 boxMax, 
 	float tNear = max(max(tSmall.x, tSmall.y), tSmall.z);
 	float tFar = min(min(tBig.x, tBig.y), tBig.z);
 	return tFar >= max(tNear, 0.0) && tNear < tMax;
+}
+
+// Entry distance into a box (0 if the origin is inside), or -1 on a miss.
+float boxEntry(vec3 origin, vec3 inverseDirection, vec3 boxMin, vec3 boxMax, float tMax)
+{
+	vec3 t0 = (boxMin - origin) * inverseDirection;
+	vec3 t1 = (boxMax - origin) * inverseDirection;
+	vec3 tSmall = min(t0, t1);
+	vec3 tBig = max(t0, t1);
+	float tNear = max(max(max(tSmall.x, tSmall.y), tSmall.z), 0.0);
+	float tFar = min(min(tBig.x, tBig.y), tBig.z);
+	return (tFar >= tNear && tNear < tMax) ? tNear : -1.0;
 }
 
 // Moller-Trumbore: solve origin + t d = p0 + u (p1 - p0) + v (p2 - p0) with
@@ -123,8 +135,23 @@ MeshHit intersectMesh(vec3 worldOrigin, vec3 worldDirection, float tMin, float t
 		}
 		else if (stackSize < BVH_STACK - 1)
 		{
-			stack[stackSize++] = first;
-			stack[stackSize++] = second;
+			// Ordered traversal: test both children now and push the farther
+			// one first, so the nearer is searched first. Its hit shrinks
+			// `closest`, and the farther box is then often skipped entirely.
+			float tFirst = boxEntry(origin, inverseDirection, texelFetch(bvhNodes, first * 2).xyz,
+				texelFetch(bvhNodes, first * 2 + 1).xyz, closest);
+			float tSecond = boxEntry(origin, inverseDirection, texelFetch(bvhNodes, second * 2).xyz,
+				texelFetch(bvhNodes, second * 2 + 1).xyz, closest);
+			if (tFirst >= 0.0 && tSecond >= 0.0)
+			{
+				bool firstNearer = tFirst <= tSecond;
+				stack[stackSize++] = firstNearer ? second : first;
+				stack[stackSize++] = firstNearer ? first : second;
+			}
+			else if (tFirst >= 0.0)
+				stack[stackSize++] = first;
+			else if (tSecond >= 0.0)
+				stack[stackSize++] = second;
 		}
 	}
 	if (hit.triangle >= 0)

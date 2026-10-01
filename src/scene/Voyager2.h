@@ -32,6 +32,9 @@ public:
 	explicit Voyager2(std::string name = "voyager2") : SceneObject(std::move(name)) {}
 
 	void update(double dt) override;
+	// Culls all parts at once: nothing is drawn when the craft's bounding
+	// sphere is off screen or smaller than about half a pixel.
+	void render(Renderer& renderer) override;
 
 	void setFlightMode(FlightMode mode);
 	FlightMode flightMode() const { return m_mode; }
@@ -79,6 +82,7 @@ private:
 	static constexpr double kManualAccel = 1.5;
 	static constexpr double kBoostMultiplier = 8.0;
 	static constexpr double kManualMaxSpeed = 12.0;
+	static constexpr double kCullBelowApparentSize = 6e-4; // radius / distance, ~0.5 px
 };
 
 #endif

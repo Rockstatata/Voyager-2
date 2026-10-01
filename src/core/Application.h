@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "Benchmark.h"
 #include "CameraController.h"
 #include "CaptureTour.h"
 #include "Input.h"
@@ -58,6 +59,8 @@ private:
 	void jumpToBookmark(int index);
 	// kind: "tour", "bodies" or "shading".
 	void startCaptureTour(const std::string& directory, const std::string& kind);
+	// `--benchmark <file>`: timed views with vsync off (docs/guide/11-performance.md).
+	void startBenchmark(const std::string& outputPath);
 
 	Window m_window;
 	Input m_input;
@@ -70,6 +73,8 @@ private:
 
 	// One unit sphere shared by every body (bible F9).
 	std::shared_ptr<Mesh> m_sphereMesh;
+	std::shared_ptr<Mesh> m_sphereMeshMedium; // 16 x 32 level of detail
+	std::shared_ptr<Mesh> m_sphereMeshLow;    // 8 x 16 level of detail
 
 	// Scene groups. SolarSystem indexes the bodies inside `bodies`.
 	SolarSystem m_solarSystem{ m_scene.group("bodies") };
@@ -78,8 +83,10 @@ private:
 	LightingController m_lighting;
 	RayTraceScene m_traceScene; // rebuilt every frame, reused storage
 	std::shared_ptr<TriangleBvh> m_voyagerBvh; // Voyager's triangles for ray tracing
+	std::vector<ShadowMap::Caster> m_shadowCasters; // Voyager's parts, refilled each frame
 	HudOverlay m_hud;
 	CaptureTour m_captureTour;
+	Benchmark m_benchmark;
 
 	Voyager2* m_voyager = nullptr;              // non-owning; in the `spacecraft` group
 	std::vector<std::unique_ptr<SceneObject>> m_backgroundLayers; // camera-centred stars

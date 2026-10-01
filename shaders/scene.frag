@@ -31,7 +31,12 @@ uniform int shadingModel;
 uniform float opacity;
 uniform float specularStrength;
 uniform float specularPower;
-uniform int selfShadowing; // spacecraft parts: trace shadow rays through Voyager's BVH
+uniform int selfShadowing; // spacecraft parts: also sample Voyager's shadow map
+
+// Shadow map of Voyager seen from the Sun (src/rendering/ShadowMap.cpp).
+uniform sampler2DShadow shadowMap;
+uniform mat4 shadowMatrix;   // camera-relative position -> map xy, depth z
+uniform float shadowTexel;   // 1 / map size
 uniform int lightingEnabled;
 uniform float ambientStrength;
 
@@ -57,6 +62,26 @@ vec3 perturbNormal(vec3 n, vec3 p, vec2 uv)
 	vec3 mapped = texture(normalMap, uv).xyz * 2.0 - 1.0;
 	mapped.xy *= normalStrength;
 	return normalize(tbn * mapped);
+}
+
+// Fraction of sunlight that reaches p past Voyager's own parts. Each
+// texture() call compares p's depth from the Sun with the stored nearest
+// depth and, thanks to linear filtering, already averages 4 texels; soft mode
+// adds a 3x3 ring of such taps (percentage-closer filtering).
+float shadowMapVisibility(vec3 p)
+{
+	vec3 s = (shadowMatrix * vec4(p, 1.0)).xyz;
+	if (s.z >= 1.0)
+		return 1.0;
+	if (shadowMode == 1)
+		return texture(shadowMap, s);
+	float lit = 0.0;
+	for (int x = -1; x <= 1; ++x)
+	{
+		for (int y = -1; y <= 1; ++y)
+			lit += texture(shadowMap, vec3(s.xy + vec2(x, y) * shadowTexel * 1.5, s.z));
+	}
+	return lit / 9.0;
 }
 
 void main()
@@ -114,12 +139,16 @@ void main()
 	}
 
 	// Ray-traced shadow: one shadow ray per pixel toward the Sun, tested
-	// against every body sphere and ring band (raytrace.glsl).
-	// Spacecraft parts start the ray a hair above their own surface (the
-	// "shadow bias") so a triangle cannot shadow itself.
-	float sunlight = selfShadowing != 0
-		? sunVisibility(relativePosition + normalize(normal) * 2e-5, true)
-		: sunVisibility(relativePosition, false);
+	// against every body sphere and ring band (raytrace.glsl). Spacecraft
+	// parts multiply in the shadow map for Voyager's shadows on itself.
+	// Pixels the Sun does not light at all skip the work entirely.
+	float sunlight = 1.0;
+	if (dot(terms.sunDiffuse + terms.sunSpecular, vec3(1.0)) > 0.0)
+	{
+		sunlight = sunVisibility(relativePosition, false);
+		if (selfShadowing != 0 && sunlight > 0.0)
+			sunlight *= shadowMapVisibility(relativePosition);
+	}
 	vec3 diffuse = terms.sunDiffuse * sunlight + terms.otherDiffuse;
 	vec3 specular = terms.sunSpecular * sunlight + terms.otherSpecular;
 	vec3 lit = color * (ambientStrength + diffuse) + specular;

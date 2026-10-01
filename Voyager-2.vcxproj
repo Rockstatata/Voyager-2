@@ -155,6 +155,7 @@
     <ClCompile Include="src\core\LightingController.cpp" />
     <ClCompile Include="src\rendering\ShaderProgram.cpp" />
     <ClCompile Include="src\ui\HudOverlay.cpp" />
+    <ClCompile Include="src\core\Benchmark.cpp" />
     <ClCompile Include="src\core\CaptureTour.cpp" />
     <ClCompile Include="src\core\CameraController.cpp" />
     <ClCompile Include="src\rendering\MaterialLibrary.cpp" />
@@ -182,6 +183,7 @@
     <ClCompile Include="src\rendering\CylinderGenerator.cpp" />
     <ClCompile Include="src\rendering\Mesh.cpp" />
 	<ClCompile Include="src\rendering\ParabolicDishGenerator.cpp" />
+    <ClCompile Include="src\rendering\ShadowMap.cpp" />
     <ClCompile Include="src\rendering\Renderer.cpp" />
     <ClCompile Include="src\rendering\RingGenerator.cpp" />
     <ClCompile Include="src\rendering\StarfieldGenerator.cpp" />
@@ -209,6 +211,8 @@
     <None Include="shaders\raytrace_mesh.glsl" />
     <None Include="shaders\scene.frag" />
     <None Include="shaders\scene.vert" />
+    <None Include="shaders\shadow.vert" />
+    <None Include="shaders\shadow.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\rendering\TriangleBvh.h" />
@@ -220,6 +224,7 @@
     <ClInclude Include="src\core\LightingController.h" />
     <ClInclude Include="src\rendering\ShaderProgram.h" />
     <ClInclude Include="src\ui\HudOverlay.h" />
+    <ClInclude Include="src\core\Benchmark.h" />
     <ClInclude Include="src\core\CaptureTour.h" />
     <ClInclude Include="src\core\CameraController.h" />
     <ClInclude Include="src\rendering\MaterialLibrary.h" />
@@ -246,6 +251,7 @@
     <ClInclude Include="src\rendering\CylinderGenerator.h" />
     <ClInclude Include="src\rendering\MeshData.h" />
 	<ClInclude Include="src\rendering\ParabolicDishGenerator.h" />
+    <ClInclude Include="src\rendering\ShadowMap.h" />
     <ClInclude Include="src\rendering\Renderer.h" />
     <ClInclude Include="src\rendering\RingGenerator.h" />
     <ClInclude Include="src\rendering\StarfieldGenerator.h" />

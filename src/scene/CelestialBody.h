@@ -49,8 +49,25 @@ public:
 	// piloting never feels laggy regardless of simulation speed.
 	static void setSimulationTimeScale(double scale) { s_simulationTimeScale = scale; }
 
+	// Level of detail (docs/guide/11-performance.md): bodies drawn with the
+	// shared full sphere switch to coarser shared spheres when small on
+	// screen. All three are uploaded once; nothing is generated per body.
+	static void setSphereLods(const Mesh* full, const Mesh* medium, const Mesh* low)
+	{
+		s_lodFull = full;
+		s_lodMedium = medium;
+		s_lodLow = low;
+	}
+	// Radius / distance below which each coarser level is used.
+	static constexpr double kMediumLodBelow = 0.05;  // ~40 px radius at 900 lines
+	static constexpr double kLowLodBelow = 0.012;    // ~10 px
+
 private:
 	void updateOrbitPosition();
+
+	static inline const Mesh* s_lodFull = nullptr;
+	static inline const Mesh* s_lodMedium = nullptr;
+	static inline const Mesh* s_lodLow = nullptr;
 
 	CelestialBodyData m_data;
 

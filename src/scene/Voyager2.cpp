@@ -1,5 +1,7 @@
 #include "Voyager2.h"
 
+#include "../rendering/Renderer.h"
+
 #include <algorithm>
 #include <cmath>
 
@@ -56,6 +58,16 @@ glm::dvec3 Voyager2::componentWorldCentre(std::size_t index) const
 	if (index >= m_components.size())
 		return transform().position;
 	return glm::dvec3(worldMatrix() * glm::dvec4(m_components[index].localCentre, 1.0));
+}
+
+void Voyager2::render(Renderer& renderer)
+{
+	const glm::dvec3 position = transform().position;
+	if (!renderer.isVisible(position, m_boundingRadius))
+		return;
+	if (m_boundingRadius / std::max(glm::length(position - renderer.origin()), 1e-12) < kCullBelowApparentSize)
+		return;
+	SceneObject::render(renderer);
 }
 
 void Voyager2::update(double dt)

@@ -26,6 +26,8 @@ public:
 	void pollEvents();
 	void swapBuffers();
 	void setTitle(const std::string& title);
+	// Vsync on by default; the benchmark turns it off to measure real cost.
+	void setVsync(bool enabled);
 
 	int width() const { return m_width; }
 	int height() const { return m_height; }

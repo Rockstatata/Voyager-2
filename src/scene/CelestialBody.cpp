@@ -1,5 +1,6 @@
 #include "CelestialBody.h"
 
+#include <algorithm>
 #include <cmath>
 
 #include <glm/gtc/constants.hpp>
@@ -86,7 +87,25 @@ void CelestialBody::render(Renderer& renderer)
 
 	if (mesh() != nullptr && material() != nullptr)
 	{
-		renderer.submit(*mesh(), *material(), surfaceMatrix());
+		const glm::dmat4 surface = surfaceMatrix();
+		const glm::dvec3 centre(surface[3]);
+		const double radius = glm::length(glm::dvec3(surface[0]));
+		// Frustum culling: a body wholly off screen costs nothing. Its
+		// children are still visited (a moon may be on screen when its
+		// planet is not).
+		if (renderer.isVisible(centre, radius))
+		{
+			const Mesh* drawMesh = mesh().get();
+			if (drawMesh == s_lodFull && s_lodMedium != nullptr && s_lodLow != nullptr)
+			{
+				const double apparentSize = radius / std::max(glm::length(centre - renderer.origin()), 1e-9);
+				if (apparentSize < kLowLodBelow)
+					drawMesh = s_lodLow;
+				else if (apparentSize < kMediumLodBelow)
+					drawMesh = s_lodMedium;
+			}
+			renderer.submit(*drawMesh, *material(), surface);
+		}
 	}
 
 	for (const auto& child : children())

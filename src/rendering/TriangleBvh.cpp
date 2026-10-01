@@ -82,19 +82,116 @@ int TriangleBvh::buildNode(int begin, int end, int depth)
 
 	const int count = end - begin;
 	const glm::vec3 extent = centroidMax - centroidMin;
-	if (count <= 4 || std::max({ extent.x, extent.y, extent.z }) <= 0.0f)
+	if (count <= 2 || std::max({ extent.x, extent.y, extent.z }) <= 0.0f)
 	{
 		m_nodes[index].first = begin;
 		m_nodes[index].second = -count;
 		return index;
 	}
 
-	// Split at the median centroid along the longest axis: each child gets
-	// half the triangles, so the tree stays balanced (depth ~ log2(n / 4)).
-	const int axis = extent.x > extent.y ? (extent.x > extent.z ? 0 : 2) : (extent.y > extent.z ? 1 : 2);
-	const int middle = begin + count / 2;
-	std::nth_element(m_triangles.begin() + begin, m_triangles.begin() + middle, m_triangles.begin() + end,
-		[axis](const Triangle& a, const Triangle& b) { return a.centroid[axis] < b.centroid[axis]; });
+	// Binned surface-area heuristic (SAH). A ray hits a box with probability
+	// proportional to its surface area, so a split's expected cost is
+	//   area(left) * count(left) + area(right) * count(right).
+	// Triangles are dropped into 12 bins by centroid along each axis, and
+	// every bin boundary is scored; the cheapest split wins. This makes boxes
+	// tight around real clusters of parts, so rays open far fewer of them
+	// than with a plain median split.
+	constexpr int kBins = 12;
+	auto surfaceArea = [](const glm::vec3& lower, const glm::vec3& upper)
+	{
+		const glm::vec3 d = glm::max(upper - lower, glm::vec3(0.0f));
+		return 2.0f * (d.x * d.y + d.y * d.z + d.z * d.x);
+	};
+	float bestCost = 1e30f;
+	int bestAxis = -1;
+	int bestSplit = 0;
+	for (int axis = 0; axis < 3; ++axis)
+	{
+		if (extent[axis] <= 0.0f)
+			continue;
+		glm::vec3 binMin[kBins];
+		glm::vec3 binMax[kBins];
+		int binCount[kBins] = {};
+		for (int b = 0; b < kBins; ++b)
+		{
+			binMin[b] = glm::vec3(1e30f);
+			binMax[b] = glm::vec3(-1e30f);
+		}
+		const float scale = kBins / extent[axis];
+		for (int i = begin; i < end; ++i)
+		{
+			const int b = std::min(kBins - 1, static_cast<int>((m_triangles[i].centroid[axis] - centroidMin[axis]) * scale));
+			++binCount[b];
+			for (const glm::vec3& p : m_triangles[i].position)
+			{
+				binMin[b] = glm::min(binMin[b], p);
+				binMax[b] = glm::max(binMax[b], p);
+			}
+		}
+		// Sweep from the right to know each suffix's box, then from the left.
+		float rightArea[kBins];
+		int rightCount[kBins];
+		glm::vec3 lower(1e30f);
+		glm::vec3 upper(-1e30f);
+		int running = 0;
+		for (int b = kBins - 1; b > 0; --b)
+		{
+			lower = glm::min(lower, binMin[b]);
+			upper = glm::max(upper, binMax[b]);
+			running += binCount[b];
+			rightArea[b] = running > 0 ? surfaceArea(lower, upper) : 0.0f;
+			rightCount[b] = running;
+		}
+		lower = glm::vec3(1e30f);
+		upper = glm::vec3(-1e30f);
+		running = 0;
+		for (int split = 1; split < kBins; ++split)
+		{
+			lower = glm::min(lower, binMin[split - 1]);
+			upper = glm::max(upper, binMax[split - 1]);
+			running += binCount[split - 1];
+			if (running == 0 || rightCount[split] == 0)
+				continue;
+			const float cost = surfaceArea(lower, upper) * running + rightArea[split] * rightCount[split];
+			if (cost < bestCost)
+			{
+				bestCost = cost;
+				bestAxis = axis;
+				bestSplit = split;
+			}
+		}
+	}
+
+	// Stop when splitting is not cheaper than testing every triangle here
+	// (the leaf cost), or the leaf is already small.
+	const float leafCost = surfaceArea(boundsMin, boundsMax) * count;
+	if (count <= 4 && (bestAxis < 0 || bestCost >= leafCost))
+	{
+		m_nodes[index].first = begin;
+		m_nodes[index].second = -count;
+		return index;
+	}
+
+	int middle = begin + count / 2;
+	if (bestAxis >= 0)
+	{
+		const float scale = kBins / extent[bestAxis];
+		const float minimum = centroidMin[bestAxis];
+		const auto pivot = std::partition(m_triangles.begin() + begin, m_triangles.begin() + end,
+			[=](const Triangle& t)
+			{
+				return std::min(kBins - 1, static_cast<int>((t.centroid[bestAxis] - minimum) * scale)) < bestSplit;
+			});
+		middle = static_cast<int>(pivot - m_triangles.begin());
+	}
+	if (bestAxis < 0 || middle == begin || middle == end)
+	{
+		// Degenerate binning (all centroids in one bin): median split.
+		const int axis = extent.x > extent.y ? (extent.x > extent.z ? 0 : 2) : (extent.y > extent.z ? 1 : 2);
+		middle = begin + count / 2;
+		std::nth_element(m_triangles.begin() + begin, m_triangles.begin() + middle, m_triangles.begin() + end,
+			[axis](const Triangle& a, const Triangle& b) { return a.centroid[axis] < b.centroid[axis]; });
+	}
 
 	const int left = buildNode(begin, middle, depth + 1);
 	const int right = buildNode(middle, end, depth + 1);

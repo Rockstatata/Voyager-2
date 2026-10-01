@@ -21,8 +21,9 @@ struct Material;
 // triangles instead of all of them.
 //
 // Build (CPU, once): gather every part's triangles in the spacecraft's local
-// frame, then recursively split them at the median of the longest axis until
-// a node holds at most four. Upload (GPU, once): nodes and triangles go into
+// frame, then recursively split them where the surface-area heuristic
+// (binned SAH) predicts the fewest ray-box and ray-triangle tests, until a
+// node holds at most four. Upload (GPU, once): nodes and triangles go into
 // two buffer textures (samplerBuffer), read with texelFetch. Per frame only
 // the spacecraft's transform is uploaded: rays are moved into its local
 // frame instead of moving thousands of triangles.
