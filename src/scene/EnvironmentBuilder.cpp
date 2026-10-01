@@ -178,7 +178,10 @@ void EnvironmentBuilder::buildSmallBodyFields(SceneObject& group, const glm::dve
 	// One instanced draw call per field (bible F9). Each field needs its own
 	// Mesh because the instance buffer lives on the mesh.
 	const ScaleManager scaleManager;
-	const MeshData rockData = UvSphereGenerator::generate(6, 8);
+	// A rock is 0.012-0.05 units across: a few pixels at most. A 3 x 6
+	// sphere (24 triangles, faceted like a real asteroid) is enough; 8,500 of
+	// them cost 204k triangles instead of the 680k a 6 x 8 sphere did.
+	const MeshData rockData = UvSphereGenerator::generate(3, 6);
 	auto addField = [&](const std::string& name, std::vector<glm::mat4> matrices, const glm::vec3& color)
 	{
 		auto mesh = std::make_shared<Mesh>(rockData);
