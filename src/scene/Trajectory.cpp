@@ -142,13 +142,13 @@ glm::dvec3 Trajectory::mapHeliocentricToRender(const glm::dvec3& sceneAu,
 
 bool Trajectory::extrapolate(double julianDate, glm::dvec3& position, glm::dvec3& velocity) const
 {
-	const bool before = julianDate < m_samples.front().julianDate;
-	const bool after = julianDate > m_samples.back().julianDate;
+	const bool before = julianDate <= m_samples.front().julianDate;
+	const bool after = julianDate >= m_samples.back().julianDate;
 	if (!before && !after)
 		return false;
 	const TrajectorySample& edge = before ? m_samples.front() : m_samples.back();
 	const double days = julianDate - edge.julianDate;
-	if (m_orbitalExtrapolation && propagateKepler(edge.heliocentricAu, edge.velocityAuPerDay, days, position, velocity))
+	if (m_orbitalExtrapolation && days != 0.0 && propagateKepler(edge.heliocentricAu, edge.velocityAuPerDay, days, position, velocity))
 		return true;
 	position = edge.heliocentricAu + edge.velocityAuPerDay * days;
 	velocity = edge.velocityAuPerDay;
