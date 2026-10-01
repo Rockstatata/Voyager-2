@@ -8,11 +8,11 @@
 
 `voyager2` is a procedural, from-scratch model built by `VoyagerModelBuilder` (src/scene/VoyagerModelBuilder.cpp). The application does **not** load NASA's glTF/USDZ geometry. NASA's model, spacecraft pages and diagrams are used only for proportions and layout (sources in [the research note](../research/voyager-2-spacecraft-reference.md)). The single image taken from NASA is the public-domain texture atlas ([voyager-textures.md](voyager-textures.md)).
 
-The root is one `Voyager2` scene object with **82 child parts** and **11,652 triangles**. All parts inherit the root transform, so historical or manual motion moves one coherent spacecraft. The start-up log prints the exact figures from the current build:
+The root is one `Voyager2` scene object with **76 child parts** and **5,828 triangles** (down from 82 parts and 11,652 triangles: surface detail now lives in textures, not geometry; [guide chapter 11](../guide/11-performance.md)). All parts inherit the root transform, so historical or manual motion moves one coherent spacecraft. The start-up log prints the exact figures from the current build:
 
 ```text
-[SHADER] BVH built: 11652 triangles, 8191 nodes, depth 12, 12 materials
-[VOYAGER] procedural spacecraft built (82 visible assemblies, 11652 rendered triangles), Historical mode
+[SHADER] BVH built: 5828 triangles, 6723 nodes, depth 24, 12 materials
+[VOYAGER] procedural spacecraft built (76 visible assemblies, 5828 rendered triangles), Historical mode
 ```
 
 The learning walkthrough is [guide chapter 8](../guide/08-voyager.md). This page is the reference.
@@ -42,8 +42,8 @@ Boresight (the high-gain antenna's pointing direction) is local **−Z**; flight
 
 | # | Component | Construction | Finish |
 | --- | --- | --- | --- |
-| 1 | Electronics bus | `CylinderGenerator(R, R, 0.47 m, 10)` rotated onto +Z; 10 bay blankets (boxes at apothem `R·cos 18°`, width `2R·sin 18° × 0.86`); 2 louvre strips on each gold bay; 3 launch-adapter feet | darkMetal; gold, dark-gold and black blankets; louvres; aluminium |
-| 2 | High-gain antenna | `ParabolicDishGenerator(1.85 m, 0.38 m, 0.045 m, 64, 12)`, rim at `z = −busDepth/2 − dishDepth − 0.04 m`; 12 ribs × 6 rods following `z = rim + depth(1 − x²) + 0.06 m`; 4 feed struts | whitePaint, aluminium |
+| 1 | Electronics bus | `CylinderGenerator(R, R, 0.47 m, 10)` rotated onto +Z; 10 bay blankets (boxes at apothem `R·cos 18°`, width `2R·sin 18° × 0.86`); 3 launch-adapter feet | darkMetal; dark-gold, louvre-photo and black blankets; aluminium |
+| 2 | High-gain antenna | `ParabolicDishGenerator(1.85 m, 0.38 m, 0.045 m, 48, 6)`, rim at `z = −busDepth/2 − dishDepth − 0.04 m`; 12 ribs × 4 rods following `z = rim + depth(1 − x²) + 0.06 m`; 4 feed struts | whitePaint, aluminium |
 | 3 | Feed stack and low-gain antenna | X-band feed frustum, subreflector disc, S-band feed, LGA cone on −Z | darkMetal, whitePaint, aluminium |
 | 4 | Sun sensor | box + aperture on the dish rim | darkMetal, lens |
 | 5 | Golden Record | 0.31 m disc (32 segments) + hub on bus face 0 | recordGold, aluminium |
@@ -51,7 +51,7 @@ Boresight (the high-gain antenna's pointing direction) is local **−Z**; flight
 | — | Shunt radiator | 0.46 × 0.38 m plate on bus face 7 | radiatorBlue |
 | 7 | Magnetometer boom | canister + `buildTriangularTruss` 13 m, 26 bays | darkGoldFoil, aluminium |
 | 8 | Low-field magnetometer (tip) | sensor boxes at 0.9 m and 1.4 m (high-field), 10 m and 13 m (low-field) | whitePaint |
-| 9 | Radioisotope generators | 3.7 m truss (9 bays); 3 cores (16 sides, r 0.10 m, 0.58 m) with 6 fins each (unit box with a basis matrix) and end flanges | darkMetal, aluminium |
+| 9 | Radioisotope generators | 3.7 m truss (9 bays); 3 cores (12 sides, r 0.10 m, 0.58 m) with 6 fins each (unit box with a basis matrix) and end flanges | darkMetal, aluminium |
 | 10 | Plasma science | cylinder + 3 Faraday-cup frustums | goldFoil, lens |
 | 11 | Cosmic ray subsystem | box + 2 telescopes | goldFoil, darkMetal |
 | 12 | Low-energy charged particles | drum + platform | darkGoldFoil, aluminium |
@@ -60,7 +60,7 @@ Boresight (the high-gain antenna's pointing direction) is local **−Z**; flight
 | 15 | Wide-angle camera | 0.50 m barrel + lens | whitePaint, lens |
 | 16 | IRIS telescope | 0.52 m-wide barrel + mirror | goldFoil, lens |
 | 17 | Radio and plasma wave antennas | two 10 m rods in a V + root box | aluminium, goldFoil |
-| 18 | Attitude thrusters | 4 blocks, 16 copper nozzle frustums (one shared mesh) | darkMetal, copper |
+| 18 | Attitude thrusters | 4 blocks, 16 copper nozzle frustums (8 sides, one shared mesh) | darkMetal, copper |
 
 | | | |
 | --- | --- | --- |
@@ -77,17 +77,17 @@ All vertices use `Vertex { position, normal, texCoord }`, and every surface tria
 
 - **Boxes**: one shared unit-cube mesh (24 vertices, 12 triangles), scaled per part.
 - **Cylinders and frustums**: `4n + 6` vertices and `4n` triangles for n segments with both caps.
-- **Dish**: 64 segments × 12 rings, front and back surfaces `thickness` apart, joined at the rim: a closed shell.
-- **Rods** (`appendRod`): a capped 6-sided cylinder turned onto `end − start` and translated to the midpoint.
+- **Dish**: 48 segments × 6 rings (1,152 triangles), front and back surfaces `thickness` apart, joined at the rim: a closed shell.
+- **Rods** (`appendRod`): an open 4-sided tube (8 triangles) turned onto `end − start` and translated to the midpoint. Ends are buried in joints, so caps would be hidden triangles; RTG flanges pass `capped = true`.
 - **Trusses** (`buildTriangularTruss`): 3 rails at 120° (`sideA`, `−½sideA ± (√3/2)sideB`) and one alternating diagonal per face per bay, giving `3 + 3·bays` rods.
 - **Merged assemblies** (`appendTransformed`): ribs, feet, struts, trusses, RTGs and antennas are baked into one `MeshData` each, with positions transformed, normals transformed by the inverse-transpose, and indices re-based.
 
 ## Materials, lighting and ray tracing
 
-- 11 finishes sample rectangles of the NASA atlas through `Material::uvTransform`; copper is untextured ([voyager-textures.md](voyager-textures.md)). A normal map is derived from the atlas.
+- 11 finishes sample rectangles of the NASA atlas through `Material::uvTransform`; copper is untextured. The louvred bays show the atlas's louvre photograph instead of modelled louvre strips ([voyager-textures.md](voyager-textures.md)). A normal map is derived from the atlas.
 - Every finish is `Lit`, with its own specular strength and power (0.12/10 for black blanket up to 0.90/120 for lenses), and `selfShadowing = true`.
 - **All five shading techniques** apply ([lighting.md](lighting.md)); Voyager is shot in each for the shading comparison images.
-- **Self-shadowing**: in the raster pass, each Voyager fragment traces a shadow ray through Voyager's own BVH (bias 2e-5), so the dish shades the bus and booms cast shadows. The same ray tests planets and rings, so Voyager darkens in a planet's shadow.
+- **Self-shadowing**: each frame `Renderer::renderShadowMap` draws the 76 parts from the Sun into a 2048² depth texture (orthographic, fitted to the 9 m bounding sphere, slope-scaled polygon offset). Every spacecraft fragment compares its depth from the Sun with it, using 3×3 hardware-filtered lookups (PCF), so the dish shades the bus and booms cast shadows. The ray-traced sphere/ring shadow is multiplied in, so Voyager still darkens in a planet's shadow. This replaced a per-pixel ray through the BVH (about 10 ms GPU per close-up frame; the whole close-up frame is now 0.8 ms GPU).
 - **Ray-traced view** (F9): Voyager is traced as triangles, textured through the BVH material palette, shadowed, and its foil and metal reflect `specular × 0.3` of the scene ([ray-tracing.md](ray-tracing.md)).
 
 | Raster | Ray-traced |
@@ -121,7 +121,8 @@ Flight is inertial and capped at 12 units per second.
 
 ## Limitations
 
-- Geometry is an engineering approximation from public diagrams, not CAD. Cabling, hinges and blanket seams are omitted.
+- Geometry is an engineering approximation from public diagrams, not CAD. Cabling, hinges and blanket seams are omitted, and surface detail (louvres, foil wrinkles) is texture only.
+- The whole craft is skipped (`Voyager2::render`) when its bounding sphere is off screen or under about half a pixel; the shadow pass runs only within 200 bounding radii.
 - The scan platform does not articulate, and the booms are always deployed (even at launch).
 - Atlas regions are stretched to each part's UVs, so texture density varies between parts.
 

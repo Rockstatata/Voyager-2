@@ -33,10 +33,11 @@ No shader or lighting code was supplied to the project. Everything below was wri
 | `opacity` | Material | Below 1, the draw is deferred and alpha blended |
 | `normalMap` (unit 1), `useNormalMap`, `normalStrength` | Material | Tangent-space bump detail |
 | `specularMap` (unit 2), `useSpecularMap` | Material | Per-texel highlight mask |
-| `selfShadowing` | Material | Spacecraft parts trace shadow rays through Voyager's BVH |
+| `selfShadowing` | Material | Spacecraft parts also sample Voyager's shadow map |
+| `shadowMap` (unit 6), `shadowMatrix`, `shadowTexel` | Renderer::renderShadowMap | Voyager seen from the Sun (depth texture, comparison sampler) |
 | `lightingEnabled`, `shadingTechnique`, `ambientStrength`, `surfaceMapsEnabled` | LightingState | `K`, `F3`, 0.07, `F8` |
 | `lights[4]` (`type`, `enabled`, `position`, `direction`, `color`, `attenuation`, `innerCutoff`, `outerCutoff`) | LightingState | The rig below |
-| `spheres[]`, `rings[]`, `sunCenter`, `sunLightRadius`, `shadowMode`, BVH uniforms | Renderer | Shadow-ray scene ([ray-tracing.md](ray-tracing.md)) |
+| `spheres[]`, `rings[]`, `sunCenter`, `sunLightRadius`, `shadowMode` | Renderer | Shadow-ray scene ([ray-tracing.md](ray-tracing.md)), each array uploaded in one call |
 | `logDepthCoefficient` | Renderer | `2 / log2(far + 1)` |
 
 ## The model
@@ -49,7 +50,7 @@ Blinn    = pow(max(dot(n, normalize(l + v)), 0), 2 * power)
 radiance = color * intensity * attenuation * spotCone
 ```
 
-The Sun (light 0) is kept separate in `LightTerms`, so only its diffuse and specular are multiplied by the ray-traced shadow factor.
+The Sun (light 0) is kept separate in `LightTerms`, so only its diffuse and specular are multiplied by the shadow factor. That factor is computed only where the Sun term is non-zero: the ray-traced sphere/ring shadow, times Voyager's shadow map for spacecraft parts ([guide chapter 11](../guide/11-performance.md)).
 
 ## Shading techniques (F3)
 
@@ -108,7 +109,7 @@ The Sun (light 0) is kept separate in `LightTerms`, so only its diffuse and spec
 
 ## Limitations
 
-- Only the Sun casts shadows; the headlamp and fill do not.
+- Only the Sun casts shadows; the headlamp and fill do not. Voyager's shadow map covers the craft only (planets are not shadowed by Voyager, which is far smaller than a pixel at planet scale).
 - No HDR, bloom, atmospheric scattering or indirect light. Ambient is a constant 0.07.
 - Normal maps are derived from colour, which approximates relief: dark maria read as low and bright rays as high.
 - Sun falloff is compressed (it is off by default) because real 1/d² would make the outer planets black at this scale.

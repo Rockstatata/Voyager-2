@@ -31,7 +31,7 @@ const uint32_t bottomRight = bottomLeft + 1;
 
 ## 2.2 The UV sphere: every planet and moon
 
-`UvSphereGenerator::generate(latitudeSegments, longitudeSegments)`. The project calls `generate(32, 64)` **once** and shares that one mesh (`shared_ptr<Mesh>`) among all 26 bodies. A body's size comes from its scale transform, not from a different mesh.
+`UvSphereGenerator::generate(latitudeSegments, longitudeSegments)`. The project calls `generate(32, 64)` **once** and shares that one mesh (`shared_ptr<Mesh>`) among all 26 bodies. A body's size comes from its scale transform, not from a different mesh. Two coarser shared copies, `generate(16, 32)` (960 triangles) and `generate(8, 16)` (224), are used when a body is small on screen (level of detail, chapter 11.5).
 
 ### Vertices
 
@@ -131,7 +131,7 @@ Counts for `generate(r, r, h, 16)` with both caps: sides 2 × 17 = 34 vertices a
 
 ## 2.5 The parabolic dish: Voyager's 3.7 m high-gain antenna
 
-`ParabolicDishGenerator::generate(radius, depth, thickness, radialSegments, radialRings)`. Voyager uses `(1.85 m, 0.38 m, 0.045 m, 64, 12)`, converted to render units.
+`ParabolicDishGenerator::generate(radius, depth, thickness, radialSegments, radialRings)`. Voyager uses `(1.85 m, 0.38 m, 0.045 m, 48, 6)`, converted to render units: 1,152 triangles. Smooth normals make 6 rings look curved; 48 segments keep the rim round.
 
 A paraboloid is a parabola spun around its axis: **y = −depth + depth·(r/R)²**. The vertex is at the bottom (y = −depth, r = 0) and the rim is at y = 0 (r = R).
 
@@ -186,12 +186,12 @@ The re-basing (`firstVertex + index`) is the essential step. The second mesh's i
 
 Built on top of this:
 
-- **`appendRod(start, end, radius)`**: a thin cylinder from any point to any other. The generator's cylinder is along +Y and centred. `rotateYTo(end − start)` builds the quaternion that turns +Y onto the rod direction: the axis is `cross(Y, dir)` and the angle is `acos(dot(Y, dir))`, with special cases for parallel and anti-parallel directions. The rod is then translated to the midpoint.
+- **`appendRod(start, end, radius, segments = 4, capped = false)`**: a thin cylinder from any point to any other. A 2 cm strut needs only 4 sides, and its ends are buried in joints, so it is an open tube of 8 triangles (a 6-sided capped rod was 24). The generator's cylinder is along +Y and centred. `rotateYTo(end − start)` builds the quaternion that turns +Y onto the rod direction: the axis is `cross(Y, dir)` and the angle is `acos(dot(Y, dir))`, with special cases for parallel and anti-parallel directions. The rod is then translated to the midpoint.
 - **`buildTriangularTruss(start, end, halfWidth, bays, rodRadius)`**: three long rails at 120° around the axis (offsets `sideA`, `−½sideA + (√3/2)sideB`, `−½sideA − (√3/2)sideB`). Each bay adds one diagonal per face, with alternating direction. This is how the 13 m magnetometer Astromast, the RTG boom and the science boom are made.
 - **RTG fins**: a unit box with a hand-built matrix whose columns are the fin's axes, already scaled: `[boom direction × 0.50 m, radial × 0.10 m, tangent × 0.02 m, centre]`. Writing a matrix column by column like this is "change of basis" in its plainest form.
-- **Bent dish ribs**: each rib follows the dish's back surface. It is six short rods whose end points lie on z = rimZ + depth·(1 − x²) + clearance, not one straight rod that would cut through the bowl.
+- **Bent dish ribs**: each rib follows the dish's back surface. It is four short rods whose end points lie on z = rimZ + depth·(1 − x²) + clearance, not one straight rod that would cut through the bowl.
 
-The whole Voyager model is **11,652 triangles** across 18 inspectable components. See chapter 8.
+The whole Voyager model is **5,828 triangles** across 18 inspectable components (it was 11,652 before surface detail moved from geometry into textures; chapter 11). See chapter 8.
 
 ## 2.9 Checking your geometry
 

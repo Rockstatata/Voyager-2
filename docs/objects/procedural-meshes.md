@@ -159,7 +159,8 @@ Using the inverse-transpose for normals is essential when a box is scaled differ
 | Construction | Rendered objects |
 | --- | --- |
 | 32×64 UV sphere | Sun, 8 planets, Pluto, 16 moons, comet nucleus |
-| 6×8 UV sphere | asteroid belt, Kuiper belt, Oort-cloud instances |
+| 3×6 UV sphere (24 triangles) | asteroid belt, Kuiper belt, Oort-cloud instances |
+| 16×32 and 8×16 UV spheres | level-of-detail copies for bodies small on screen |
 | Annulus | every Jupiter/Saturn/Uranus/Neptune ring band |
 | Unit line circle | eight orbit guides; three great circles per heliosphere boundary |
 | Star points | background starfield |

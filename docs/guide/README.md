@@ -18,6 +18,7 @@ This guide explains the whole project from first principles, in the order you ne
 | 8 | [The Voyager 2 spacecraft](08-voyager.md) | How the 18-component model is built, textured, lit, ray-traced and inspected |
 | 9 | [Data, time and the mission](09-mission-data.md) | Horizons ephemeris, Hermite interpolation, the simulation clock, flyby clearance, CSV catalogs |
 | 10 | [How to change things](10-how-to-change-things.md) | Step-by-step recipes for the changes you are most likely to be asked for |
+| 11 | [Performance](11-performance.md) | The benchmark, what was slow and why, shadow mapping, level of detail, frustum culling, texture instead of geometry |
 
 ## The map of the code
 
@@ -29,6 +30,7 @@ src/core/                    application-level systems
   CameraController           which camera rig is active and what it looks at (+ mouse picking)
   LightingController         the light rig and the lighting/shading/shadow switches
   CaptureTour                scripted screenshots (--capture ...)
+  Benchmark                  --benchmark: frame and GPU timing per view
 src/rendering/               everything that talks to OpenGL
   Vertex, MeshData           CPU geometry format (8 floats per vertex)
   *Generator                 procedural geometry: UvSphere, Box, Cylinder, ParabolicDish, Ring, Circle, Starfield
@@ -36,6 +38,7 @@ src/rendering/               everything that talks to OpenGL
   Material, MaterialLibrary  how a surface looks and responds to light
   Texture2D, SurfaceMaps     image decode/upload; normal and specular maps derived on the CPU
   ShaderProgram              loads shaders/*.vert|frag with #include support
+  ShadowMap                  Voyager's self-shadows: a depth pass from the Sun
   Renderer                   the raster pass: camera-relative matrices, lights, shadows, translucency
   Lighting, LightingUniforms light/shading state and its upload to shaders
   RayTraceScene, RayTracer   analytic spheres/rings and the full-screen ray-traced view
@@ -63,6 +66,7 @@ docs/objects/                one reference page per object (the "encyclopedia" t
 .\scripts\verify_scene_layout.ps1                 # scale, data and flyby checks
 .\scripts\verify_navigation_and_motion.ps1        # architecture contracts
 x64\Debug\Voyager-2.exe --capture-shading shots   # screenshot every shading technique and light
+x64\Release\Voyager-2.exe --benchmark bench.txt   # frame and GPU time per view (chapter 11)
 ```
 
 The capture options (`--capture`, `--capture-bodies`, `--capture-shading`, `--capture-raytrace`, `--capture-voyager`) each write a folder of BMP screenshots and exit. Every image in these docs came from them.

@@ -100,7 +100,9 @@ Going through `add` also puts the part in the ray tracer's BVH automatically. Ch
 | `[SHADER] ... compile error` | A GLSL syntax error. The log gives the file and line after `#include` expansion. |
 | An object is invisible or inside-out | The triangle winding is clockwise (it is culled). Swap two indices per triangle. |
 | Lighting looks inverted on a part | The normals point inward. Negate them, or check the normal matrix for mirrored scales. |
-| Speckled dark dots on Voyager | Shadow acne: raise the `2e-5` bias in scene.frag and raytrace.frag. |
+| Striped or speckled dark patches on Voyager (raster) | Shadow-map acne: raise `glPolygonOffset(2.0f, 4.0f)` in `ShadowMap::render`. |
+| Speckled dark dots on Voyager (F9 view) | Shadow acne: raise the `2e-5` bias in raytrace.frag. |
+| It runs slowly | Run `--benchmark` and read chapter 11. |
 | A texture looks mirrored or upside down | UV direction; see chapter 4.1 (flip) and 2.2 (`1 − u`). |
 | Flickering far surfaces | Something bypasses the log-depth write (a new shader must write `gl_FragDepth` the same way). |
 | Linker error for a new file | It is not registered in `Voyager-2.vcxproj`. |

@@ -48,3 +48,7 @@ indices   = 3 × 3,968 = 11,904
 ```
 
 Generation performs fail-fast validation: exact counts, unit-length positions/normals, UVs in `[0,1]`, in-range indices, non-zero triangle area, and eastward UV orientation. Those checks run once during scene construction, not per frame.
+
+## Level of detail
+
+The same generator also makes two coarser shared copies at start-up: `generate(16, 32)` (561 vertices, 960 triangles) and `generate(8, 16)` (153 vertices, 224 triangles). `CelestialBody::render` swaps to them when a body's apparent size (render radius ÷ camera distance) is below 0.05 (about 40 px) or 0.012 (about 10 px). Every level has the same UV layout and seam, so the texture looks identical; only the silhouette's smoothness changes, where it is too small to see. Bodies wholly outside the view frustum are not drawn at all. See [guide chapter 11](../guide/11-performance.md).

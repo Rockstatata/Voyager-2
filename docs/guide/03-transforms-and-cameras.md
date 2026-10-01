@@ -49,7 +49,7 @@ Scene
  │    ├── earth ── moon
  │    ├── jupiter ── io, europa, ganymede, callisto, ring bands
  │    └── ...
- ├── group "spacecraft"   └── voyager2 ── 82 parts (bus, dish, booms...)
+ ├── group "spacecraft"   └── voyager2 ── 76 parts (bus, dish, booms...)
  ├── group "mission_path" (trajectory line)
  ├── group "orbit_guides", "heliosphere", "small_bodies", "comet"
 ```
@@ -120,7 +120,11 @@ gl_FragDepth = log2(logDepthW) * logDepthCoefficient * 0.5;   // coefficient = 2
 
 Each factor of 2 in distance gets the same share of depth precision, so a 5 cm antenna and a 3,000-unit orbit sort correctly in one buffer. The ray tracer writes depth with the same formula, so traced and rasterised pixels sort against each other (chapter 7).
 
-## 3.7 Camera rigs (CameraController)
+## 3.7 What the camera cannot see is not drawn
+
+`Renderer::beginFrame` extracts the six planes of the view frustum from `projection × view`. Bodies and Voyager test their bounding spheres against them (`Renderer::isVisible`) and skip the draw when wholly outside. Chapter 11.5 shows the maths.
+
+## 3.8 Camera rigs (CameraController)
 
 | Mode | How the camera is positioned | Enter with |
 | --- | --- | --- |

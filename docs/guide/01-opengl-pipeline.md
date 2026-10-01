@@ -147,9 +147,10 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 1. `Renderer::beginFrame`: clear, set frame uniforms.
 2. Background star layers (`submitBackground`, depth writes off, always behind).
-3. The scene graph: `Scene::render` walks every root group and calls each object's `render`, which calls `Renderer::submit(mesh, material, worldMatrix)`.
-4. If the ray-traced view is on (F9), `RayTracer::render` draws the traced worlds over the frame (chapter 7). The bodies and spacecraft groups are hidden from the raster pass for that frame.
-5. `Renderer::endFrame`: the deferred translucent and glow draws.
-6. HUD: text and labels, drawn in screen space by `TextRenderer` with `shaders/hud.*`.
+3. Voyager's shadow map: if the craft is on screen and near, `Renderer::renderShadowMap` draws its parts from the Sun into a depth texture (chapter 11.5).
+4. The scene graph: `Scene::render` walks every root group and calls each object's `render`, which calls `Renderer::submit(mesh, material, worldMatrix)`. Bodies outside the view are skipped (frustum culling), and small ones use coarser spheres (level of detail).
+5. If the ray-traced view is on (F9), `RayTracer::render` draws the traced worlds over the frame (chapter 7). The bodies and spacecraft groups are hidden from the raster pass for that frame.
+6. `Renderer::endFrame`: the deferred translucent and glow draws.
+7. HUD: text and labels, drawn in screen space by `TextRenderer` with `shaders/hud.*`.
 
 Next: where the vertices themselves come from.

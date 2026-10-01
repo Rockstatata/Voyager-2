@@ -12,8 +12,8 @@ This is the reference page for the project's ray tracing. The step-by-step deriv
 
 ## What is ray-traced
 
-1. **Sun shadows in the raster view** (always, unless `F4` is off). Every lit fragment fires one shadow ray to the Sun through the analytic scene: every body sphere, every ring band, and, for Voyager's own parts, Voyager's triangle BVH. Planet shadows on rings, ring shadows on planets, moon eclipse shadows and Voyager's self-shadowing all come from this one function, `sunVisibility`.
-2. **The ray-traced view** (`F9`). A Whitted-style tracer draws the Sun, the 25 other bodies, all 15 ring bands and Voyager 2's 11,652 triangles. It has shadow rays, rays through translucent rings (up to 4 layers), one mirror bounce (`F10`), and a solar glow. It composites with the rasterised orbit lines, trajectory, belts, stars and heliosphere through the depth buffer.
+1. **Sun shadows in the raster view** (always, unless `F4` is off). Every sunlit fragment fires one shadow ray to the Sun through the analytic scene: every body sphere and every ring band. Planet shadows on rings, ring shadows on planets and moon eclipse shadows all come from this one function, `sunVisibility`. A cheap distance test rejects occluders before any trigonometry. Voyager's shadows on itself use a shadow map instead ([guide chapter 11](../guide/11-performance.md)); tracing its BVH per pixel cost ~10 ms per close-up frame.
+2. **The ray-traced view** (`F9`). A Whitted-style tracer draws the Sun, the 25 other bodies, all 15 ring bands and Voyager 2's 5,828 triangles. It has shadow rays, rays through translucent rings (up to 4 layers), one mirror bounce (`F10`; reflected rays see planets and rings, not Voyager itself), and a solar glow. It composites with the rasterised orbit lines, trajectory, belts, stars and heliosphere through the depth buffer.
 
 ## Files
 
@@ -26,7 +26,7 @@ This is the reference page for the project's ray tracing. The step-by-step deriv
 | `src/rendering/RayTraceScene.h` | `TraceSphere`, `TraceRing`, `RayTraceScene` (limits 32 spheres, 16 rings; `sunLightRadius` 0.6) |
 | `src/scene/SolarSystem.cpp` | `buildTraceScene`: spheres from each body's `surfaceMatrix`, rings from the band registry, reflectivity (ocean 0.12, ice 0.06) |
 | `src/rendering/RayTracer.*` | The F9 pass; builds the 1024×512 `GL_TEXTURE_2D_ARRAY` of body albedos on first use |
-| `src/rendering/TriangleBvh.*` | Builds Voyager's BVH (median split, leaves of 4 or fewer) and uploads it as two `GL_TEXTURE_BUFFER`s |
+| `src/rendering/TriangleBvh.*` | Builds Voyager's BVH (binned SAH, leaves of 4 or fewer) and uploads it as two `GL_TEXTURE_BUFFER`s |
 | `src/rendering/LightingUniforms.cpp` | `uploadTraceScene`, camera-relative |
 
 ## Primitives
@@ -41,7 +41,7 @@ This is the reference page for the project's ray tracing. The step-by-step deriv
 
 - **Hard** (`F4` → HARD): one ray to the Sun's centre; a hit is full shadow.
 - **Soft** (default): the Sun is a disc of angular radius `asin(0.6 / d)`. Each occluding sphere hides the circle-overlap fraction `discCoverage(sunAngle, occluderAngle, separation)`, which gives an analytic umbra and penumbra with no noise. Ring bands multiply by `1 − opacity`. Voyager's triangles block completely (its penumbra is far below one pixel).
-- **Bias**: the sphere the point lies on is skipped, ring rays start `1e-4 × outer radius` off the plane, and spacecraft rays start at `p + n × 2e-5`.
+- **Bias**: the sphere the point lies on is skipped, ring rays start `1e-4 × outer radius` off the plane, and spacecraft rays (F9 view) start at `p + n × 2e-5`.
 
 | Off | Hard | Soft |
 | --- | --- | --- |
@@ -67,12 +67,12 @@ The pass is drawn after the opaque raster pass with depth test on, and blends by
 
 | | |
 | --- | --- |
-| Triangles | 11,652 (every visible part, in the spacecraft frame, added by `VoyagerModelBuilder::add`) |
-| Nodes / depth | 8,191 / 12 (median split on the longest centroid axis, leaves of 4 or fewer) |
+| Triangles | 5,828 (every visible part, in the spacecraft frame, added by `VoyagerModelBuilder::add`) |
+| Nodes / depth | 6,723 / 24 (binned surface-area heuristic, 12 bins per axis; leaves of 4 or fewer) |
 | Materials | 12 palette slots (limit 16): colour, specular, atlas UV window |
 | GPU layout | nodes: 2 RGBA32F texels `(min, first) (max, second)`; triangles: 7 texels (positions, material, normals, UVs) |
 | Per frame | `meshPosition` (camera-relative), `meshWorldToLocal` (transpose of the rotation), `meshBoundingRadius`; the ray is moved into the mesh frame, not the mesh into the world |
-| Traversal | bounding-sphere reject, explicit 32-entry stack, slab test against the closest hit so far; shadow rays stop at the first hit |
+| Traversal | bounding-sphere reject, explicit 32-entry stack, slab test against the closest hit so far, nearer child visited first; shadow rays stop at the first hit |
 
 | Raster | Ray-traced |
 | --- | --- |
@@ -89,6 +89,6 @@ The pass is drawn after the opaque raster pass with depth test on, and blends by
 
 1. Press `3` (Saturn encounter), then `Tab` until Saturn. The rings show the planet's shadow and the planet shows ring shadows. Press `F4` to cycle off, hard and soft.
 2. Press `F9`. The HUD reads `RENDER RAY-TRACED`. The planet is perfectly round at any zoom; the rings are translucent and the planet shows through the C ring.
-3. Press `I`, `F9`. Voyager is ray-traced with its textures; the dish shades the bus. `F10` toggles reflections in the foil.
-4. The log shows `BVH built: 11652 triangles, 8191 nodes, depth 12, 12 materials` and, on the first traced frame, `ray-tracer albedo atlas: 26 layers of 1024x512`.
+3. Press `I`, `F9`. Voyager is ray-traced with its textures; the dish shades the bus. `--benchmark` reports this view at about 4.8 ms GPU on an RX 590 (12.7 ms before the performance pass). `F10` toggles reflections in the foil.
+4. The log shows `BVH built: 5828 triangles, 6723 nodes, depth 24, 12 materials` and, on the first traced frame, `ray-tracer albedo atlas: 26 layers of 1024x512`.
 5. `x64\Release\Voyager-2.exe --capture-raytrace <dir>` regenerates the comparison images.

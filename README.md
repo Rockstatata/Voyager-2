@@ -6,11 +6,13 @@ Started from an instructor starter project (VAO/VBO/EBO/Shader wrappers, GLAD, G
 
 ## Status
 
-**All bible phases complete.** 26 textured bodies (Sun, eight planets, Pluto and every required and optional moon) share one indexed 32×64 UV sphere. Every planet and Voyager 2 is placed from dense NASA/JPL Horizons state vectors on one shared simulation date, so all four giant-planet flybys happen at the real time (within a minute) and at the real planet-relative geometry (within 0.5 %). Voyager 2 is built entirely from project-native geometry (82 parts, 11,652 triangles) and textured from NASA's public-domain hardware atlas. The lighting phase implements five shading techniques (Flat, Gouraud, Phong, Blinn-Phong, Toon), point, spot and directional lights, derived normal and specular maps, and ray-traced soft shadows; a Whitted-style ray-traced view (F9) traces every world, ring and Voyager's own triangles through a BVH. Glow, translucent rings, a floating origin, logarithmic depth, a HUD with labels and Inspect captions, and full camera autonomy are in place.
+**All bible phases complete.** 26 textured bodies (Sun, eight planets, Pluto and every required and optional moon) share one indexed 32×64 UV sphere. Every planet and Voyager 2 is placed from dense NASA/JPL Horizons state vectors on one shared simulation date, so all four giant-planet flybys happen at the real time (within a minute) and at the real planet-relative geometry (within 0.5 %). Voyager 2 is built entirely from project-native geometry (76 parts, 5,828 triangles) and textured from NASA's public-domain hardware atlas. The lighting phase implements five shading techniques (Flat, Gouraud, Phong, Blinn-Phong, Toon), point, spot and directional lights, derived normal and specular maps, and ray-traced soft shadows; a Whitted-style ray-traced view (F9) traces every world, ring and Voyager's own triangles through a BVH. Glow, translucent rings, a floating origin, logarithmic depth, a HUD with labels and Inspect captions, and full camera autonomy are in place. Time never freezes: after the NASA/JPL tables end (2030) planets keep orbiting on two-body Kepler orbits.
+
+**Performance.** `Voyager-2.exe --benchmark bench.txt` times eight fixed views with vsync off. A diagnosis-driven pass replaced per-pixel BVH shadow rays with a shadow map, added sphere level of detail, frustum culling and an SAH-built BVH, and moved surface detail from triangles into textures (Voyager 11,652 → 5,828 triangles, 818k → 235k triangles per frame). The mean frame went from 4.75 ms to 1.45 ms; the worst raster close-up from 10.8 ms to under 1 ms, and the ray-traced Voyager view from 13.9 ms to 5.5 ms ([chapter 11](docs/guide/11-performance.md)).
 
 ![Voyager 2 six hours before Jupiter closest approach](docs/objects/images/runtime/03_jupiter_approach.jpg)
 
-**Learning the code:** start with the [learning guide](docs/guide/README.md): ten chapters from the OpenGL pipeline and how every vertex, index and triangle is generated, through transforms, textures, lighting, shading and ray tracing, to Voyager 2, the mission data and recipes for common changes. [`docs/objects/`](docs/objects/) is the illustrated object-by-object reference, and the implementation bible is the specification.
+**Learning the code:** start with the [learning guide](docs/guide/README.md): eleven chapters from the OpenGL pipeline and how every vertex, index and triangle is generated, through transforms, textures, lighting, shading and ray tracing, to Voyager 2, the mission data, recipes for common changes and performance. [`docs/objects/`](docs/objects/) is the illustrated object-by-object reference, and the implementation bible is the specification.
 
 ## Build & run
 
@@ -50,7 +52,7 @@ Press **F1** in the program for the full list ([docs/objects/controls.md](docs/o
 - **Lighting and ray tracing**: `K` lighting, `F3` shading technique, `F4` shadows off/hard/soft, `F5` headlamp spotlight, `F6` fill light, `F7` Sun falloff, `F8` normal/specular maps, `F9` ray-traced view, `F10` reflections.
 - **Display**: `L` labels, `F2` HUD, `F12` screenshot. `Esc` backs out of help and Inspect; press it twice to quit.
 
-`Voyager-2.exe --capture <dir>`, `--capture-bodies`, `--capture-shading`, `--capture-raytrace` and `--capture-voyager` write scripted screenshot tours (used for the documentation).
+`Voyager-2.exe --capture <dir>`, `--capture-bodies`, `--capture-shading`, `--capture-raytrace` and `--capture-voyager` write scripted screenshot tours (used for the documentation); `--benchmark <file>` writes a timing table.
 
 ## Architecture
 

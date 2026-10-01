@@ -75,7 +75,7 @@ The vertex shader maps the mesh's own 0..1 UVs into that window: `uv * scale + o
 | Finish | Pixels (l, t, r, b) | Tint | Specular / power | Parts |
 | --- | --- | --- | --- | --- |
 | whitePaint | 225, 835, 352, 958 | 1.0 | 0.20 / 16 | dish, subreflector, cameras, magnetometers |
-| goldFoil | 390, 710, 490, 818 | 1.15 | 0.75 / 70 | bay blankets, plasma science, cosmic ray, IRIS |
+| goldFoil | 390, 710, 490, 818 | 1.15 | 0.75 / 70 | plasma science, cosmic ray, IRIS, PRA root |
 | darkGoldFoil | same | 0.62 | 0.55 / 50 | bays, canister, LECP, scan platform |
 | blackBlanket | 8, 8, 212, 160 | 1.0 | 0.12 / 10 | bays, UVS |
 | aluminium | 978, 20, 1010, 560 | 1.1 | 0.55 / 40 | trusses, ribs, struts |
@@ -83,7 +83,7 @@ The vertex shader maps the mesh's own 0..1 UVs into that window: `uv * scale + o
 | lens | 298, 672, 360, 736 | 1.0 | 0.90 / 120 | camera lenses, cups, apertures |
 | radiatorBlue | 480, 356, 640, 536 | 1.0 | 0.30 / 24 | shunt radiator |
 | recordGold | 8, 172, 234, 396 | 1.1 | 0.85 / 90 | Golden Record |
-| louvres | 278, 122, 448, 280 | 1.0 | 0.60 / 50 | thermal louvres |
+| louvres | 278, 122, 448, 280 | 1.0 | 0.60 / 50 | the three louvred bays (photo instead of modelled strips) |
 | calibrationPanel | 470, 20, 630, 220 | 1.0 | 0.15 / 12 | calibration target |
 | copper | untextured (0.72, 0.36, 0.12) | n/a | 0.60 / 48 | thruster nozzles |
 

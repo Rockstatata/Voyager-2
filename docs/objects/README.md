@@ -2,7 +2,7 @@
 
 These notes explain the renderable objects at the level needed to reconstruct and defend the implementation. Start with the shared-system guides, then read each object's page.
 
-**New to the code?** Read the [learning guide](../guide/README.md) first. It builds everything up from the ground: the OpenGL pipeline, how every vertex and triangle is generated, transforms, textures, lighting, the five shading techniques, ray tracing, Voyager 2, the mission data, and step-by-step recipes for changes. These object pages are the reference that goes with it.
+**New to the code?** Read the [learning guide](../guide/README.md) first; [chapter 11](../guide/11-performance.md) covers performance (benchmark, shadow mapping, LOD, culling). It builds everything up from the ground: the OpenGL pipeline, how every vertex and triangle is generated, transforms, textures, lighting, the five shading techniques, ray tracing, Voyager 2, the mission data, and step-by-step recipes for changes. These object pages are the reference that goes with it.
 
 1. [Procedural mesh handbook](procedural-meshes.md): exact vertex equations, index order, normals, UVs, winding, and counts for boxes, cylinders/frusta/cones, parabolic dishes, annuli, line circles, and star points.
 2. [UV sphere geometry](uv-sphere.md): every position, normal, UV, index, triangle count, seam, pole, and winding decision for all bodies and small rocks.
@@ -21,7 +21,7 @@ These notes explain the renderable objects at the level needed to reconstruct an
    26 bodies total. Pluto and Saturn's Tethys, Dione, Rhea and Iapetus are the bible's optional set (section 3).
 
 9. [Planetary rings](rings.md): Saturn and Uranus (5 real bands each), plus faint translucent Jupiter (2) and Neptune (3) systems, all in planet-radius units.
-10. [Voyager 2](voyager-2.md): the from-scratch spacecraft (82 parts, 11,652 triangles, 18 inspectable components), its quaternion flight model, chase and Inspect cameras, self-shadowing and ray tracing. [Voyager textures](voyager-textures.md): how each part shows one region of NASA's public-domain hardware atlas. Its [historical trajectory](voyager-trajectory.md) follows 11,002 NASA/JPL Horizons state vectors. The [primary-source NASA research note](../research/voyager-2-spacecraft-reference.md) separates sourced dimensions from implementation inference.
+10. [Voyager 2](voyager-2.md): the from-scratch spacecraft (76 parts, 5,828 triangles, 18 inspectable components), its quaternion flight model, chase and Inspect cameras, self-shadowing and ray tracing. [Voyager textures](voyager-textures.md): how each part shows one region of NASA's public-domain hardware atlas. Its [historical trajectory](voyager-trajectory.md) follows 11,002 NASA/JPL Horizons state vectors. The [primary-source NASA research note](../research/voyager-2-spacecraft-reference.md) separates sourced dimensions from implementation inference.
 11. [GPU instancing](instancing.md): the shared mechanism behind every "thousands of bodies, one draw call" object below.
 12. [Asteroid belt, Kuiper belt, Oort cloud](small-body-fields.md): lit instanced small-body fields.
 13. [Background starfield](starfield.md): three camera-centred brightness layers, 7,380 points.

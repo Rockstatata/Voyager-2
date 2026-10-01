@@ -128,7 +128,7 @@ Cosines are compared instead of angles because the dot product gives the cosine 
 | `normalTexture`, `normalStrength` | bump detail (chapter 4.5) |
 | `specularTexture` | per-texel highlight mask |
 | `uvTransform` | atlas window (chapter 4.4) |
-| `selfShadowing` | trace shadow rays through Voyager's own triangles (chapter 7.7) |
+| `selfShadowing` | also sample Voyager's shadow map, so the craft shadows itself (chapter 11.5) |
 
 Planet presets (`MaterialLibrary::surface`, chosen by the `material` column of celestial_bodies.csv):
 

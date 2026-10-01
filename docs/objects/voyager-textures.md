@@ -31,7 +31,7 @@ The generator's own 0..1 UVs are then squeezed into that window, so a whole box 
 | Finish | Pixels (l, t, r, b) | Tint | Specular / power | Used on |
 | --- | --- | --- | --- | --- |
 | whitePaint | 225, 835, 352, 958 | 1.0 | 0.20 / 16 | high-gain dish, subreflector, LGA, cameras, magnetometer sensors |
-| goldFoil | 390, 710, 490, 818 | 1.15 | 0.75 / 70 | bay blankets, plasma science, cosmic ray, IRIS, PRA root |
+| goldFoil | 390, 710, 490, 818 | 1.15 | 0.75 / 70 | plasma science, cosmic ray, IRIS, PRA root |
 | darkGoldFoil | 390, 710, 490, 818 | 0.62 | 0.55 / 50 | bay blankets, magnetometer canister, LECP, scan platform |
 | blackBlanket | 8, 8, 212, 160 | 1.0 | 0.12 / 10 | bay blankets, ultraviolet spectrometer |
 | aluminium | 978, 20, 1010, 560 | 1.1 | 0.55 / 40 | trusses, dish ribs, struts, adapter feet, flanges, platforms |
@@ -39,15 +39,17 @@ The generator's own 0..1 UVs are then squeezed into that window, so a whole box 
 | lens | 298, 672, 360, 736 | 1.0 | 0.90 / 120 | camera lenses, IRIS mirror, Faraday cups, sun-sensor aperture |
 | radiatorBlue | 480, 356, 640, 536 | 1.0 | 0.30 / 24 | shunt radiator |
 | recordGold | 8, 172, 234, 396 | 1.1 | 0.85 / 90 | Golden Record |
-| louvres | 278, 122, 448, 280 | 1.0 | 0.60 / 50 | thermal louvre strips |
+| louvres | 278, 122, 448, 280 | 1.0 | 0.60 / 50 | the three louvred bays (bus faces 1, 4, 7) |
 | calibrationPanel | 470, 20, 630, 220 | 1.0 | 0.15 / 12 | optical calibration target |
 | copper | untextured, (0.72, 0.36, 0.12) | n/a | 0.60 / 48 | thruster nozzles |
 
 The tint multiplies the photograph, so one gold-foil region gives both the bright and the aged, darker blankets.
 
+**Texture, not geometry.** The louvred bays used to carry two modelled louvre strips each; they now show NASA's louvre photograph on the bay blanket itself. Detail that does not change the silhouette belongs in the texture and its derived normal map, not in extra triangles ([guide chapter 11](../guide/11-performance.md)).
+
 ## Lighting maps
 
-`MaterialLibrary::loadAtlas(path, 1.4)` also derives a normal map from the atlas (Sobel on luminance, [lighting.md](lighting.md)). Every textured finish uses it at strength 0.8, so the wrinkles in the foil and the louvre slats catch the light in Phong, Blinn-Phong and Toon. All finishes set `selfShadowing`, so the raster pass traces shadow rays through Voyager's own BVH ([ray-tracing.md](ray-tracing.md)).
+`MaterialLibrary::loadAtlas(path, 1.4)` also derives a normal map from the atlas (Sobel on luminance, [lighting.md](lighting.md)). Every textured finish uses it at strength 0.8, so the wrinkles in the foil and the louvre slats catch the light in Phong, Blinn-Phong and Toon. All finishes set `selfShadowing`, so the raster pass samples Voyager's shadow map ([lighting.md](lighting.md)).
 
 ## Changing a finish
 

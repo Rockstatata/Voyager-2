@@ -6,7 +6,7 @@
 
 The project uses ray tracing in **two places**:
 
-1. **Ray-traced shadows inside the normal raster view.** Every lit pixel fires one *shadow ray* toward the Sun (`sunVisibility` in raytrace.glsl, called from scene.frag). This is always on unless F4 turns it off.
+1. **Ray-traced shadows inside the normal raster view.** Every sunlit pixel fires one *shadow ray* toward the Sun against the planets and rings (`sunVisibility` in raytrace.glsl, called from scene.frag). This is always on unless F4 turns it off. Voyager's shadows *on itself* in this view use a shadow map instead (chapter 11.5), which is far cheaper than a ray through its triangles.
 2. **A full ray-traced view (F9).** A Whitted-style ray tracer draws every planet, moon, ring and Voyager itself, with shadows, rays through translucent rings, and one reflection bounce.
 
 | Raster (F9 off) | Ray-traced (F9 on) |
@@ -154,7 +154,7 @@ A shadow ray starts exactly *on* a surface. Rounding can place its origin a hair
 
 - Spheres: skip the sphere the point lies on (`centreDistance <= radius * 1.001`).
 - Rings: start the ray a little off the ring plane (`tMin = outer radius × 1e-4`).
-- Voyager's triangles: move the start point along the normal, `p + n × 2e-5` (the **shadow bias**).
+- Voyager's triangles (ray-traced view): move the start point along the normal, `p + n × 2e-5` (the **shadow bias**). The raster shadow map has its own bias: `glPolygonOffset` (chapter 11.5).
 
 ## 7.5 The Whitted ray tracer (F9)
 
@@ -164,7 +164,7 @@ Turner Whitted's 1980 algorithm: for each pixel, find the nearest hit. Shade it 
 main():
     primary = castRay(eye, pixel direction)
     if primary hit something reflective and maxBounces > 0 (F10):
-        bounce = castRay(hit point + normal·bias, reflect(direction, normal))
+        bounce = castRay(hit point + normal·bias, reflect(direction, normal), withMesh = false)
         colour += opaqueWeight × reflectivity × bounce.colour
     add solar glow; write colour + depth
 
@@ -178,11 +178,11 @@ castRay(origin, direction):             // loops through up to 4 translucent rin
 
 lightSurface(albedo, p, n, v, ...):
     terms = evaluateLights(n, v, p, ..., SHADING_BLINN_PHONG, ...)   // the SAME lighting.glsl
-    sunlight = sunVisibility(p + n·2e-5, true)                          // shadow ray
+    sunlight = sunVisibility(p + n·2e-5, meshShadow)                    // shadow ray (mesh too on primary hits)
     return albedo·(ambient + sunDiffuse·sunlight + otherDiffuse) + sunSpecular·sunlight + otherSpecular
 ```
 
-GLSL has no recursion, so the single bounce is written as a second call. Reflectivity: ocean worlds 0.12, icy worlds 0.06 (`SolarSystem::buildTraceScene`), Voyager parts `specularStrength × 0.3`.
+GLSL has no recursion, so the single bounce is written as a second call. The bounce skips Voyager's triangles: reflections show planets and rings, not the craft reflected in itself, which costs a fraction as much (chapter 11). Reflectivity: ocean worlds 0.12, icy worlds 0.06 (`SolarSystem::buildTraceScene`), Voyager parts `specularStrength × 0.3`.
 
 ### The glow
 
@@ -210,7 +210,7 @@ return textureGrad(albedoAtlas, vec3(uv, layer), dx, dy).rgb;
 
 ## 7.6 Ray tracing triangles: Voyager's BVH
 
-Spheres and rings have tiny exact formulas. Voyager is **11,652 triangles**. Testing every triangle for every pixel would be 11,652 tests × 2 million pixels × (primary + shadow + reflection rays) per frame, which is far too slow. A **bounding volume hierarchy** (BVH) makes it roughly log₂ instead.
+Spheres and rings have tiny exact formulas. Voyager is **5,828 triangles**. Testing every triangle for every pixel would be 5,828 tests × 2 million pixels × (primary + shadow + reflection rays) per frame, which is far too slow. A **bounding volume hierarchy** (BVH) makes it roughly log₂ instead.
 
 ### Ray-triangle: Möller–Trumbore
 
@@ -234,7 +234,7 @@ The same (u, v) then interpolate the triangle's three normals and UVs at the hit
 ### Building the tree (CPU, TriangleBvh.cpp)
 
 1. `VoyagerModelBuilder`'s `add(...)` sends every part's triangles, in **Voyager's local frame**, to `TriangleBvh::addMesh`, together with a material index. Each distinct material becomes one palette slot, up to 16.
-2. `buildNode(begin, end)` computes the box around all those triangles. If there are **4 or fewer**, it becomes a **leaf**. Otherwise it picks the **longest axis** of the triangle centroids, splits at the **median** centroid (`std::nth_element`), and recurses on each half. Median splits keep the tree balanced: the depth is about log₂(n/4). The log reads `BVH built: 11652 triangles, 8191 nodes, depth 12, 12 materials`.
+2. `buildNode(begin, end)` computes the box around all those triangles. It then chooses the split with the **surface-area heuristic** (SAH): bin the centroids into 12 slots per axis, and pick the boundary that minimises `area(left box) × count(left) + area(right box) × count(right)`. A ray hits a box with probability proportional to its area, so this minimises the expected work. A node of **4 or fewer** triangles for which no split is cheaper becomes a **leaf**. The log reads `BVH built: 5828 triangles, 6723 nodes, depth 24, 12 materials` (chapter 11.5 compares it with a median split).
 3. The nodes and triangles are packed into `RGBA32F` texels and uploaded as **texture buffers** (`GL_TEXTURE_BUFFER`). GLSL 3.30 reads them with `texelFetch(samplerBuffer, index)`:
 
 ```text
@@ -257,7 +257,7 @@ while stack not empty:
     node = pop
     if the ray misses node's box, or the box starts beyond the closest hit so far: continue   // slab test
     if leaf: Möller–Trumbore each triangle, keep the closest (a shadow ray stops at the FIRST hit)
-    else: push both children
+    else: test both child boxes, push the farther first so the nearer is searched first (ordered traversal)
 ```
 
 The **slab test** intersects the ray with the three pairs of parallel planes that bound the box. The ray is inside the box during the overlap of the three [tNear, tFar] intervals:
@@ -270,15 +270,15 @@ float tFar  = min3(max(t0, t1));
 hit = tFar >= max(tNear, 0) && tNear < closestSoFar;
 ```
 
-GLSL has no recursion, so an explicit stack of 32 ints stands in for it. The tree depth is 12, well under that.
+GLSL has no recursion, so an explicit stack of 32 ints stands in for it. The tree depth is 24, so at most 25 entries are ever on the stack (a larger array slowed every pixel; chapter 11.4). Visiting the nearer child first matters: once a close hit is found, `closest` shrinks and farther boxes fail the slab test without being opened.
 
 ### Where Voyager's BVH is used
 
 | Pass | What the BVH does |
 | --- | --- |
-| Raster, spacecraft parts (`selfShadowing` material flag) | Shadow rays from each Voyager pixel through its own triangles: the dish shades the bus, and the booms cast thin shadows. `sunVisibility(p + n·2e-5, true)` |
+| Raster, spacecraft parts | Not used: Voyager's self-shadows come from a shadow map (chapter 11.5). Tracing the BVH per pixel cost ~10 ms per close-up frame. |
 | Raster, every other surface | Not used, so planets pay nothing for it |
-| Ray-traced view (F9) | Primary rays hit Voyager's triangles (textured through the atlas palette), shadow rays test them, and reflections off foil and metal see the rest of the scene |
+| Ray-traced view (F9) | Primary rays hit Voyager's triangles (textured through the atlas palette), their shadow rays test them, and reflections off foil and metal see the planets and rings |
 
 `TriangleBvh::bind` uploads the per-frame data: `meshPosition` (camera-relative), `meshWorldToLocal` (the transpose of Voyager's rotation), `meshBoundingRadius`, the material palette (`meshMaterialColor`, `meshMaterialSpecular`, `meshMaterialUv`, `meshMaterialTextured`), and the atlas on unit 5.
 

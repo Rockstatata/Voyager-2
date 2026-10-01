@@ -12,7 +12,7 @@ There are three `InstancedField` objects, `asteroid_belt`, `kuiper_belt` and `oo
 
 ## Geometry generation
 
-All three use `UvSphereGenerator::generate(6, 8)`: 63 vertices and 80 triangles. Each field uploads its own `Mesh` from that CPU data, because `Mesh::setInstanceTransforms` stores the instance buffer on the mesh.
+All three use `UvSphereGenerator::generate(3, 6)`: 28 vertices and 24 triangles, faceted like a real asteroid. A rock is a few pixels at most; the earlier 6×8 sphere (80 triangles) put 680,000 triangles on screen for the three fields, now 204,000 ([guide chapter 11](../guide/11-performance.md)). Each field uploads its own `Mesh` from that CPU data, because `Mesh::setInstanceTransforms` stores the instance buffer on the mesh.
 
 ## Vertex attributes
 

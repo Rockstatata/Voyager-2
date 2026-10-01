@@ -78,7 +78,7 @@ Orientation is a quaternion and every turn is about the ship's own axes, so ther
 | `T` | Voyager trajectory line |
 | `O` | Orbit guides |
 
-The shared Julian Date runs at 120 mission days per second at 1x, easing to about 1.2 hours per second at each closest approach. Planets, Voyager and the HUD all read it ([mission-ephemeris.md](mission-ephemeris.md)). Moon revolution and axial spin use the same speed factor and pause ([orbital-motion.md](orbital-motion.md)).
+The shared Julian Date runs at 120 mission days per second at 1x, easing to about 1.2 hours per second at each closest approach. It never stops on its own: after the NASA/JPL data ends (2030-01-02) the planets keep orbiting on two-body Kepler orbits until 2500 ([mission-ephemeris.md](mission-ephemeris.md)). Planets, Voyager and the HUD all read it ([mission-ephemeris.md](mission-ephemeris.md)). Moon revolution and axial spin use the same speed factor and pause ([orbital-motion.md](orbital-motion.md)).
 
 ## Display
 
@@ -111,6 +111,8 @@ Details: [lighting.md](lighting.md), [ray-tracing.md](ray-tracing.md) and the le
 ## Scripted captures
 
 `Voyager-2.exe --capture <dir>` runs a fixed tour: overview, launch, four pre-encounter views, heliopause, four Focus views and the help overlay. It writes each view as a BMP and exits. `--capture-bodies <dir>` shoots a Focus view of each of the 26 bodies. `--capture-shading <dir>` shoots Earth and Voyager in every shading technique plus each light and shadow mode, `--capture-raytrace <dir>` pairs raster and ray-traced views of the same shots, and `--capture-voyager <dir>` shoots every Inspect component. These produced the images in `docs/objects/images/`.
+
+`--benchmark <file>` turns vsync off, measures frame and GPU time (OpenGL timer queries), draw calls and triangles over eight fixed views, and writes a table to `<file>` ([guide chapter 11](../guide/11-performance.md)).
 
 ## Verification
 

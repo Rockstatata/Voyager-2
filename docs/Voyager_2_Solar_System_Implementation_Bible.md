@@ -3745,6 +3745,10 @@ Use this table whenever we make a significant architecture change.
 | D023 | 2026-09-25 | Texture Voyager from NASA's public-domain atlas via per-material UV windows; geometry stays self-authored | Real hardware finishes without importing another project's geometry | MaterialLibrary, VoyagerModelBuilder |
 | D024 | 2026-09-25 | Spacecraft scale 0.006 units/m, 18 inspectable components and an Inspect camera | Voyager is the primary object and must be studied part by part | ScaleManager, CameraController |
 | D025 | 2026-09-25 | Data-driven catalogs (`assets/data/*.csv`) and named scene groups | Bodies, rings and bookmarks can be changed without recompiling; groups toggle whole categories | BodyCatalog, Scene |
+| D026 | 2026-10-01 | Shadow-map Voyager's self-shadows in the raster pass; keep BVH rays for the F9 view only | Per-pixel BVH shadow rays cost ~10 ms per close-up frame (measured); a depth pass plus PCF costs < 0.4 ms | ShadowMap, scene.frag |
+| D027 | 2026-10-01 | Surface detail in textures, not triangles: louvre photo, 4-sided open rods, 48×6 dish, 3×6 rocks | Instructor diagnosis: polygons were used to imitate texture; triangles per frame 818k → 235k | VoyagerModelBuilder, EnvironmentBuilder |
+| D028 | 2026-10-01 | Shared sphere LOD (32×64, 16×32, 8×16) by apparent size, and frustum culling | Distant bodies wasted thousands of sub-pixel triangles; off-screen bodies cost a draw call each | CelestialBody, Renderer |
+| D029 | 2026-10-01 | Run the clock past the 2030 end of the Horizons data on two-body Kepler orbits (to 2500) | The clamped clock froze every planet ~2.5 minutes after launch; historical mode must keep moving | Trajectory, MissionController |
 
 Add entries below rather than deleting old decisions. If a decision is reversed, add a new decision referencing the old one.
 
@@ -3844,6 +3848,31 @@ Complete the lighting and shading phase without instructor resources, add ray tr
 
 ### Next exact task
 Optional: date-synchronized moons, shadows from the headlamp, path-traced global illumination.
+
+## Session 2026-10-01
+
+### Goal
+Diagnose and fix slow rendering (instructor: too many polygons used as texture), and stop the planets freezing in Historical mode.
+
+### Files changed
+- New: `src/core/Benchmark.*`, `src/rendering/ShadowMap.*`, `shaders/shadow.*`, `docs/guide/11-performance.md`
+- Changed: `Renderer` (culling, shadow pass, cached uniforms), `LightingUniforms` (batched arrays), `CelestialBody` (LOD), `Voyager2` (culling), `VoyagerModelBuilder` (fewer triangles), `EnvironmentBuilder` (rocks), `Trajectory`/`MissionController` (Kepler after 2030), `scene.frag`, `raytrace.glsl`, `raytrace_mesh.glsl`, `raytrace.frag`, verify script, docs
+
+### Completed
+- [x] `--benchmark` with GPU timer queries; baseline and result recorded in guide chapter 11
+- [x] Mean frame 4.75 → 1.45 ms; worst raster view 10.81 → 0.97 ms; ray-traced Voyager 13.88 → 5.53 ms (SAH BVH); triangles 818k → 236k; Voyager 11,652 → 5,828
+- [x] Planets keep orbiting after 2030 (two-body Kepler), HUD notice, start-up accuracy self-check
+
+### Problems found
+- Per-pixel BVH shadow rays dominated close-up frames; the clamped clock froze the solar system at 2030.
+
+### Decisions made
+- D026-D029.
+
+### Current build state
+- Builds: Yes (Debug and Release x64)
+- Runs: Yes; both verify scripts pass
+- Known errors: none
 
 ---
 
