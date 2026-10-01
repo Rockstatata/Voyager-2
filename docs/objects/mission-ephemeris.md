@@ -69,7 +69,7 @@ Those Julian Dates are 1979-07-09 22:29, 1981-08-26 03:24, 1986-01-24 18:00 and 
 
 - The base rate is 120 mission days per real second at speed 1x. `=`/`-` double or halve it (1/64x to 64x), `P` pauses and `Backspace` resets it.
 - Encounter slow-motion (`N` toggles it) multiplies the rate by `clamp(|t - t_CA| / 60 days, 0.0004, 1)`. Approaching a planet is therefore an exponential ease-in of about four seconds per side, with a floor of about 1.2 mission hours per second at closest approach. The 12-year cruise still plays in seconds. Updates are sub-stepped so a long frame cannot jump across the slow zone.
-- The date is clamped to the data range and stops at 2030-01-02 instead of wrapping.
+- The date never wraps (capture `images/runtime/13_beyond_data.jpg` shows 2044). It runs on past the tables' end (2030-01-02) to 2500-01-01: planets then follow two-body Kepler orbits from their last state vector (`Trajectory::propagateKepler`), Voyager coasts at its last velocity, and the HUD shows `BEYOND NASA/JPL DATA (2030): TWO-BODY KEPLER PREDICTION`. Before this, the clock stopped at 2030 about 2.5 minutes after launch and every planet froze.
 - Moons keep their own visual orbital clock ([orbital-motion.md](orbital-motion.md)). At 120 days per second, Io would otherwise complete 68 orbits every second.
 
 ## Bookmarks
@@ -79,7 +79,7 @@ Those Julian Dates are 1979-07-09 22:29, 1981-08-26 03:24, 1986-01-24 18:00 and 
 ## Limitations
 
 - Horizons body centres are exact, but the display clearance is educational: rendered distances near a planet are not to scale.
-- Every table ends on 2030-01-02. Outside the range positions are linear extrapolation, which the clock never requests.
+- Every table ends on 2030-01-02. After that, planet positions are two-body predictions: they ignore planetary perturbations and, for Earth, the Moon's pull (start-up self-check: about 1.3 million km for Earth and 78,000 km for Neptune after one year, far below a rendered planet radius).
 
 ## Verification
 

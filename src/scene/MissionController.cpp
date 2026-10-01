@@ -34,7 +34,11 @@ void MissionController::load(SolarSystem& system, const glm::dvec3& sunPosition,
 	{
 		m_ephemeris.computeEncounters({ "jupiter", "saturn", "uranus", "neptune" });
 		const Trajectory& track = m_ephemeris.voyagerTrack();
-		m_clock.setRange(track.startJulianDate(), track.endJulianDate());
+		// The clock runs on past the end of the NASA/JPL tables (2030-01-02)
+		// to 2500: planets then follow two-body Kepler orbits from their last
+		// real state and Voyager coasts outward, so nothing ever freezes.
+		m_dataEndJulianDate = track.endJulianDate();
+		m_clock.setRange(track.startJulianDate(), kExtendedEndJulianDate);
 		std::vector<double> encounterDates;
 		for (const MissionEphemeris::Encounter& encounter : m_ephemeris.encounters())
 			encounterDates.push_back(encounter.closestApproachJulianDate);
@@ -44,8 +48,28 @@ void MissionController::load(SolarSystem& system, const glm::dvec3& sunPosition,
 	else
 	{
 		// Without the Voyager table the planets still run on their own data.
-		m_clock.setRange(2443376.5, 2462503.5);
+		m_dataEndJulianDate = 2462503.5;
+		m_clock.setRange(2443376.5, kExtendedEndJulianDate);
 		m_clock.setJulianDate(2443376.5);
+	}
+
+	// Self-check of the post-2030 prediction: propagate a real state one
+	// year before the end of each table and compare with the real end state.
+	for (const char* id : { "earth", "neptune" })
+	{
+		const MissionEphemeris::Planet* planet = m_ephemeris.findPlanet(id);
+		if (planet == nullptr || planet->track.samples().size() < 2)
+			continue;
+		const TrajectorySample& last = planet->track.samples().back();
+		const double startDate = last.julianDate - 365.25;
+		glm::dvec3 predicted;
+		glm::dvec3 velocity;
+		if (Trajectory::propagateKepler(planet->track.heliocentricPositionAtJulianDate(startDate),
+			planet->track.velocityAtJulianDate(startDate), 365.25, predicted, velocity))
+		{
+			std::cout << "[TRAJECTORY] two-body check " << planet->displayName << ": 1-year Kepler prediction differs from Horizons by "
+				<< static_cast<long long>(glm::length(predicted - last.heliocentricAu) * 149597870.7) << " km" << std::endl;
+		}
 	}
 
 	std::cout << "[TRAJECTORY] synchronized ephemeris: " << m_bindings.size()

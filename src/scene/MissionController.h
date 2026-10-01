@@ -40,6 +40,11 @@ public:
 	// Encounter planet whose flyby region contains `position`, else nullptr.
 	const CelestialBody* encounterPlanetNear(const glm::dvec3& position, double clearances) const;
 
+	// True once the date is past the last NASA/JPL state vector: positions
+	// are then two-body predictions (HUD says so).
+	bool beyondData() const { return m_clock.julianDate() > m_dataEndJulianDate; }
+	static constexpr double kExtendedEndJulianDate = 2634166.5; // 2500-01-01
+
 	SimulationClock& clock() { return m_clock; }
 	const SimulationClock& clock() const { return m_clock; }
 	const MissionEphemeris& ephemeris() const { return m_ephemeris; }
@@ -62,6 +67,7 @@ private:
 	SolarSystem* m_system = nullptr;
 	Voyager2* m_voyager = nullptr;
 	glm::dvec3 m_sunPosition{ 0.0 };
+	double m_dataEndJulianDate = 0.0;
 };
 
 #endif

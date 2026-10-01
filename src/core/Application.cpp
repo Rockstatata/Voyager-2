@@ -370,6 +370,8 @@ void Application::render()
 	view.hudVisible = m_hudVisible;
 	view.helpVisible = m_helpVisible;
 	view.extraLines = m_lighting.statusLines();
+	if (m_mission.beyondData())
+		view.extraLines.push_back("BEYOND NASA/JPL DATA (2030): TWO-BODY KEPLER PREDICTION");
 	view.hints = keyHints();
 	if (m_quitArmedSeconds > 0.0)
 		view.notice = "PRESS ESC AGAIN TO QUIT";
@@ -550,6 +552,15 @@ void Application::startCaptureTour(const std::string& directory, const std::stri
 		{ "10_focus_saturn.bmp", 3.5, [=, this]() { pause(); focusById("saturn"); } },
 		{ "11_focus_uranus.bmp", 3.5, [=, this]() { pause(); focusById("uranus"); } },
 		{ "12_help.bmp", 0.5, [this]() { m_helpVisible = true; } },
+		// Past the NASA/JPL tables: planets on two-body orbits, 2044-01-02.
+		{ "13_beyond_data.bmp", 1.4, [=, this]()
+		{
+			m_helpVisible = false;
+			jumpToBookmark(5);
+			m_mission.clock().setJulianDate(2467616.5);
+			pause();
+			m_cameraController.goToOverview();
+		} },
 	};
 	m_captureTour.start(directory, std::move(shots));
 }

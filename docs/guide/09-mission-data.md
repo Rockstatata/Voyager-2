@@ -14,7 +14,7 @@ Everything that moves is driven by **real data** evaluated at **one date**.
 | `assets/trajectory/planets/*_heliocentric.csv` | NASA/JPL Horizons position + velocity for 9 planets | `MissionEphemeris` |
 | `assets/trajectory/voyager2_heliocentric.csv` | 11,002 Horizons state vectors for Voyager 2, denser near encounters | `MissionEphemeris` |
 
-The program never goes online. `scripts/fetch_horizons.ps1` regenerates the trajectory tables from the Horizons API. It also builds each encounter's rows as *planet position + planet-centred Voyager position*. That fixed a 13,600 km mismatch between Horizons' heliocentric Voyager and Neptune solutions.
+The program never goes online. Past the tables' end (2030-01-02) planets are propagated by Kepler's laws (see 9.2). `scripts/fetch_horizons.ps1` regenerates the trajectory tables from the Horizons API. It also builds each encounter's rows as *planet position + planet-centred Voyager position*. That fixed a 13,600 km mismatch between Horizons' heliocentric Voyager and Neptune solutions.
 
 ## 9.2 The simulation clock
 
@@ -25,6 +25,19 @@ The program never goes online. `scripts/fetch_horizons.ps1` regenerates the traj
 - **Sub-stepping**: a long frame is split so that no step jumps more than a quarter of the remaining distance to an encounter. The slow zone cannot be skipped over.
 
 Planets and Voyager are placed from this date every frame. Moons and spin use a *visual* clock driven by the same speed and pause state (moons are not in the ephemeris).
+
+### After the data ends (2030 onward)
+
+The Horizons tables end on 2030-01-02, about 2.5 minutes after launch at 1×. The clock used to stop there, and every planet froze. It now runs on to the year 2500:
+
+- **Planets** follow the **two-body Kepler orbit** through their last real state vector (`Trajectory::propagateKepler`). From r and v it finds the orbit's plane (angular momentum r × v), its perihelion (eccentricity vector), its size (vis-viva: 1/a = 2/r − v²/μ) and the current eccentric anomaly E. It then advances the mean anomaly M = E − e sin E by n·Δt, with n = √(μ/a³), and solves Kepler's equation for the new E by Newton's method. μ is the Sun's GM, 2.959 × 10⁻⁴ AU³/day².
+- **Voyager** coasts in a straight line at its last velocity. By 2030 it is on a nearly straight escape path at about 15 km/s.
+- The HUD shows `BEYOND NASA/JPL DATA (2030): TWO-BODY KEPLER PREDICTION`.
+
+![The solar system on 2044-01-02, past the end of the NASA/JPL tables: planets on their orbits, Voyager 2 at 199 AU](../objects/images/runtime/13_beyond_data.jpg)
+- Start-up logs a self-check: Kepler propagation over the last year of each table, compared with Horizons. Earth differs by about 1.3 million km (0.14% of its yearly path; the Moon's pull, which a two-body model ignores) and Neptune by about 78,000 km. Both are far below one rendered planet radius.
+
+Near each flyby the encounter slow-motion still makes the planets look almost still (about 1.2 mission-hours per second). `N` turns it off.
 
 ## 9.3 Hermite interpolation between samples
 

@@ -36,6 +36,21 @@ public:
 	glm::dvec3 heliocentricPositionAtJulianDate(double julianDate) const;
 	glm::dvec3 velocityAtJulianDate(double julianDate) const;
 
+	// Outside the table's dates a track is extrapolated. By default it
+	// coasts in a straight line at the end velocity (right for Voyager, on a
+	// nearly straight escape path). With orbital extrapolation on (planets)
+	// it follows the two-body Kepler orbit through the end state vector, so
+	// planets keep circling the Sun after the NASA/JPL data ends.
+	void setOrbitalExtrapolation(bool enabled) { m_orbitalExtrapolation = enabled; }
+
+	// Two-body motion about the Sun: the state (r0, v0) advanced by `days`
+	// along its ellipse (Kepler's equation). False for unbound orbits.
+	static bool propagateKepler(const glm::dvec3& r0, const glm::dvec3& v0, double days,
+		glm::dvec3& position, glm::dvec3& velocity);
+
+	// The Sun's GM in AU^3/day^2 (Gaussian gravitational constant squared).
+	static constexpr double kSunGravitationalParameter = 2.9591220828559115e-4;
+
 	// Heliocentric AU (ecliptic X, Y, Z) to scene axes (X, Z, Y): the ecliptic
 	// is the scene's horizontal plane and ecliptic north is scene +Y.
 	static glm::dvec3 eclipticToScene(const glm::dvec3& ecliptic)
@@ -48,7 +63,11 @@ public:
 		const ScaleManager& scaleManager, const glm::dvec3& sunPosition);
 
 private:
+	// The extrapolated state outside the table, or false inside it.
+	bool extrapolate(double julianDate, glm::dvec3& position, glm::dvec3& velocity) const;
+
 	bool m_hasVelocities = false;
+	bool m_orbitalExtrapolation = false;
 	std::vector<TrajectorySample> m_samples;
 };
 

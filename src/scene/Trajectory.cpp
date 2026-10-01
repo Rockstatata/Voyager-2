@@ -1,6 +1,7 @@
 #include "Trajectory.h"
 
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -68,12 +69,10 @@ glm::dvec3 Trajectory::heliocentricPositionAtJulianDate(double julianDate) const
 {
 	if (m_samples.empty())
 		return glm::dvec3(0.0);
-	if (julianDate <= m_samples.front().julianDate)
-		return m_samples.front().heliocentricAu + m_samples.front().velocityAuPerDay *
-			(julianDate - m_samples.front().julianDate);
-	if (julianDate >= m_samples.back().julianDate)
-		return m_samples.back().heliocentricAu + m_samples.back().velocityAuPerDay *
-			(julianDate - m_samples.back().julianDate);
+	glm::dvec3 position;
+	glm::dvec3 velocity;
+	if (extrapolate(julianDate, position, velocity))
+		return position;
 
 	const auto upper = std::upper_bound(m_samples.begin(), m_samples.end(), julianDate,
 		[](double value, const TrajectorySample& sample)
@@ -108,10 +107,10 @@ glm::dvec3 Trajectory::velocityAtJulianDate(double julianDate) const
 		return (heliocentricPositionAtJulianDate(julianDate + kStepDays) -
 			heliocentricPositionAtJulianDate(julianDate - kStepDays)) / (2.0 * kStepDays);
 	}
-	if (julianDate <= m_samples.front().julianDate)
-		return m_samples.front().velocityAuPerDay;
-	if (julianDate >= m_samples.back().julianDate)
-		return m_samples.back().velocityAuPerDay;
+	glm::dvec3 position;
+	glm::dvec3 velocity;
+	if (extrapolate(julianDate, position, velocity))
+		return velocity;
 
 	const auto upper = std::upper_bound(m_samples.begin(), m_samples.end(), julianDate,
 		[](double value, const TrajectorySample& sample)
@@ -139,4 +138,66 @@ glm::dvec3 Trajectory::mapHeliocentricToRender(const glm::dvec3& sceneAu,
 	if (distanceAu <= 1e-12)
 		return sunPosition;
 	return sunPosition + (sceneAu / distanceAu) * scaleManager.distanceAuToRenderUnits(distanceAu);
+}
+
+bool Trajectory::extrapolate(double julianDate, glm::dvec3& position, glm::dvec3& velocity) const
+{
+	const bool before = julianDate < m_samples.front().julianDate;
+	const bool after = julianDate > m_samples.back().julianDate;
+	if (!before && !after)
+		return false;
+	const TrajectorySample& edge = before ? m_samples.front() : m_samples.back();
+	const double days = julianDate - edge.julianDate;
+	if (m_orbitalExtrapolation && propagateKepler(edge.heliocentricAu, edge.velocityAuPerDay, days, position, velocity))
+		return true;
+	position = edge.heliocentricAu + edge.velocityAuPerDay * days;
+	velocity = edge.velocityAuPerDay;
+	return true;
+}
+
+bool Trajectory::propagateKepler(const glm::dvec3& r0, const glm::dvec3& v0, double days,
+	glm::dvec3& position, glm::dvec3& velocity)
+{
+	constexpr double mu = kSunGravitationalParameter;
+	const double radius = glm::length(r0);
+	if (radius <= 0.0)
+		return false;
+
+	// Orbital elements from one state vector: the angular momentum fixes the
+	// plane, the eccentricity vector points at perihelion, and the energy
+	// gives the semi-major axis (vis-viva).
+	const glm::dvec3 angularMomentum = glm::cross(r0, v0);
+	const double semiMajorAxis = 1.0 / (2.0 / radius - glm::dot(v0, v0) / mu);
+	const glm::dvec3 eccentricityVector = glm::cross(v0, angularMomentum) / mu - r0 / radius;
+	const double eccentricity = glm::length(eccentricityVector);
+	if (semiMajorAxis <= 0.0 || eccentricity >= 1.0 || glm::length(angularMomentum) <= 0.0)
+		return false;
+
+	const glm::dvec3 perihelion = eccentricity > 1e-9 ? eccentricityVector / eccentricity : r0 / radius;
+	const glm::dvec3 quadrature = glm::cross(glm::normalize(angularMomentum), perihelion);
+	const double semiMinorAxis = semiMajorAxis * std::sqrt(1.0 - eccentricity * eccentricity);
+
+	// Where on the ellipse r0 is: x = a (cos E - e), y = b sin E.
+	const double startAnomaly = std::atan2(glm::dot(r0, quadrature) / semiMinorAxis,
+		glm::dot(r0, perihelion) / semiMajorAxis + eccentricity);
+	const double meanMotion = std::sqrt(mu / (semiMajorAxis * semiMajorAxis * semiMajorAxis));
+	const double meanAnomaly = startAnomaly - eccentricity * std::sin(startAnomaly) + meanMotion * days;
+
+	// Kepler's equation M = E - e sin E by Newton's method.
+	double anomaly = meanAnomaly;
+	for (int iteration = 0; iteration < 12; ++iteration)
+	{
+		const double step = (anomaly - eccentricity * std::sin(anomaly) - meanAnomaly) /
+			(1.0 - eccentricity * std::cos(anomaly));
+		anomaly -= step;
+		if (std::abs(step) < 1e-12)
+			break;
+	}
+
+	const double cosE = std::cos(anomaly);
+	const double sinE = std::sin(anomaly);
+	const double anomalyRate = meanMotion / (1.0 - eccentricity * cosE);
+	position = perihelion * (semiMajorAxis * (cosE - eccentricity)) + quadrature * (semiMinorAxis * sinE);
+	velocity = perihelion * (-semiMajorAxis * sinE * anomalyRate) + quadrature * (semiMinorAxis * cosE * anomalyRate);
+	return true;
 }

@@ -44,6 +44,8 @@ bool MissionEphemeris::addPlanet(const std::string& id, const std::string& displ
 	planet.displayName = displayName;
 	planet.radiusKm = radiusKm;
 	planet.renderRadius = renderRadius;
+	// Planets keep orbiting (two-body Kepler) past the end of their tables.
+	planet.track.setOrbitalExtrapolation(true);
 	if (!planet.track.loadCsv("assets/trajectory/planets/" + id + "_heliocentric.csv"))
 		return false;
 
