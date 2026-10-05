@@ -6,7 +6,7 @@ The presentation follows the clarified structure: **two introduction slides, ten
 
 | Deliverable | Contents |
 | --- | --- |
-| [Report PDF](Voyager_2_Graphics_Report.pdf) | Nineteen pages; seven chapters; numbered equations; construction diagrams; runtime comparisons; verification; limitations; IEEE references |
+| [Report PDF](Voyager_2_Graphics_Report.pdf) | Nineteen pages; five chapters; eleven-page methodology; numbered equations; full-width figures; verification; limitations; seven external references |
 | [Editable LaTeX report](Voyager_2_Graphics_Report.tex) | XeLaTeX source with Times New Roman and centralized template formatting |
 | [Editable PowerPoint](Voyager_2_Presentation.pptx) | Thirteen slides, editable text, high-resolution equations/screenshots and detailed speaker notes |
 | [Presentation PDF](Voyager_2_Presentation.pdf) | The same thirteen layouts in a portable format |
@@ -44,7 +44,7 @@ Report figures occupy the full printable width (about 6.1 inches), with captions
 
 The supplied [CSE-4000 template](<CSE-4000-Final (Template).pdf>) and [KUET logo](KUET-LOGO.png) are preserved. The report uses XeLaTeX, A4, **Times New Roman 12-point body text with 1.5-line spacing**, a **1.2-inch left/top margin and 1-inch right/bottom margin**, template-sized centered chapter titles, 14-point sections, 11-point captions, Roman front-matter pagination, Arabic main pagination, chapter-numbered equations, figure captions below, table captions above and IEEE-style references. The cover places the project-number field in the header, uses the template's title/author hierarchy and centers the logo within its specified 1.14×1.0-inch box while preserving its aspect ratio.
 
-Course teachers replace the thesis supervisor field. The contents and short lists share one page, and Chapters V?VII share one page to meet the earlier **less-than-twenty-page** constraint. The typography is retained; the thesis template's example student names, topic, signature placeholder and annotation boxes are not copied into the submission. The obsolete Markdown/ReportLab report and ten-slide sources have been replaced by the LaTeX source and current thirteen-slide builder.
+Course teachers replace the thesis supervisor field. At the author's request, the acknowledgment and the original Societal/Professional and Complex Engineering chapters are removed. Conclusions is renumbered Chapter V and shares a page with results. Methodology now spans eleven pages, adding worked indices/transforms, all eighteen hardware constructions, picking, Hermite reasoning, tangent-frame normal mapping, BVH details and rendering optimizations. The bibliography contains seven external sources and no project self-reference. The contents/lists are combined to retain the **less-than-twenty-page** constraint. The template typography and full-width figures remain; its example names, topic, signature placeholder and annotation boxes are not copied.
 
 ## Rebuild the documents
 

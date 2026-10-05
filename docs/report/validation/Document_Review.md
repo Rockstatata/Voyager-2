@@ -14,7 +14,7 @@ Reviewed against the handwritten graphics criteria and the author's clarified **
 | Five shading techniques | Slide 9: matched Earth and Voyager views for Flat, Gouraud, Phong, Blinn–Phong and Toon | Section 3.6; evaluation stage, normals, specular vectors and explicit Toon thresholds |
 | Shadows and ray tracing | Slides 10–11: off/hard/soft, traced/raster comparisons, ray diagram and BVH diagram | Section 3.8; sphere/annulus/triangle intersection, visibility, depth map/PCF, BVH traversal and one reflection |
 | Textures and relief/specular maps | Slide 12: Earth albedo/normal/mask, Moon maps off/on and spacecraft atlas | Section 3.7; UV, Sobel kernels, normal perturbation, ocean thresholds, atlas and asset credits |
-| Performance, verification and defense | Notes and closing slide | Chapter IV measured eight-view table; Chapters V–VII, limitations, references, viva guide and validation logs |
+| Performance, verification and defense | Notes and closing slide | Chapter IV measured eight-view table; Chapter V conclusion, limitations, external references, viva guide and validation logs |
 
 ## Claim boundaries
 
@@ -40,14 +40,22 @@ Reviewed against the handwritten graphics criteria and the author's clarified **
 
 ## Export and visual review
 
-All nineteen report pages and thirteen presentation pages were rendered for review. A heading overlap in the first introduction was corrected. The final slide builder rejects overlapping text/equations/images. The report embeds Times New Roman, resolves citations and references and passes the no-overfull-box guard. The supplied logo and template are retained; the explicitly documented adaptations are course-teacher fields, combined contents/lists and shared Chapters V?VII. The author's final video is reserved after Slide 2 and is outside this rebuild.
+All nineteen report pages and thirteen presentation pages were rendered for review. A heading overlap in the first introduction was corrected. The final slide builder rejects overlapping text/equations/images. The report embeds Times New Roman, resolves citations and references and passes the no-overfull-box guard. The supplied logo and template are retained; the explicitly documented adaptations are course-teacher fields, combined contents/lists and shared results/conclusions. The author's final video is reserved after Slide 2 and is outside this rebuild.
 
 See [document checks](document-check.json), [layout bounds](slide-layout.json), [LaTeX log](latex-build.txt), [visual provenance](../figures/technical/visual_manifest.json) and [validation evidence](README.md).
 
 ## Print-visibility revision
 
-All eleven technical report images now occupy the approximately 6.1-inch printable width. Height caps and fixed bottom placement were removed. Figures/captions remain together at their source location while methodology flows naturally across pages. The shader comparison uses a three-column, two-row grid of cropped Earth views with larger labels; Moon map comparisons use matching detail crops. The overview excludes telemetry bands. Technical derivations remain; introductory/closing prose was condensed and Chapters V–VII share a page to retain nineteen pages. The figure list now references figure labels rather than assuming the section and its image share a page. Export checks reject images narrower than 430 PDF points or images crossing the template margins. The final nineteen pages were rendered again for visual review.
+All eleven technical report images now occupy the approximately 6.1-inch printable width. Height caps and fixed bottom placement were removed. Figures/captions remain together at their source location while methodology flows naturally across pages. The shader comparison uses a three-column, two-row grid of cropped Earth views with larger labels; Moon map comparisons use matching detail crops. The overview excludes telemetry bands. Technical derivations remain; introductory/closing prose was condensed and the results and conclusion share a page to retain nineteen pages. The figure list now references figure labels rather than assuming the section and its image share a page. Export checks reject images narrower than 430 PDF points or images crossing the template margins. The final nineteen pages were rendered again for visual review.
 
 ## Learning-resource consistency correction
 
 Preparing the [rehearsal workbook](../../guide/12-presentation-rehearsal.md) exposed an incorrect assessment star count. `EnvironmentBuilder::buildStarLayers` creates 5,200 + 1,800 + 380 = **7,380 background points**; the original starfield object reference already documented this correctly. Report, slide text/notes, visual fundamentals and explanatory figures now use that count. The 4,000 asteroid instances are unchanged. The mission-learning chapter's opening now distinguishes historical planets/Voyager from visual moons/spin/comet animation. PDF/PPTX and LaTeX guards passed after regeneration; workbook resource/image links resolve.
+
+## Expanded-methodology revision
+
+The acknowledgment and the original chapters on societal/professional considerations and complex engineering problems/activities were removed at the author's request. Conclusions is now Chapter V. The bibliography contains seven external sources; the project self-citation was removed. Methodology now occupies eleven physical pages (7 through 17) within the nineteen-page report. All eleven technical images retain full printable width.
+
+The added material covers a worked indexed sphere cell; dish surface/rim counts; construction and inspection anchors for all eighteen spacecraft targets; a numerical inverse-transpose example; angular camera picking; Hermite weights and velocity units; derivative-based tangent frames; BVH slab tests and traversal; and instancing, LOD, culling, transparent passes and resource reuse. These explanations were checked against the mesh generators, camera controller, spacecraft builder, renderer and shaders. The eight measured benchmark cases are retained in a compact table beside the closing chapter.
+
+Review across the five dimensions: the educational contribution remains clearly scoped; equations and worked examples strengthen clarity; retained screenshots and measured timings support the empirical account; the rebuilt PDF was checked on all nineteen pages for layout and resolved references; and implementation details retain their limits, including approximate visual motion and bounded hybrid ray tracing. This revision changes documentation only and does not claim fresh runtime measurements. XeLaTeX completed without overfull boxes or unresolved citations/references; export guards confirm chapter structure, removals, page budget and image bounds.

@@ -22,7 +22,7 @@ The user clarified the handwritten outline: **two introduction slides**, **ten d
 | Moving light | Headlamp position/direction rebuilt from camera each frame | F5, RMB orbit or free flight | Present; demonstrated by the moving-spot demo chapter |
 | Ray tracing | `raytrace*.glsl`, `RayTracer`, `TriangleBvh` | F9 and F10 | Present; analytic bodies/rings and triangle spacecraft |
 | Clear overall explanation | LaTeX report, visual catalogue, detailed speaker notes | Two high-level introductions and ten technical slides | Rebuilt with mathematical and visual explanations |
-| Report below 20 pages | XeLaTeX source and export guard | Nineteen pages including cover, front matter and references | Template typography retained; short lists and Chapters V?VII share a page |
+| Report below 20 pages | XeLaTeX source and export guard | Nineteen pages including cover, front matter and references | Template typography retained; compact lists, eleven-page methodology and shared results/conclusions |
 | Thirteen-slide structure | `build_assessment_slides.py`; editable notes source | Exactly 2 introductions + 10 technical + 1 thanks | Follows the user's clarified outline |
 | Video after introduction | Cue on slide 2 | Author will record and attach the final video | No new recording or embedding; earlier MP4 retained separately |
 

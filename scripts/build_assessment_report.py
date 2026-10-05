@@ -52,13 +52,28 @@ def verify_exports():
         report_pages=len(report);text='\n'.join(page.get_text() for page in report)
         for required in ['Sarwad Hasan Siddiqui','2107006','CSE 4102','October','6.60','1.71']:
             if required not in text:raise ValueError('Missing report metadata/evidence: '+required)
+        for removed in ['Acknowledgment','Societal and Professional Considerations',
+                        'Complex Engineering Problems and Activities','project source, object handbook']:
+            if removed in text:raise ValueError('Removed report content reappeared: '+removed)
+        source=(REPORT/'Voyager_2_Graphics_Report.tex').read_text(encoding='utf-8')
+        chapters=re.findall(r'\\chapter\{([^}]+)\}',source)
+        if chapters!=['Introduction','Background and System Design','Methodology',
+                      'Implementation, Results and Discussion']:
+            raise ValueError('Unexpected report chapter structure')
+        if '\\bibitem{project}' in source:raise ValueError('Self-reference must not appear in bibliography')
+        methodology_start=next(page.number for page in report
+                               if page.get_text().strip().startswith('CHAPTER III\n'))
+        results_start=next(page.number for page in report
+                           if page.get_text().strip().startswith('CHAPTER IV\n'))
+        methodology_pages=results_start-methodology_start
+        if methodology_pages!=11:raise ValueError('Expected eleven pages of expanded methodology')
         fonts=sorted({span['font'] for page in report for block in page.get_text('dict')['blocks']
                       for line in block.get('lines',[]) for span in line['spans']})
         if not any('TimesNewRoman' in name for name in fonts):raise ValueError('Report must embed Times New Roman')
         # Every technical image must occupy the full printable text width.
         # Catch height caps or thumbnail sizing silently shrinking later exports.
         figure_bounds=[{'page':page.number+1,'bbox':list(info['bbox'])}
-                       for page in report if page.number>=5 for info in page.get_image_info()]
+                       for page in report if page.number>=4 for info in page.get_image_info()]
         if len(figure_bounds)<11:raise ValueError('Missing technical report figures')
         for item in figure_bounds:
             x0,y0,x1,y1=item['bbox']
@@ -75,6 +90,12 @@ def verify_exports():
             'structure':'2 introductions + 10 technical + 1 thank you','report_engine':'XeLaTeX',
             'embedded_report_fonts':fonts,'video':'author records and attaches later'}
     result['report_figure_bounds']=figure_bounds
+    result['report_chapters']=chapters+['Conclusions']
+    result['methodology_pages']=methodology_pages
+    result['methodology_physical_page_range']=[methodology_start+1,results_start]
+    result['removed_sections']=['Acknowledgment','Societal and Professional Considerations',
+                                'Complex Engineering Problems and Activities']
+    result['external_references']=len(re.findall(r'\\bibitem\{',source))
     (REPORT/'validation/document-check.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
     (REPORT/'validation/document-check.txt').write_text('19-page XeLaTeX report; 13 PDF/PPTX slides with detailed notes. Confirmed KUET, student, course, teachers, October 2026 and benchmark.\n',encoding='utf-8')
 
