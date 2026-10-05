@@ -9,7 +9,7 @@ The presentation follows the clarified structure: **two introduction slides, ten
 | [Report PDF](Voyager_2_Graphics_Report.pdf) | Nineteen pages; five chapters; eleven-page methodology; numbered equations; full-width figures; verification; limitations; seven external references |
 | [Editable LaTeX report](Voyager_2_Graphics_Report.tex) | XeLaTeX source with Times New Roman and centralized template formatting |
 | [Editable PowerPoint](Voyager_2_Presentation.pptx) | Thirteen slides, editable text, high-resolution equations/screenshots and detailed speaker notes |
-| [Presentation PDF](Voyager_2_Presentation.pdf) | Generated thirteen-slide companion; subsequent manual PowerPoint edits may differ |
+| [Presentation PDF](Voyager_2_Presentation.pdf) | Thirteen-slide companion exported from the edited main PowerPoint, including the scope comparison |
 | [Editable speaker-note source](Presentation_Notes_Source.md) | Derivations, all eighteen hardware constructions, worked examples, source paths and caveats |
 | [Exported speaker notes](Presentation_Notes.md) | The explanations embedded in the current PPTX |
 | [Visual fundamentals catalogue](Visual_Fundamentals.md) | Full-resolution body/hardware catalogues, primitive rules, worked topology examples and links to every object |
@@ -38,6 +38,8 @@ The presentation follows the clarified structure: **two introduction slides, ten
 | 13 | Thanks, implementation evidence and discussion |
 
 Speaker notes are substantive explanations, not a substitute for visible content: they expand the equations and connect each example to its implementation. Full-resolution catalogue plates are available separately because 26 body names and eighteen hardware close-ups cannot all be readable thumbnails on one projected slide.
+
+Slide 2 now also shows **Proposed features** and **Implemented + additions**, matching the report's scope comparison. Both edited PPTX files retain thirteen slides and their other slides/media. Expanded notes explain the proposal, implemented controls and additional graphics features. The main presentation PDF was exported from PowerPoint after this edit. To reapply just these scope cards to closed PPTX files, use `python -X utf8 scripts/update_showcase_scope_slides.py`; close both files in PowerPoint first. This targeted updater preserves all package parts except slide 2 and its notes, and does not regenerate other slides.
 
 Report figures occupy the full printable width (about 6.1 inches), with captions immediately below. Methodology flows across pages instead of anchoring small images at the bottom of fixed pages. The five shading examples use a two-row, three-column close-up grid with larger labels; Moon relief examples use matching detail crops. The overview removes telemetry bands. Figure sources retain full-resolution provenance. Introductory/closing prose is condensed to preserve the nineteen-page limit while retaining the technical equations and template body font.
 

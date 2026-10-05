@@ -1,0 +1,24 @@
+{
+  "decks": [
+    {
+      "file": "docs/report/Voyager_2_Presentation.pptx",
+      "slides": 13,
+      "other_slides_preserved": true,
+      "all_other_notes_preserved": true,
+      "media_preserved": true,
+      "sha256": "711dff3a57a7efe3aa357f2a2a7e1e6f010780b06df60c37053b032f1844115b"
+    },
+    {
+      "file": "docs/report/Final-Presentation.pptx",
+      "slides": 13,
+      "other_slides_preserved": true,
+      "all_other_notes_preserved": true,
+      "media_preserved": true,
+      "sha256": "f240cade2be963a7481d70a922b5a371593899e49240388b86c587adf6744950"
+    }
+  ],
+  "pdf_pages": 13,
+  "scope_cards": "Visible on slide 2; updated speaker notes",
+  "visual_review": "PowerPoint preview inspected; text bounds checked",
+  "text_bounds": "Four new text boxes checked in PowerPoint; no overflow"
+}

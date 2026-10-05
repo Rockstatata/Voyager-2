@@ -22,6 +22,16 @@ The stack is C++20, OpenGL 3.3, GLFW, GLAD and GLM. Window/input, scene ownershi
 
 Sources: `Application::handleKeys`, `CameraController`, `MissionController`; `docs/objects/controls.md`. Report Chapter IV.
 
+PROPOSED SCOPE AND FINAL IMPLEMENTATION
+The submitted two-page proposal is titled Voyager 2: Journey Beyond the Solar System. It planned an Earth-to-interstellar journey through Jupiter, Saturn, Uranus and Neptune, a primitive spacecraft, a visible path, starfield and heliopause. It also planned translation, rotation, scaling, composite and hierarchical transforms, planet spin, Sun lighting with ambient/diffuse/specular terms, Flat/Gouraud/Phong shading, and camera and keyboard interaction.
+
+Point to the mission, inspection and comparison screenshots above the cards while describing the implemented feature groups. Launch bookmark 1 provides a mission restart; P pauses, =/- changes speed, C changes camera rig, T toggles the path and F3 selects the named shading technique. Explain that user input changes application state, update computes motion, and render consumes the current transforms and materials.
+
+Additional features include 26 textured bodies, four ring systems, 76 spacecraft assemblies and 18 inspection targets, 8,500 instanced rocks, a dynamic comet and 7,380 stars. The final project adds manual six-degree flight, component inspection, a moving camera spotlight and directional fill, Blinn-Phong and Toon shading, derived surface maps, shadows and hybrid BVH ray tracing. These extend the implemented feature groups from the proposal.
+
+Give the overview first; the following ten technical slides derive geometry, transforms, motion, lighting, shading, shadows, tracing and textures. The report methodology contains the detailed implementation and equations, and its typography follows the supplied CSE-4000 report template. Play the final project video at the existing cue, narrating each visible feature as it changes.
+
+
 # Slide 3: Vertices → indices → triangles → worlds
 
 A vertex is a surface record, not a pixel: position xyz, normal xyz and UV, eight floats or 32 bytes. A VBO stores records, an EBO stores unsigned integer references, and a VAO records how the shader attributes interpret those bytes. Locations 0, 1 and 2 hold position, normal and UV. Each three indices in `GL_TRIANGLES` select a triangle; adjacent triangles can reference the same records.

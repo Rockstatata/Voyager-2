@@ -21,6 +21,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
+from update_showcase_scope_slides import CARDS
 
 ROOT=Path(__file__).resolve().parents[1]
 REPORT=ROOT/'docs/report'
@@ -150,9 +151,11 @@ def main():
             ('COMPARISON','Three lights, five shading modes, ray tracing.','saturn_traced.jpg')]
     for i,(a,b,c) in enumerate(labels):
         x=32+i*306;d.pic(FIG/c,x,99,286,161);d.text(a,x,272,286,20,True,color=TEAL);d.text(b,x,304,286,17)
-    d.rect(32,378,588,97,PALE)
-    d.text('C++20 · OpenGL 3.3 · GLFW / GLAD / GLM',46,388,560,18,True)
-    d.text('Course teachers: Md Tajmilur Rahman\nand Md Mubtashim Abrar Nihal — Lecturers',46,420,560,16)
+    for i,(heading,body) in enumerate(CARDS):
+        x=32+i*306
+        d.rect(x,373,286,117,PALE)
+        d.text(heading,x+12,383,262,15,True,color=TEAL)
+        d.text(body,x+12,410,262,14,leading=18)
     d.rect(642,378,286,97,INK)
     d.text('PLAY PROJECT VIDEO',659,392,254,19,True,color=WHITE)
     d.text('Attach your final recording here.',659,428,254,14,color=WHITE)

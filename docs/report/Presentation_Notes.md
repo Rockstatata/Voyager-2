@@ -1,4 +1,4 @@
-# Slide 1: Voyager 2 Solar-System Explorer
+# Slide 1
 
 Open by explaining the whole project: this is a controllable, educational three-dimensional solar-system explorer, built with C++20 and OpenGL. It combines historical Voyager 2 playback with manual spacecraft flight and a procedural hardware model. The viewer can explore a mission, inspect objects and compare graphics techniques using the same scene.
 
@@ -10,7 +10,7 @@ Student: Sarwad Hasan Siddiqui, Roll 2107006. Course: CSE 4102, Computer Graphic
 
 Sources: `Application.cpp`, `SolarSystemBuilder.cpp`, `EnvironmentBuilder.cpp`, `VoyagerModelBuilder.cpp`, and `assets/data/celestial_bodies.csv`. Report Chapters I and II.
 
-# Slide 2: Explore, control, compare
+# Slide 2
 
 Walk through what someone can actually do. `H` opens the overview and `T` reveals the mission path. Bookmarks `1`–`6` visit launch, the four giant-planet encounters and the heliopause. `C` enters Chase; Tab or a click focuses a body; brackets select moons. `I` enters Inspect and comma/period step through eighteen spacecraft components. FreeFly permits independent movement. `P` pauses astronomical motion, while the camera and manual flight remain usable.
 
@@ -22,7 +22,17 @@ The stack is C++20, OpenGL 3.3, GLFW, GLAD and GLM. Window/input, scene ownershi
 
 Sources: `Application::handleKeys`, `CameraController`, `MissionController`; `docs/objects/controls.md`. Report Chapter IV.
 
-# Slide 3: Vertices → indices → triangles → worlds
+PROPOSED SCOPE AND FINAL IMPLEMENTATION
+The submitted two-page proposal is titled Voyager 2: Journey Beyond the Solar System. It planned an Earth-to-interstellar journey through Jupiter, Saturn, Uranus and Neptune, a primitive spacecraft, a visible path, starfield and heliopause. It also planned translation, rotation, scaling, composite and hierarchical transforms, planet spin, Sun lighting with ambient/diffuse/specular terms, Flat/Gouraud/Phong shading, and camera and keyboard interaction.
+
+Point to the mission, inspection and comparison screenshots above the cards while describing the implemented feature groups. Launch bookmark 1 provides a mission restart; P pauses, =/- changes speed, C changes camera rig, T toggles the path and F3 selects the named shading technique. Explain that user input changes application state, update computes motion, and render consumes the current transforms and materials.
+
+Additional features include 26 textured bodies, four ring systems, 76 spacecraft assemblies and 18 inspection targets, 8,500 instanced rocks, a dynamic comet and 7,380 stars. The final project adds manual six-degree flight, component inspection, a moving camera spotlight and directional fill, Blinn-Phong and Toon shading, derived surface maps, shadows and hybrid BVH ray tracing. These extend the implemented feature groups from the proposal.
+
+Give the overview first; the following ten technical slides derive geometry, transforms, motion, lighting, shading, shadows, tracing and textures. The report methodology contains the detailed implementation and equations, and its typography follows the supplied CSE-4000 report template. Play the final project video at the existing cue, narrating each visible feature as it changes.
+
+
+# Slide 3
 
 A vertex is a surface record, not a pixel: position xyz, normal xyz and UV, eight floats or 32 bytes. A VBO stores records, an EBO stores unsigned integer references, and a VAO records how the shader attributes interpret those bytes. Locations 0, 1 and 2 hold position, normal and UV. Each three indices in `GL_TRIANGLES` select a triangle; adjacent triangles can reference the same records.
 
@@ -34,7 +44,7 @@ For L=32, N=64: vertices=(L+1)(N+1)=2,145; triangles=2N(L−1)=3,968; indices=11
 
 The generator validates counts, bounds, unit vectors, UV ranges, nonzero triangle area and texture direction. The wireframe is a real runtime polygon-line capture. Sources: `UvSphereGenerator.cpp`, `Vertex.h`, `Mesh.cpp`; report §3.1 and `docs/objects/uv-sphere.md`.
 
-# Slide 4: Voyager: authored from reusable primitives
+# Slide 4
 
 The model has 76 assemblies, 5,828 rendered triangles and eighteen inspectable components. Dimensions are authored in metres and multiplied by 0.006. NASA references guide proportions and images; the mesh is authored from boxes, cylinders, frustums, rods and a parabolic dish.
 
@@ -69,7 +79,7 @@ All eighteen inspection targets and their construction:
 
 The full labelled component plate is `figures/technical/voyager_catalog.png`; individual images and limitations are in `docs/objects/voyager-2.md`. The scan platform is fixed and booms remain deployed. Source: `VoyagerModelBuilder.cpp` and the Box/Cylinder/ParabolicDish generators. Report §3.2.
 
-# Slide 5: Rings, belts, stars, comet and scene guides
+# Slide 5
 
 Rings are double-sided annuli, not filled discs. Generate inner and outer radius vertices at p=(r cosθ,0,r sinθ). Separate top/bottom normals and reverse the back winding. At each segment, top triangles are (innerLeft,outerLeft,innerRight) and (innerRight,outerLeft,outerRight). For 64 segments: 4(n+1)=260 vertices and 4n=256 triangles per band. Fifteen colour/opacity bands form four systems. Rings inherit planet tilt/scale but not daily surface spin.
 
@@ -81,7 +91,7 @@ The dynamic comet is a container with a sphere nucleus, larger additive glow com
 
 HUD glyphs are screen-space quads with two triangles each. World labels are projected into the view. Transparent rings/glow are drawn after opaque surfaces, with depth testing and no depth writes. Sources: `EnvironmentBuilder`, `RingGenerator`, `StarfieldGenerator`, `Comet`, `InstancedField`, `TextRenderer`. Report §3.2.
 
-# Slide 6: Transforms, hierarchy, scale and cameras
+# Slide 6
 
 For column vectors, pclip=P V Mworld plocal. Local M=T R S applies scale first, then rotation, then translation. A child's world matrix is Mparent Mlocal. Changing order changes the result: scaling a translated object is not the same as translating a scaled object.
 
@@ -97,7 +107,7 @@ Four camera cases: FreeFly uses independent basis motion; Focus orbits a body; C
 
 Sources: `Transform`, `SceneObject`, `CelestialBody`, `ScaleManager`, `Camera`, `CameraController`, `Renderer`. Report §3.3.
 
-# Slide 7: Every motion has an owner and a clock
+# Slide 7
 
 Historical motion uses one Julian date. Horizons rows supply position and velocity. With s=(JD−JD0)/h, Hermite interpolation is p(s)=h00 p0+h10 h v0+h01 p1+h11 h v1, where h00=2s³−3s²+1, h10=s³−2s²+s, h01=−2s³+3s², h11=s³−s². It matches both endpoint position and derivative. Differentiating and dividing by h gives velocity. Ecliptic coordinates map from (x,y,z) to scene (x,z,y), followed by radial compression.
 
@@ -111,7 +121,7 @@ The comet aligns its cone with pcomet−pSun, handling parallel/opposite axis ca
 
 Sources: `Trajectory`, `MissionEphemeris`, `SimulationClock`, `CelestialBody`, `Voyager2`, `Comet`. Report §3.4.
 
-# Slide 8: Three light types—and a moving headlamp
+# Slide 8
 
 Use source geometry first. At surface p, n is the unit normal, v points to the eye and l points toward the light. A point source uses l=(pL−p)/distance. A directional source uses normalize(−direction), the same direction everywhere. A spotlight adds a cone to a point source. Phong is a surface-response model, not a light type.
 
@@ -125,7 +135,7 @@ Colour is albedo×(ambient+VS×SunDiffuse+otherDiffuse)+VS×SunSpecular+otherSpe
 
 Sources: `LightingController.cpp`, `LightingUniforms.cpp`, `shaders/lighting.glsl`. Report §3.5.
 
-# Slide 9: Five shading techniques, matched views
+# Slide 9
 
 These are paused views with the same geometry, texture and lighting. Flat obtains a face normal from normalize(dFdx(p)×dFdy(p)), revealing facets. Gouraud computes Phong light terms at vertices in scene.vert and interpolates them across a triangle. A narrow highlight located between vertices can disappear; normal maps are disabled in Gouraud. Phong shading interpolates normals, renormalizes and evaluates a reflect-vector highlight per fragment. Blinn–Phong uses a half-vector per fragment and is the default.
 
@@ -137,7 +147,7 @@ Separate material behaviors include Unlit for Sun/guides, LitTwoSided for rings,
 
 Sources: `scene.vert`, `scene.frag`, `lighting.glsl`. Report §3.6. The Earth and spacecraft rows demonstrate both broad curved surfaces and authored hardware under all five cases.
 
-# Slide 10: Visibility: eclipses, ring shadows and self-shadow
+# Slide 10
 
 Shadows determine whether light reaches a point. Diffuse/specular shading determines how it responds to light that reaches it. Only the Sun casts shadows. F4 cycles Off, Hard and Soft in the matched Saturn screenshots. Point to the planet's shadow on the rings and the ring shadow on the planet.
 
@@ -151,7 +161,7 @@ The older per-fragment BVH self-shadow path was expensive in close-ups. The shad
 
 Sources: `Renderer::renderShadowMap`, `ShadowMap`, `scene.frag`, `raytrace.glsl`. Report §3.8 and learning guide Chapters 7 and 11.
 
-# Slide 11: Ray tracing: nearest hit, light, reflection
+# Slide 11
 
 A primary ray comes from the same camera basis as projection: normalize(forward+ndcX tan(fov/2) aspect right+ndcY tan(fov/2) up). Ray position is o+td. For a sphere, substitute into |o+td−c|²=R². With unit d, b=(o−c)·d and f=|o−c|²−R²; roots are −b±sqrt(b²−f). A negative discriminant misses; accept the nearest positive root. A ring uses t=((c−o)·N)/(d·N), rejects parallel/backward hits and checks inner≤|hit−center|≤outer.
 
@@ -163,7 +173,7 @@ F9 traces the Sun, twenty-five other bodies, fifteen ring bands and Voyager. Hit
 
 Sources: `raytrace.frag`, `raytrace_mesh.glsl`, `TriangleBvh`, `RayTracer`. Report §3.8. Distinguish primary, shadow and reflection rays; the BVH changes search cost rather than the triangle definition.
 
-# Slide 12: Textures: colour, atlas, relief and specular mask
+# Slide 12
 
 Albedo RGB supplies surface colour and multiplies material tint before lighting. UV maps reuse one sphere for 26 bodies. Seam duplication, reversed longitude and vertically flipped image loading preserve geographic orientation. Filtering and mipmaps control distant minification. An albedo image does not alter vertices or the silhouette.
 
@@ -175,7 +185,7 @@ Earth's specular mask marks water when B>1.25R, B>1.02G and R+G+B<1.5, assigning
 
 Credits are in the asset manifests: Solar System Scope CC BY 4.0 maps and NASA resource provenance. Sources: `SurfaceMaps`, `Texture2D`, `MaterialLibrary`, `VoyagerModelBuilder`, `scene.frag`. Report §3.7.
 
-# Slide 13: Thank you
+# Slide 13
 
 Close with the chain of ideas: indexed geometry creates objects, transforms create relationships and pose, motion updates state, and illumination/shading/textures/rays create the visible result. Invite a question about any equation and connect it to the corresponding screenshot and source file.
 
