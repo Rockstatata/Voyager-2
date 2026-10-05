@@ -1,6 +1,6 @@
 # Body Textures
 
-21 real, credited image maps — one per body in the Phase 3 solar system, loaded at runtime by `Texture2D::loadFromFile` (`stb_image` JPEG decode, see [docs/objects/phase-2-rendering-pipeline.md](../../../docs/objects/phase-2-rendering-pipeline.md)). No procedural/synthetic textures remain in the build.
+26 real, credited image maps — one per registered celestial body, loaded at runtime by `Texture2D::loadFromFile` (`stb_image` JPEG decode, see [docs/objects/phase-2-rendering-pipeline.md](../../../docs/objects/phase-2-rendering-pipeline.md)). Normal and specular maps are derived from these images at load time.
 
 | File | Body | Resolution | Source |
 | --- | --- | ---: | --- |
@@ -25,6 +25,11 @@
 | `titania.jpg` | Titania | 1440x720 | NASA 3D Resources, public domain |
 | `oberon.jpg` | Oberon | 1440x720 | NASA 3D Resources, public domain |
 | `triton.jpg` | Triton | 1440x720 | NASA 3D Resources, public domain |
+| `pluto.jpg` | Pluto | 720x360 | NASA 3D Resources, public domain |
+| `tethys.jpg` | Tethys | 1440x720 | NASA 3D Resources, public domain |
+| `dione.jpg` | Dione | 1440x720 | NASA 3D Resources, public domain |
+| `rhea.jpg` | Rhea | 1440x720 | NASA 3D Resources, public domain |
+| `iapetus.jpg` | Iapetus | 1440x720 | NASA 3D Resources, public domain |
 
 Sources:
 - **Solar System Scope** free 2k texture pack — CC BY 4.0 — https://www.solarsystemscope.com/textures/

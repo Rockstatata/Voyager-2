@@ -1,0 +1,113 @@
+[OPENGL] 3.3.0 Core Profile Context 26.5.2.260413 | Radeon RX 590 Series
+[SHADER] loaded shaders/scene.vert + shaders/scene.frag
+[SHADER] loaded shaders/shadow.vert + shaders/shadow.frag
+[SHADER] shadow map 2048x2048 ready
+[SHADER] loaded shaders/hud.vert + shaders/hud.frag
+[SHADER] loaded shaders/raytrace.vert + shaders/raytrace.frag
+[SOLAR] catalog: 26 bodies from assets/data/celestial_bodies.csv
+[ASSET] texture uploaded: assets/textures/bodies/sun.jpg (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/mercury.jpg (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/mercury.jpg [normal] (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/venus.jpg (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/earth.jpg (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/earth.jpg [normal] (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/earth.jpg [specular] (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/mars.jpg (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/mars.jpg [normal] (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/jupiter.jpg (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/saturn.jpg (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/uranus.jpg (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/neptune.jpg (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/pluto.jpg (720x360)
+[ASSET] texture uploaded: assets/textures/bodies/pluto.jpg [normal] (720x360)
+[ASSET] texture uploaded: assets/textures/bodies/moon.jpg (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/moon.jpg [normal] (2048x1024)
+[ASSET] texture uploaded: assets/textures/bodies/io.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/io.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/europa.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/europa.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/ganymede.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/ganymede.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/callisto.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/callisto.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/tethys.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/tethys.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/dione.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/dione.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/rhea.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/rhea.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/titan.jpg (720x360)
+[ASSET] texture uploaded: assets/textures/bodies/iapetus.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/iapetus.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/miranda.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/miranda.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/ariel.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/ariel.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/umbriel.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/umbriel.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/titania.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/titania.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/oberon.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/oberon.jpg [normal] (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/triton.jpg (1440x720)
+[ASSET] texture uploaded: assets/textures/bodies/triton.jpg [normal] (1440x720)
+[SCENE] 26 bodies share 1 sphere mesh (2145 vertices, 3968 triangles), 26 real texture maps loaded
+[SCENE] ring systems attached: jupiter (2) neptune (3) saturn (5) uranus (5)
+[TRAJECTORY] loaded 4782 NASA/JPL Horizons state vectors from assets/trajectory/planets/mercury_heliocentric.csv
+[TRAJECTORY] loaded 3826 NASA/JPL Horizons state vectors from assets/trajectory/planets/venus_heliocentric.csv
+[TRAJECTORY] loaded 3826 NASA/JPL Horizons state vectors from assets/trajectory/planets/earth_heliocentric.csv
+[TRAJECTORY] loaded 3826 NASA/JPL Horizons state vectors from assets/trajectory/planets/mars_heliocentric.csv
+[TRAJECTORY] loaded 957 NASA/JPL Horizons state vectors from assets/trajectory/planets/jupiter_heliocentric.csv
+[TRAJECTORY] loaded 957 NASA/JPL Horizons state vectors from assets/trajectory/planets/saturn_heliocentric.csv
+[TRAJECTORY] loaded 638 NASA/JPL Horizons state vectors from assets/trajectory/planets/uranus_heliocentric.csv
+[TRAJECTORY] loaded 638 NASA/JPL Horizons state vectors from assets/trajectory/planets/neptune_heliocentric.csv
+[TRAJECTORY] loaded 638 NASA/JPL Horizons state vectors from assets/trajectory/planets/pluto_heliocentric.csv
+[TRAJECTORY] loaded 11002 NASA/JPL Horizons state vectors from assets/trajectory/voyager2_heliocentric.csv
+[TRAJECTORY] Jupiter closest approach JD 2444064.4369, 721351 km (10.32 radii), display clearance 4.71 display radii
+[TRAJECTORY] Saturn closest approach JD 2444842.6419, 160517 km (2.76 radii), display clearance 3.16 display radii
+[TRAJECTORY] Uranus closest approach JD 2446455.2498, 107117 km (4.22 radii), display clearance 3.56 display radii
+[TRAJECTORY] Neptune closest approach JD 2447763.6642, 29187 km (1.19 radii), display clearance 2.59 display radii
+[TRAJECTORY] two-body check Earth: 1-year Kepler prediction differs from Horizons by 1314683 km
+[TRAJECTORY] two-body check Neptune: 1-year Kepler prediction differs from Horizons by 77806 km
+[TRAJECTORY] synchronized ephemeris: 9 planets + Voyager 2 on one simulation date
+[ASSET] texture uploaded: assets/textures/spacecraft/voyager_nasa_atlas.png (1024x1024)
+[ASSET] texture uploaded: assets/textures/spacecraft/voyager_nasa_atlas.png [normal] (1024x1024)
+[SHADER] BVH built: 5828 triangles, 6723 nodes, depth 24, 12 materials
+[VOYAGER] procedural spacecraft built (76 visible assemblies, 5828 rendered triangles), Historical mode
+[SCENE] asteroid_belt: 4000 instances, 1 draw call
+[SCENE] kuiper_belt: 3000 instances, 1 draw call
+[SCENE] oort_cloud: 1500 instances, 1 draw call
+[SCENE] groups: bodies(10) spacecraft(1) mission_path(1) orbit_guides(9) heliosphere(6) small_bodies(3) comet(1)
+[APP] initialized. F1: full control list. Click a world to fly there, I to inspect Voyager, C free flight (WASD + RMB), Tab planets, [ ] moons, F3-F10 lighting and ray tracing. 1-6: mission bookmarks. V: Historical/Manual. Esc twice quits.
+[APP] overview camera
+[APP] capture tour: 18 shots -> F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/01_overview.bmp
+[APP] focused: Earth
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/02_objects.bmp
+[TRAJECTORY] bookmark: Launch (1977-08-21)
+[APP] inspecting: High-gain antenna
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/03_curved_dish.bmp
+[APP] inspecting: Voyager 2
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/04_textures.bmp
+[TRAJECTORY] bookmark: Jupiter encounter (1979-07-09)
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/05_motion.bmp
+[APP] focused: Moon
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/06_point.bmp
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/07_spot.bmp
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/08_moving_spot.bmp
+[APP] focused: Moon
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/09_directional.bmp
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/10_shading_0.bmp
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/10_shading_1.bmp
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/10_shading_2.bmp
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/10_shading_3.bmp
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/10_shading_4.bmp
+[APP] focused: Saturn
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/11_shadows.bmp
+[TRAJECTORY] bookmark: Launch (1977-08-21)
+[APP] inspecting: Voyager 2
+[SHADER] ray-tracer albedo atlas: 26 layers of 1024x512
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/12_raytrace.bmp
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/13_reflections.bmp
+[APP] capture saved: F:\CODE\Graphics-Project\Voyager-2\captures\assessment\demo/14_controls.bmp
+[APP] shutting down after 8975 frames

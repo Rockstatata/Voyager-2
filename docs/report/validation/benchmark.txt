@@ -1,0 +1,10 @@
+view                        frame ms     fps    GPU ms   draws   triangles
+overview                        0.64    1551      0.42      67      235616
+launch_chase                    0.83    1199      0.65     118      237380
+jupiter_focus                   0.68    1460      0.51      43      231776
+saturn_focus                    0.72    1398      0.55      45      232960
+voyager_inspect                 0.99    1015      0.58     117      233412
+voyager_dish_closeup            1.15     872      0.96     118      237380
+saturn_raytraced                2.10     475      1.77      24      211968
+voyager_raytraced               6.60     152      5.89      24      211968
+mean                            1.71

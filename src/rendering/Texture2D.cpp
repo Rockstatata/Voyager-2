@@ -82,7 +82,7 @@ bool Texture2D::decodeFile(const std::string& path, int& width, int& height, std
 {
 	// Real photo maps are stored top-row-first in the file but OpenGL's (0,0)
 	// texel is the bottom-left, so flip on load to keep our UV convention
-	// (v=0 at the sphere's north pole row) matching the pixel rows.
+	// (v=0 at the sphere's south pole row) matching the pixel rows.
 	stbi_set_flip_vertically_on_load(true);
 
 	int sourceChannels = 0;

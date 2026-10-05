@@ -33,3 +33,7 @@ desktop.ini
 
 # F12 screenshots
 captures/
+
+# Local Python caches from report/demo tooling
+__pycache__/
+*.pyc

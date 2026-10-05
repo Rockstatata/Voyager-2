@@ -8,6 +8,8 @@ The camera is fully free. A viewer can fly anywhere, at any speed, and inspect e
 
 ## Camera modes
 
+`Input::attach` enables GLFW sticky key and mouse-button state: a brief press remains available until the next frame poll, even if it was released during a slow frame. The existing keyPressed/keyDown interface remains the same. `python scripts/verify_input_taps.py` exercises same-frame press/release toggles in the running application.
+
 | Mode | Enter | What it does |
 | --- | --- | --- |
 | **Free flight** | `C` from a locked view, `H`, or any fly key in Focus/Chase | Fly anywhere (below) |
@@ -71,7 +73,7 @@ Orientation is a quaternion and every turn is about the ship's own axes, so ther
 | `1` | Launch, 1977-08-21 |
 | `2` / `3` / `4` / `5` | Jupiter / Saturn / Uranus / Neptune, 1.5 days before each computed closest approach |
 | `6` | Heliopause crossing, 2018-11-05 |
-| `P` | Pause or resume |
+| `P` | Pause or resume the astronomical clock/body animation; camera and manual flight remain live |
 | `=` / `-` (keypad `+` `-`) | Double or halve speed, 1/64x to 64x |
 | `Backspace` | Speed back to 1x and unpause |
 | `N` | Encounter slow-motion on or off |
@@ -114,6 +116,8 @@ Details: [lighting.md](lighting.md), [ray-tracing.md](ray-tracing.md) and the le
 
 `--benchmark <file>` turns vsync off, measures frame and GPU time (OpenGL timer queries), draw calls and triangles over eight fixed views, and writes a table to `<file>` ([guide chapter 11](../guide/11-performance.md)).
 
+`--capture-assessment <dir>` records clean construction and comparison evidence: the same Moon under three light additions, a moving-headlamp sequence, sphere/dish wireframes, clean spacecraft and five shading cases, comet, all three fields, moon revolution and axial spin. HUD/labels are hidden within that tour; normal interactive settings are unaffected. `--capture-demo <dir>` remains a 120-second runtime tour. The current [assessment package](../report/README.md) uses thirteen slides and a nineteen-page LaTeX report; the author will record and attach the final video.
+
 ## Verification
 
 1. At startup the HUD reads `CAMERA CHASE VOYAGER`. Drag with RMB and the view orbits the probe. The wheel zooms in until the struts fill the screen.
@@ -121,4 +125,4 @@ Details: [lighting.md](lighting.md), [ray-tracing.md](ray-tracing.md) and the le
 3. Press `Tab` repeatedly. The camera flies to the Sun, then Mercury, then Venus, and so on. At Jupiter press `]`: it flies to Io, then Europa. Zoom to 1.08 radii to see surface texture detail. Left-click another planet and the camera flies there.
 4. Press `I`, then `.` a few times. The caption steps through Voyager's components and the camera frames each one. `Esc` returns to Chase.
 5. Press `C`, then `V`. Pilot with `W`/`A`/`R`/`Q`, press `X` to stop, then `V` again. Voyager returns to its historical position.
-6. Press `P` and all motion stops while the camera keeps flying. Press `=` and the HUD rate doubles.
+6. Press `P` and dated body motion/spin stop while the camera keeps flying; manual piloting remains driven by real time. Resume, then press `=` and the HUD rate doubles.

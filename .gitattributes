@@ -1,0 +1,8 @@
+# Preserve generated documents and visual assets byte-for-byte on checkout.
+*.pdf binary
+*.pptx binary
+*.mp4 binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.bmp binary

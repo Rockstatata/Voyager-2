@@ -1,0 +1,7 @@
+reportlab==5.0.1
+PyMuPDF==1.28.2
+Pillow==12.3.0
+matplotlib>=3.10,<4
+numpy>=2,<3
+python-pptx>=1.0,<2
+imageio-ffmpeg==0.6.0

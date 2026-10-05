@@ -1,0 +1,97 @@
+[
+  {
+    "figure": "jupiter_encounter.jpg",
+    "runtime_source": "captures\\assessment\\tour\\03_jupiter_approach.bmp",
+    "source_sha256": "13c43d276a6662a5c0c6b4f73b27ca5d5f98911cf0156af3a7b033a8496f020d"
+  },
+  {
+    "figure": "saturn_encounter.jpg",
+    "runtime_source": "captures\\assessment\\tour\\04_saturn_approach.bmp",
+    "source_sha256": "acc5f8c121ac32dedd3c5cda836cd2d72b3fd2a084307e9c95735812545d4623"
+  },
+  {
+    "figure": "overview.jpg",
+    "runtime_source": "captures\\assessment\\tour\\01_overview.bmp",
+    "source_sha256": "1a219aebaa22f559a8710bb57c93bc4b884b03321a380191a02a64a8715a8a54"
+  },
+  {
+    "figure": "controls.jpg",
+    "runtime_source": "captures\\assessment\\tour\\12_help.bmp",
+    "source_sha256": "f528f9aff7c0483a3044716c464d5e4b8e35e1b65f0ed1c34a6d5566d5d5e41d"
+  },
+  {
+    "figure": "dish.jpg",
+    "runtime_source": "captures\\assessment\\raytrace\\voyager_dish_raster.bmp",
+    "source_sha256": "99d35b482b26715cbb8cf95d71660dc31807209e777b980eaf6502d6fd11976d"
+  },
+  {
+    "figure": "voyager.jpg",
+    "runtime_source": "captures\\assessment\\raytrace\\voyager_inspect_raster.bmp",
+    "source_sha256": "b8783e77bd5583397e7c1a6e6a91e32f2daa44c5d2bccb63c6944406dd531159"
+  },
+  {
+    "figure": "voyager_traced.jpg",
+    "runtime_source": "captures\\assessment\\raytrace\\voyager_inspect_traced.bmp",
+    "source_sha256": "4af0537743a485ea527cc88011515b788a81b0f2eeeba50f08c0bc1d406ff19a"
+  },
+  {
+    "figure": "saturn_traced.jpg",
+    "runtime_source": "captures\\assessment\\raytrace\\saturn_traced.bmp",
+    "source_sha256": "0ecc73ac11a3f999faa54b9ab7b2f49ead036ccdf7fae2b96974ba4c0a5ee62f"
+  },
+  {
+    "figure": "moon_maps.jpg",
+    "runtime_source": "captures\\assessment\\shading\\maps_moon_on.bmp",
+    "source_sha256": "02617f8bc44e541cf489389a1772f18c9dc9e9058c8b27c8a5971fc61af1d6a7"
+  },
+  {
+    "figure": "moon_no_maps.jpg",
+    "runtime_source": "captures\\assessment\\shading\\maps_moon_off.bmp",
+    "source_sha256": "579716515c4b9aa80897917043c5fb389458b0a09e1cc663535a7b06040cf927"
+  },
+  {
+    "figure": "spotlight.jpg",
+    "runtime_source": "captures\\assessment\\shading\\light_headlamp.bmp",
+    "source_sha256": "12804d58891281772a1fbfd89b889f09eed09b3ff35b78282a5143ea2516ec0a"
+  },
+  {
+    "figure": "fill.jpg",
+    "runtime_source": "captures\\assessment\\shading\\light_fill.bmp",
+    "source_sha256": "ff805fd5da4193ac394efad480224535d4fbca39b084a44de5191ee1c93cc59a"
+  },
+  {
+    "figure": "saturn_shadow.jpg",
+    "runtime_source": "captures\\assessment\\shading\\shadow_saturn_soft.bmp",
+    "source_sha256": "979fef1a2913a7151128328a89cd296fa1dbf86def86466772e3c84027e2e0a4"
+  },
+  {
+    "figure": "saturn_no_shadow.jpg",
+    "runtime_source": "captures\\assessment\\shading\\shadow_saturn_off.bmp",
+    "source_sha256": "88cca63d2aba1a4f0d8089e90ceaee048e9a75ad5b13dd05cd1a760c68c5fdbe"
+  },
+  {
+    "figure": "earth_flat.jpg",
+    "runtime_source": "captures\\assessment\\shading\\earth_flat.bmp",
+    "source_sha256": "b45b5d66a989c8af5bb378cf82b12fcb0410362e13ab1fb9d528f7581dddf395"
+  },
+  {
+    "figure": "earth_gouraud.jpg",
+    "runtime_source": "captures\\assessment\\shading\\earth_gouraud.bmp",
+    "source_sha256": "d643cd44c685daea7fad553d658b400b616c23070fc22588b84f25dcf1f2f0c8"
+  },
+  {
+    "figure": "earth_phong.jpg",
+    "runtime_source": "captures\\assessment\\shading\\earth_phong.bmp",
+    "source_sha256": "932be60079f72db027f956381a686c42e313c206fd1098e0a2b4bfc21a3e1403"
+  },
+  {
+    "figure": "earth_blinn_phong.jpg",
+    "runtime_source": "captures\\assessment\\shading\\earth_blinn_phong.bmp",
+    "source_sha256": "331d5459347ba6a1d314535b822735b9011f37090d7e03dd40185583f98b312a"
+  },
+  {
+    "figure": "earth_toon.jpg",
+    "runtime_source": "captures\\assessment\\shading\\earth_toon.bmp",
+    "source_sha256": "c4232b9135982db2cb3b9f136f7283baef03124f09db10757db9dfe987551c8f"
+  }
+]

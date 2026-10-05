@@ -15,11 +15,11 @@ x64\Release\Voyager-2.exe --benchmark bench.txt
 | Column | Meaning |
 | --- | --- |
 | frame ms / fps | Whole-frame time on the CPU clock: update, draw submission and buffer swap |
-| GPU ms | Time the GPU spent on `render()`, from an OpenGL `GL_TIME_ELAPSED` timer query. Queries are read one frame late so they never stall the pipeline. |
-| draws | `glDraw*` calls the Renderer issued (`RenderStats`) |
-| triangles | Triangles submitted that frame |
+| GPU ms | Time the GPU spent on `render()`, including HUD, from an OpenGL `GL_TIME_ELAPSED` timer query. Two alternating query slots delay the reads; `GL_QUERY_RESULT` can still wait for an unfinished result. |
+| draws | Draw submissions counted by `Renderer` (`RenderStats`); excludes the spacecraft shadow-depth pass, fullscreen ray-trace pass and HUD. |
+| triangles | Triangles in those Renderer submissions, including instance multiplicity; excludes traced intersections and the passes above. |
 
-If GPU ms is close to frame ms, the GPU is the bottleneck. If frame ms is much larger, the CPU is.
+Similar frame and GPU times suggest a GPU bottleneck. A much larger frame time can indicate CPU work, driver overhead, buffer swapping or query waits; it does not isolate CPU cost. The fresh assessment run and its environment are recorded in [the report validation folder](../report/validation/README.md).
 
 ## 11.2 What the measurements showed
 

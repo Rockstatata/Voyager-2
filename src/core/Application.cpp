@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <filesystem>
 #include <functional>
 #include <iomanip>
@@ -51,6 +52,10 @@ bool Application::initialize(int argc, char** argv)
 			startCaptureTour(argv[i + 1], "raytrace");
 		else if (option == "--capture-voyager")
 			startCaptureTour(argv[i + 1], "voyager");
+		else if (option == "--capture-demo")
+			startCaptureTour(argv[i + 1], "demo");
+		else if (option == "--capture-assessment")
+			startCaptureTour(argv[i + 1], "assessment");
 		else if (option == "--benchmark")
 			startBenchmark(argv[i + 1]);
 	}
@@ -335,6 +340,21 @@ void Application::update(double deltaTime)
 	m_scene.update(deltaTime);
 	m_mission.update(deltaTime, m_simulationSpeed);
 	m_cameraController.update(m_input, deltaTime, piloting, m_captureTour.active());
+	if (m_demoOrbit)
+	{
+		// The assessment tour moves the eye and its attached spotlight together.
+		// This uses the existing camera/light seam; normal interactive rigs are unchanged.
+		m_demoOrbitSeconds += deltaTime;
+		if (const CelestialBody* body = m_cameraController.focusedBody())
+		{
+			const glm::dmat4 world = body->worldMatrix();
+			const double radius = glm::length(glm::dvec3(world[0]));
+			const glm::dvec3 target(world[3]);
+			const double angle = m_demoOrbitSeconds * 0.3;
+			m_camera.setPosition(target + radius * 2.8 * glm::dvec3(std::sin(angle), 0.3, std::cos(angle)));
+			m_camera.lookAt(target);
+		}
+	}
 
 	m_titleRefreshTimer += deltaTime;
 	if (m_titleRefreshTimer >= 0.5)
@@ -431,6 +451,11 @@ void Application::render()
 	view.hints = keyHints();
 	if (m_quitArmedSeconds > 0.0)
 		view.notice = "PRESS ESC AGAIN TO QUIT";
+	else if (!m_demoCaption.empty())
+	{
+		view.notice = m_demoCaption;
+		view.hints.clear(); // the chapter caption owns the bottom line during the tour
+	}
 	if (m_cameraController.mode() == CameraController::Mode::Inspect)
 	{
 		const int component = m_cameraController.inspectedComponent();
@@ -487,6 +512,213 @@ void Application::startCaptureTour(const std::string& directory, const std::stri
 		m_mission.freezeBefore(planet, days);
 	};
 	auto pause = [this]() { m_mission.clock().setPaused(true); };
+	if (kind == "assessment")
+	{
+		// Fixed views expose construction, moving lights and dynamic objects.
+		// All screenshots use the real scene; no extra renderable is created.
+		m_hudVisible = false;
+		m_labelsVisible = false;
+		auto fixedView = [this](const glm::dvec3& target, const glm::dvec3& offset)
+		{
+			m_cameraController.enterFreeFly();
+			m_camera.setPosition(target + offset);
+			m_camera.lookAt(target);
+		};
+		auto moonView = [=, this]()
+		{
+			pause();
+			const glm::dmat4 world = m_solarSystem.find("moon")->worldMatrix();
+			const glm::dvec3 target(world[3]);
+			const double radius = glm::length(glm::dvec3(world[0]));
+			const glm::dvec3 towardSun = glm::normalize(m_sunPosition - target);
+			const glm::dvec3 side = glm::normalize(glm::cross(towardSun, glm::dvec3(0.0, 1.0, 0.0)));
+			fixedView(target, radius * 2.8 * glm::normalize(-towardSun + side * 0.7));
+		};
+		shots.push_back({ "moon_point.bmp", 0.5, [=, this]() { moonView(); } });
+		shots.push_back({ "moon_spot.bmp", 0.5, [this]() { m_lighting.setHeadlamp(true); } });
+		shots.push_back({ "moon_directional.bmp", 0.5, [this]()
+		{
+			m_lighting.setHeadlamp(false);
+			m_lighting.setFill(true);
+		} });
+		shots.push_back({ "spot_move_0.bmp", 0.5, [=, this]()
+		{
+			m_lighting.setFill(false);
+			m_lighting.setHeadlamp(true);
+			moonView();
+			m_demoOrbitSeconds = 0.0;
+			m_demoOrbit = true;
+			focusById("moon");
+		} });
+		shots.push_back({ "spot_move_1.bmp", 1.5, []() {} });
+		shots.push_back({ "spot_move_2.bmp", 1.5, []() {} });
+		shots.push_back({ "earth_wire.bmp", 2.8, [=, this]()
+		{
+			m_demoOrbit = false;
+			m_lighting.setHeadlamp(false);
+			focusById("earth");
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		} });
+		shots.push_back({ "dish_wire.bmp", 2.8, [this]() { m_cameraController.inspect(1); } });
+		shots.push_back({ "voyager_clean.bmp", 2.8, [this]()
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			m_scene.group("orbit_guides").setVisible(false);
+			m_scene.group("small_bodies").setVisible(false);
+			m_cameraController.inspect(-1);
+		} });
+		const std::array<ShadingTechnique, 5> techniques = { ShadingTechnique::Flat, ShadingTechnique::Gouraud,
+			ShadingTechnique::Phong, ShadingTechnique::BlinnPhong, ShadingTechnique::Toon };
+		const std::array<const char*, 5> names = { "flat", "gouraud", "phong", "blinn_phong", "toon" };
+		for (std::size_t i = 0; i < techniques.size(); ++i)
+		{
+			shots.push_back({ std::string("voyager_clean_") + names[i] + ".bmp", 0.4,
+				[this, technique = techniques[i]]() { m_lighting.setTechnique(technique); } });
+		}
+		shots.push_back({ "dish_clean.bmp", 2.8, [this]()
+		{
+			m_lighting.setTechnique(ShadingTechnique::BlinnPhong);
+			m_cameraController.inspect(1);
+		} });
+		shots.push_back({ "comet.bmp", 0.6, [=, this]()
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			m_scene.group("small_bodies").setVisible(true);
+			m_lighting.setFill(true);
+			const glm::dvec3 target(m_scene.group("comet").children().front()->worldMatrix()[3]);
+			const glm::dvec3 away = glm::normalize(target - m_sunPosition);
+			const glm::dvec3 side = glm::normalize(glm::cross(away, glm::dvec3(0.0, 1.0, 0.0)));
+			fixedView(target + away * 4.0, side * 17.0 + glm::dvec3(0.0, 4.0, 0.0));
+		} });
+		shots.push_back({ "asteroid_field.bmp", 0.6, [=, this]()
+		{
+			fixedView(m_sunPosition + glm::dvec3(34.0, 0.0, 0.0), glm::dvec3(0.0, 0.6, 2.0));
+		} });
+		shots.push_back({ "kuiper_field.bmp", 0.6, [=, this]()
+		{
+			fixedView(m_sunPosition + glm::dvec3(150.0, 0.0, 0.0), glm::dvec3(0.0, 2.0, 8.0));
+		} });
+		shots.push_back({ "oort_field.bmp", 0.6, [=, this]()
+		{
+			fixedView(m_sunPosition, glm::dvec3(0.0, 400.0, 2500.0));
+		} });
+		shots.push_back({ "jupiter_motion_0.bmp", 3.0, [=, this]()
+		{
+			focusById("jupiter");
+			pause();
+		} });
+		shots.push_back({ "jupiter_motion_1.bmp", 1.2, [this]()
+		{
+			m_simulationSpeed = 1.0;
+			m_mission.clock().setPaused(false);
+		} });
+		shots.push_back({ "jupiter_motion_2.bmp", 1.2, []() {} });
+		shots.push_back({ "earth_spin_0.bmp", 3.0, [=, this]() { pause(); focusById("earth"); } });
+		shots.push_back({ "earth_spin_1.bmp", 1.2, [this]()
+		{
+			m_simulationSpeed = 4.0;
+			m_mission.clock().setPaused(false);
+		} });
+		shots.push_back({ "earth_spin_2.bmp", 1.2, []() {} });
+		m_captureTour.start(directory, std::move(shots));
+		return;
+	}
+	if (kind == "demo")
+	{
+		// 120 seconds of actual rendering, recorded externally to keep video
+		// encoding and recording overhead out of the interactive application.
+		auto chapter = [&](std::string name, double seconds, std::string caption, std::function<void()> setup)
+		{
+			shots.push_back({ std::string(name) + ".bmp", seconds, [=, this]()
+			{
+				m_demoOrbit = false;
+				m_demoCaption = caption;
+				setup();
+			} });
+		};
+		chapter("01_overview", 8.0, "VOYAGER 2 - INTERACTIVE COMPUTER GRAPHICS", [=, this]()
+		{
+			pause();
+			m_scene.group("mission_path").setVisible(true);
+			m_cameraController.goToOverview();
+		});
+		chapter("02_objects", 10.0, "26 TEXTURED BODIES - SHARED PROCEDURAL SPHERES", [=, this]()
+		{
+			m_scene.group("mission_path").setVisible(false);
+			focusById("earth");
+			m_mission.clock().setPaused(false);
+			m_simulationSpeed = 1.0 / 64.0;
+		});
+		chapter("03_curved_dish", 10.0, "CURVED SURFACE - SELF-AUTHORED PARABOLIC ANTENNA", [=, this]()
+		{
+			jumpToBookmark(0);
+			pause();
+			m_cameraController.inspect(1);
+		});
+		chapter("04_textures", 10.0, "NASA TEXTURE ATLAS - GEOMETRY DEFINES THE SILHOUETTE", [this]()
+		{
+			m_cameraController.inspect(-1);
+		});
+		chapter("05_motion", 12.0, "COMPLEX MOTION - DATE-SYNCHRONIZED JUPITER ENCOUNTER", [=, this]()
+		{
+			beforeEncounter(1, "jupiter", 0.25);
+			m_simulationSpeed = 1.0 / 64.0;
+			m_mission.clock().setPaused(false);
+		});
+		chapter("06_point", 6.0, "POINT LIGHT - SUN ILLUMINATES THE DAY SIDE", [=, this]()
+		{
+			pause();
+			focusById("moon");
+		});
+		chapter("07_spot", 6.0, "SPOTLIGHT - SOFT CONE ATTACHED TO THE CAMERA (F5)", [this]()
+		{
+			m_lighting.setHeadlamp(true);
+		});
+		chapter("08_moving_spot", 6.0, "MOVING LIGHT - CAMERA AND HEADLAMP ORBIT THE MOON", [this]()
+		{
+			m_demoOrbitSeconds = 0.0;
+			m_demoOrbit = true;
+		});
+		chapter("09_directional", 6.0, "DIRECTIONAL LIGHT - COOL FILL ON THE NIGHT SIDE (F6)", [=, this]()
+		{
+			m_lighting.setHeadlamp(false);
+			m_lighting.setFill(true);
+			focusById("moon");
+		});
+		const std::array<ShadingTechnique, 5> techniques = { ShadingTechnique::Flat, ShadingTechnique::Gouraud,
+			ShadingTechnique::Phong, ShadingTechnique::BlinnPhong, ShadingTechnique::Toon };
+		for (const ShadingTechnique technique : techniques)
+		{
+			const std::string name = "10_shading_" + std::to_string(static_cast<int>(technique));
+			const std::string caption = std::string("SHADING COMPARISON (F3) - ") + shadingTechniqueName(technique);
+			chapter(name, 4.0, caption, [=, this]() { m_lighting.setTechnique(technique); });
+		}
+		chapter("11_shadows", 6.0, "SATURN - RAY-TRACED SPHERE AND RING SHADOWS (F4)", [=, this]()
+		{
+			m_lighting.setTechnique(ShadingTechnique::BlinnPhong);
+			m_lighting.setFill(false);
+			focusById("saturn");
+		});
+		chapter("12_raytrace", 10.0, "WHITTED RAY TRACING - VOYAGER TRIANGLES THROUGH A BVH (F9)", [=, this]()
+		{
+			jumpToBookmark(0);
+			pause();
+			m_cameraController.inspect(-1);
+			m_rayTraced = true;
+			m_rayTracer.setMaxBounces(0);
+		});
+		chapter("13_reflections", 4.0, "ONE REFLECTION BOUNCE - METAL AND FOIL (F10)", [this]()
+		{
+			m_rayTracer.setMaxBounces(1);
+		});
+		chapter("14_controls", 6.0, "THANK YOU - CAMERA, TIME AND SIX-DOF SPACECRAFT CONTROLS", [this]()
+		{
+			m_rayTraced = false;
+			m_helpVisible = true;
+		});
+		m_captureTour.start(directory, std::move(shots));
+		return;
+	}
 
 	if (kind == "voyager")
 	{

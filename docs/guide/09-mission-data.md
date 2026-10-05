@@ -2,7 +2,7 @@
 
 [Guide index](README.md) · previous: [The Voyager 2 spacecraft](08-voyager.md) · next: [How to change things](10-how-to-change-things.md)
 
-Everything that moves is driven by **real data** evaluated at **one date**.
+Planets and historical Voyager playback use **real state-vector data** evaluated at **one date**. Moon revolution, axial spin and the comet use documented visual animation rules; manual flight and camera movement use real frame time.
 
 ## 9.1 The data files
 

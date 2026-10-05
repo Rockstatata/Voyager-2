@@ -1,0 +1,10 @@
+{
+  "frames": 3600,
+  "duration_seconds": 120.0,
+  "fps": 30.0,
+  "size": [
+    1440,
+    900
+  ],
+  "codec": "h264"
+}

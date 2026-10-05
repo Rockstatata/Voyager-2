@@ -1,0 +1,407 @@
+PASS 1
+This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(Voyager_2_Graphics_Report.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-06-18>
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/base\report.cls
+Document Class: report 2025/01/22 v1.4n Standard LaTeX document class
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/base\size12.clo))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/xparse\xpars
+e.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/l3kernel\expl3.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-xet
+ex.def)))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec-xetex
+.sty (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec.cfg))
+) (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty))
+ (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.c
+fg)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\xetex.def)
+))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspace.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/fancyhdr\fancyhdr.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
+)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefine
+keys.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.s
+ty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds
+.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.s
+ty)))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettit
+lestring.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+)))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.s
+ty) (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
+) (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
+) (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc
+.sty)))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hxetex.def
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
+echeck.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniquec
+ounter.sty)))
+(F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\Voyager_2_Graphic
+s_Report.aux)
+*geometry* driver: auto-detecting
+*geometry* detected driver: xetex
+
+(F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\Voyager_2_Graphic
+s_Report.out)
+(F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\Voyager_2_Graphic
+s_Report.out) [1]
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd)
+[1] [2] [3] [4]
+Chapter 1.
+[1]
+Chapter 2.
+[2]
+Chapter 3.
+[3] [4] [5] [6] [7] [8] [9] [10] [11]
+Chapter 4.
+[12]
+Chapter 5.
+[13]
+Underfull \hbox (badness 3514) in paragraph at lines 316--317
+[]\TU/TimesNewRoman(0)/m/n/12 Khronos Group, “The OpenGL Graphics System: A Spe
+cification,” ver. 3.3,
+
+Underfull \hbox (badness 1178) in paragraph at lines 318--319
+[]\TU/TimesNewRoman(0)/m/n/12 GLFW, “Input Guide.” [Online]. Available: []$[][]
+[][][] [] [] [] [][][] [] [][][][] [] [][][] [] [][][][] [] [][][][][][] []
+
+Underfull \hbox (badness 2591) in paragraph at lines 320--321
+[]\TU/TimesNewRoman(0)/m/n/12 NASA, “NASA 3D Resources” and “Voyager 2.” [Onlin
+e]. Available: []$[][][][][] []
+
+Underfull \hbox (badness 10000) in paragraph at lines 320--321
+[] [] [][][][][][] [] [][][] [] [][][][] [] [][][][][][][][][][][][][][][][][][
+][]$[]\TU/TimesNewRoman(0)/m/n/12 ; []$[][][][][] [] [] [] [][][][][][][] [] []
+[][][] [] [][][] [] [][][][][][][] []
+
+Underfull \hbox (badness 10000) in paragraph at lines 321--322
+[]\TU/TimesNewRoman(0)/m/n/12 T. Möller and B. Trumbore, “Fast, minimum storage
+ ray-triangle inter-
+
+Underfull \hbox (badness 5133) in paragraph at lines 321--322
+\TU/TimesNewRoman(0)/m/n/12 section,” \TU/TimesNewRoman(0)/m/it/12 Journal of G
+raphics Tools\TU/TimesNewRoman(0)/m/n/12 , vol. 2, no. 1, pp. 21–28, 1997, doi:
+
+[14]
+(F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\Voyager_2_Graphic
+s_Report.aux) )
+(see the transcript file for additional information)
+Output written on F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\
+Voyager_2_Graphics_Report.pdf (19 pages).
+Transcript written on F:\CODE\Graphics-Project\Voyager-2\captures\assessment\la
+tex\Voyager_2_Graphics_Report.log.
+
+PASS 2
+This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(Voyager_2_Graphics_Report.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-06-18>
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/base\report.cls
+Document Class: report 2025/01/22 v1.4n Standard LaTeX document class
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/base\size12.clo))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/xparse\xpars
+e.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/l3kernel\expl3.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-xet
+ex.def)))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec-xetex
+.sty (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec.cfg))
+) (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty))
+ (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.c
+fg)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\xetex.def)
+))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspace.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/fancyhdr\fancyhdr.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
+)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefine
+keys.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.s
+ty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds
+.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.s
+ty)))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettit
+lestring.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+)))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.s
+ty) (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
+) (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
+) (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc
+.sty)))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hxetex.def
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
+echeck.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniquec
+ounter.sty)))
+(F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\Voyager_2_Graphic
+s_Report.aux)
+*geometry* driver: auto-detecting
+*geometry* detected driver: xetex
+
+(F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\Voyager_2_Graphic
+s_Report.out)
+(F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\Voyager_2_Graphic
+s_Report.out) [1]
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd)
+[1] [2] [3] [4]
+Chapter 1.
+[1]
+Chapter 2.
+[2]
+Chapter 3.
+[3] [4] [5] [6] [7] [8] [9] [10] [11]
+Chapter 4.
+[12]
+Chapter 5.
+[13]
+Underfull \hbox (badness 3514) in paragraph at lines 316--317
+[]\TU/TimesNewRoman(0)/m/n/12 Khronos Group, “The OpenGL Graphics System: A Spe
+cification,” ver. 3.3,
+
+Underfull \hbox (badness 1178) in paragraph at lines 318--319
+[]\TU/TimesNewRoman(0)/m/n/12 GLFW, “Input Guide.” [Online]. Available: []$[][]
+[][][] [] [] [] [][][] [] [][][][] [] [][][] [] [][][][] [] [][][][][][] []
+
+Underfull \hbox (badness 2591) in paragraph at lines 320--321
+[]\TU/TimesNewRoman(0)/m/n/12 NASA, “NASA 3D Resources” and “Voyager 2.” [Onlin
+e]. Available: []$[][][][][] []
+
+Underfull \hbox (badness 10000) in paragraph at lines 320--321
+[] [] [][][][][][] [] [][][] [] [][][][] [] [][][][][][][][][][][][][][][][][][
+][]$[]\TU/TimesNewRoman(0)/m/n/12 ; []$[][][][][] [] [] [] [][][][][][][] [] []
+[][][] [] [][][] [] [][][][][][][] []
+
+Underfull \hbox (badness 10000) in paragraph at lines 321--322
+[]\TU/TimesNewRoman(0)/m/n/12 T. Möller and B. Trumbore, “Fast, minimum storage
+ ray-triangle inter-
+
+Underfull \hbox (badness 5133) in paragraph at lines 321--322
+\TU/TimesNewRoman(0)/m/n/12 section,” \TU/TimesNewRoman(0)/m/it/12 Journal of G
+raphics Tools\TU/TimesNewRoman(0)/m/n/12 , vol. 2, no. 1, pp. 21–28, 1997, doi:
+
+[14]
+(F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\Voyager_2_Graphic
+s_Report.aux) )
+(see the transcript file for additional information)
+Output written on F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\
+Voyager_2_Graphics_Report.pdf (19 pages).
+Transcript written on F:\CODE\Graphics-Project\Voyager-2\captures\assessment\la
+tex\Voyager_2_Graphics_Report.log.
+
+PASS 3
+This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(Voyager_2_Graphics_Report.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-06-18>
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/base\report.cls
+Document Class: report 2025/01/22 v1.4n Standard LaTeX document class
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/base\size12.clo))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/xparse\xpars
+e.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/l3kernel\expl3.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-xet
+ex.def)))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec-xetex
+.sty (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec.cfg))
+) (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty))
+ (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.c
+fg)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\xetex.def)
+))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspace.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/fancyhdr\fancyhdr.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
+)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefine
+keys.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.s
+ty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds
+.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.s
+ty)))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettit
+lestring.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+)))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.s
+ty) (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
+) (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
+) (C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc
+.sty)))
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hxetex.def
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
+echeck.sty
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniquec
+ounter.sty)))
+(F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\Voyager_2_Graphic
+s_Report.aux)
+*geometry* driver: auto-detecting
+*geometry* detected driver: xetex
+
+(F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\Voyager_2_Graphic
+s_Report.out)
+(F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\Voyager_2_Graphic
+s_Report.out) [1]
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd)
+(C:\Users\sarwa\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd)
+[1] [2] [3] [4]
+Chapter 1.
+[1]
+Chapter 2.
+[2]
+Chapter 3.
+[3] [4] [5] [6] [7] [8] [9] [10] [11]
+Chapter 4.
+[12]
+Chapter 5.
+[13]
+Underfull \hbox (badness 3514) in paragraph at lines 316--317
+[]\TU/TimesNewRoman(0)/m/n/12 Khronos Group, “The OpenGL Graphics System: A Spe
+cification,” ver. 3.3,
+
+Underfull \hbox (badness 1178) in paragraph at lines 318--319
+[]\TU/TimesNewRoman(0)/m/n/12 GLFW, “Input Guide.” [Online]. Available: []$[][]
+[][][] [] [] [] [][][] [] [][][][] [] [][][] [] [][][][] [] [][][][][][] []
+
+Underfull \hbox (badness 2591) in paragraph at lines 320--321
+[]\TU/TimesNewRoman(0)/m/n/12 NASA, “NASA 3D Resources” and “Voyager 2.” [Onlin
+e]. Available: []$[][][][][] []
+
+Underfull \hbox (badness 10000) in paragraph at lines 320--321
+[] [] [][][][][][] [] [][][] [] [][][][] [] [][][][][][][][][][][][][][][][][][
+][]$[]\TU/TimesNewRoman(0)/m/n/12 ; []$[][][][][] [] [] [] [][][][][][][] [] []
+[][][] [] [][][] [] [][][][][][][] []
+
+Underfull \hbox (badness 10000) in paragraph at lines 321--322
+[]\TU/TimesNewRoman(0)/m/n/12 T. Möller and B. Trumbore, “Fast, minimum storage
+ ray-triangle inter-
+
+Underfull \hbox (badness 5133) in paragraph at lines 321--322
+\TU/TimesNewRoman(0)/m/n/12 section,” \TU/TimesNewRoman(0)/m/it/12 Journal of G
+raphics Tools\TU/TimesNewRoman(0)/m/n/12 , vol. 2, no. 1, pp. 21–28, 1997, doi:
+
+[14]
+(F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\Voyager_2_Graphic
+s_Report.aux) )
+(see the transcript file for additional information)
+Output written on F:\CODE\Graphics-Project\Voyager-2\captures\assessment\latex\
+Voyager_2_Graphics_Report.pdf (19 pages).
+Transcript written on F:\CODE\Graphics-Project\Voyager-2\captures\assessment\la
+tex\Voyager_2_Graphics_Report.log.

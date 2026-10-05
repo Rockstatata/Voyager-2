@@ -1,0 +1,580 @@
+[
+  {
+    "figure": "docs\\report\\figures\\technical\\report_overview.png",
+    "kind": "runtime overview; telemetry-only crop",
+    "sources": [
+      {
+        "path": "captures\\assessment\\tour\\01_overview.bmp",
+        "sha256": "1a219aebaa22f559a8710bb57c93bc4b884b03321a380191a02a64a8715a8a54"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\index_cell.png",
+    "kind": "construction diagram",
+    "sources": [
+      {
+        "path": "src\\rendering\\UvSphereGenerator.cpp",
+        "sha256": "cf34d237455812744d40a399effb682bb5e045b73429799dd247a1b506185f4c"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\primitive_profiles.png",
+    "kind": "construction diagram",
+    "sources": [
+      {
+        "path": "src\\rendering\\BoxGenerator.cpp",
+        "sha256": "383c5960cfaac3bf272ee02c49a91c5dde66ad3e67a423d41a6a846a068b55a8"
+      },
+      {
+        "path": "src\\rendering\\CylinderGenerator.cpp",
+        "sha256": "e2164c87546e9282297bf7685b2c695202583ccb20356887369ef2ff0bdf5bf2"
+      },
+      {
+        "path": "src\\rendering\\ParabolicDishGenerator.cpp",
+        "sha256": "50f4838670756cf13091f4ebeb0d47cc0b7bb2b6b2a35127f2f51e03ebae6325"
+      },
+      {
+        "path": "src\\scene\\VoyagerModelBuilder.cpp",
+        "sha256": "6fc700c9bc35e34b127dab1a366bdc7011e53cdc41534ca368495415dfd44dc1"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\environment_topology.png",
+    "kind": "construction diagram",
+    "sources": [
+      {
+        "path": "src\\rendering\\RingGenerator.cpp",
+        "sha256": "152b2d2f8ad31e00cdd6838841ca90c86d7d002d4b4a7eee0ab42593993f24a6"
+      },
+      {
+        "path": "src\\rendering\\StarfieldGenerator.cpp",
+        "sha256": "ac3cfa6c0025f0057b2743b559a91091b9a1e3ab9575e8ddfaa05eb5cccb0a6c"
+      },
+      {
+        "path": "src\\scene\\Comet.cpp",
+        "sha256": "5076191fbc97e312634d5563217447e85aa76060d01594d2cf25019e51f68ffb"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\transform_hierarchy.png",
+    "kind": "construction diagram",
+    "sources": [
+      {
+        "path": "src\\scene\\CelestialBody.cpp",
+        "sha256": "86a5695063bb055dfcd3c242f06181519b77e2d975689cb2b8b9eda6f0cd37fd"
+      },
+      {
+        "path": "src\\rendering\\Renderer.cpp",
+        "sha256": "f0dd75ad325a599e7c6a4a936fdca5fc1235b7da8ef6f86d872eaf4a854710a7"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\ray_paths.png",
+    "kind": "construction diagram",
+    "sources": [
+      {
+        "path": "shaders\\raytrace.frag",
+        "sha256": "e2edbfea6c99d508251ac56dd9058aa1e4148296d96f5505f50087e4ef612ab5"
+      },
+      {
+        "path": "shaders\\raytrace.glsl",
+        "sha256": "f0b75b8c413167013a3921cd297afd9f46acc62543c6ccb7a2a3f7fb9049716c"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\bvh_layout.png",
+    "kind": "construction diagram",
+    "sources": [
+      {
+        "path": "src\\rendering\\TriangleBvh.cpp",
+        "sha256": "352533a4a972ac5191f1ad46f3e60e5a75ad13088d767c7db0345b5c9dceaa45"
+      },
+      {
+        "path": "shaders\\raytrace_mesh.glsl",
+        "sha256": "6911d83c1647701f0033c5f551c3d1af0a20547b51bdd6de26223decdc299dd5"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\light_response.png",
+    "kind": "equation response plot; PNG/PDF/SVG exports",
+    "sources": [
+      {
+        "path": "src\\core\\LightingController.cpp",
+        "sha256": "c155aa61a34d08550373fcb026e4a71e53423a492cf9820fa6c217185144f3fa"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\performance.png",
+    "kind": "measured frame-time plot; PNG/PDF/SVG exports",
+    "sources": [
+      {
+        "path": "docs\\report\\validation\\benchmark.txt",
+        "sha256": "b55da45c5d5a201081eeaaaf419ad1b1b1ca434edbce18636fa48873350dc26b"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\texture_channels.png",
+    "kind": "derived explanatory map plate; resized albedo, not exported runtime texture",
+    "sources": [
+      {
+        "path": "assets\\textures\\bodies\\earth.jpg",
+        "sha256": "767ee1dc6eb3802699bfccf6f264880f8acd0b80de3191cd24984fe279b07b7c"
+      },
+      {
+        "path": "src\\rendering\\SurfaceMaps.cpp",
+        "sha256": "78b48c734cbaa762f4e7289e0a25cd243fe719f0d564bc0ab936b98262167a52"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\lighting.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\technical\\moon_point.bmp",
+        "sha256": "52c99879dd7237eb0f1f83038f41e45f766b1e4495b56c16738c1c27badc0505"
+      },
+      {
+        "path": "captures\\assessment\\technical\\moon_spot.bmp",
+        "sha256": "4b6fd3c35e9ca70984c81da195cf0b86bfb95f2b0542064de3ed9d58712c4c27"
+      },
+      {
+        "path": "captures\\assessment\\technical\\moon_directional.bmp",
+        "sha256": "af54f29a35430c1e73fa10def238829bb0f49e49f1e6159c34320edd685dd019"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\report_lighting.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\technical\\moon_point.bmp",
+        "sha256": "52c99879dd7237eb0f1f83038f41e45f766b1e4495b56c16738c1c27badc0505"
+      },
+      {
+        "path": "captures\\assessment\\technical\\moon_spot.bmp",
+        "sha256": "4b6fd3c35e9ca70984c81da195cf0b86bfb95f2b0542064de3ed9d58712c4c27"
+      },
+      {
+        "path": "captures\\assessment\\technical\\moon_directional.bmp",
+        "sha256": "af54f29a35430c1e73fa10def238829bb0f49e49f1e6159c34320edd685dd019"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\moving_spot.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\technical\\spot_move_0.bmp",
+        "sha256": "f7505b67911c320904090423de1448c8144a0bbad92f6b5cd29f504e62703931"
+      },
+      {
+        "path": "captures\\assessment\\technical\\spot_move_1.bmp",
+        "sha256": "017750bd2e79eafbaa7d73fe30f057e45d827926a705007bfd66a9d42423bd17"
+      },
+      {
+        "path": "captures\\assessment\\technical\\spot_move_2.bmp",
+        "sha256": "279053c1512abcb569196f17b3f98280e0026a2a7ec213dd1523b4a8a9f7981d"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\spin.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\technical\\earth_spin_0.bmp",
+        "sha256": "2688238ce019ed297041a931fb99418c1f885e22054346b6a976926c773227c6"
+      },
+      {
+        "path": "captures\\assessment\\technical\\earth_spin_1.bmp",
+        "sha256": "805e2ee5ddc7e8b350b7613bfc243ba4021ac260905d6989c59d48c0bb2f8155"
+      },
+      {
+        "path": "captures\\assessment\\technical\\earth_spin_2.bmp",
+        "sha256": "0534ed7ec20cc12f3cafa6d3ba7e1bf1f5266ec2e4901777a0af215aa6878582"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\moon_motion.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\technical\\jupiter_motion_0.bmp",
+        "sha256": "85fc06d01d0c41b9e7b6b8dd1a162d4d0baa0ab8d1ec92aae3cffd7098274c4c"
+      },
+      {
+        "path": "captures\\assessment\\technical\\jupiter_motion_1.bmp",
+        "sha256": "2287ed66e12d1ff2f02582bf2f8304c36a7837a479de0846649480781d6f3c0c"
+      },
+      {
+        "path": "captures\\assessment\\technical\\jupiter_motion_2.bmp",
+        "sha256": "72ab0ada5f299d6abf80e536931ac0c2facb25cf8d59a5ebfb9b45394f8ff479"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\shading.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\shading\\earth_flat.bmp",
+        "sha256": "b45b5d66a989c8af5bb378cf82b12fcb0410362e13ab1fb9d528f7581dddf395"
+      },
+      {
+        "path": "captures\\assessment\\shading\\earth_gouraud.bmp",
+        "sha256": "d643cd44c685daea7fad553d658b400b616c23070fc22588b84f25dcf1f2f0c8"
+      },
+      {
+        "path": "captures\\assessment\\shading\\earth_phong.bmp",
+        "sha256": "932be60079f72db027f956381a686c42e313c206fd1098e0a2b4bfc21a3e1403"
+      },
+      {
+        "path": "captures\\assessment\\shading\\earth_blinn_phong.bmp",
+        "sha256": "331d5459347ba6a1d314535b822735b9011f37090d7e03dd40185583f98b312a"
+      },
+      {
+        "path": "captures\\assessment\\shading\\earth_toon.bmp",
+        "sha256": "c4232b9135982db2cb3b9f136f7283baef03124f09db10757db9dfe987551c8f"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\report_shading.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\shading\\earth_flat.bmp",
+        "sha256": "b45b5d66a989c8af5bb378cf82b12fcb0410362e13ab1fb9d528f7581dddf395"
+      },
+      {
+        "path": "captures\\assessment\\shading\\earth_gouraud.bmp",
+        "sha256": "d643cd44c685daea7fad553d658b400b616c23070fc22588b84f25dcf1f2f0c8"
+      },
+      {
+        "path": "captures\\assessment\\shading\\earth_phong.bmp",
+        "sha256": "932be60079f72db027f956381a686c42e313c206fd1098e0a2b4bfc21a3e1403"
+      },
+      {
+        "path": "captures\\assessment\\shading\\earth_blinn_phong.bmp",
+        "sha256": "331d5459347ba6a1d314535b822735b9011f37090d7e03dd40185583f98b312a"
+      },
+      {
+        "path": "captures\\assessment\\shading\\earth_toon.bmp",
+        "sha256": "c4232b9135982db2cb3b9f136f7283baef03124f09db10757db9dfe987551c8f"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\shading_voyager.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\technical\\voyager_clean_flat.bmp",
+        "sha256": "f5fd9bccc84a6dac21ce71a5c1034a21e0094d2175c3742ed6fd9799df6cb644"
+      },
+      {
+        "path": "captures\\assessment\\technical\\voyager_clean_gouraud.bmp",
+        "sha256": "ae29538d31ab9c2575f8360a42914e6a50f5c7a02e3080381299b84e894bc7ad"
+      },
+      {
+        "path": "captures\\assessment\\technical\\voyager_clean_phong.bmp",
+        "sha256": "23e23e4ebb2cb980af53a3d924c9156486661aca900368d00cae3075c2c79e06"
+      },
+      {
+        "path": "captures\\assessment\\technical\\voyager_clean_blinn_phong.bmp",
+        "sha256": "541e8a88c1d1ff88df201507ba24dcb4a2d126723dac31d47124fac35ff598ae"
+      },
+      {
+        "path": "captures\\assessment\\technical\\voyager_clean_toon.bmp",
+        "sha256": "e3931e40363d8d52c3fff06040250a6c7018288eed3bdc02fa1336b92ec4f4f4"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\shadows.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\shading\\shadow_saturn_off.bmp",
+        "sha256": "88cca63d2aba1a4f0d8089e90ceaee048e9a75ad5b13dd05cd1a760c68c5fdbe"
+      },
+      {
+        "path": "captures\\assessment\\shading\\shadow_saturn_hard.bmp",
+        "sha256": "1966b7058233fa19528c8c33977f8e9e8d410050db1f7bc954e7f897775c3d8d"
+      },
+      {
+        "path": "captures\\assessment\\shading\\shadow_saturn_soft.bmp",
+        "sha256": "979fef1a2913a7151128328a89cd296fa1dbf86def86466772e3c84027e2e0a4"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\tracing.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\raytrace\\saturn_raster.bmp",
+        "sha256": "8de4f74302aaa8e72c23c77067d62f9c26dfaca4183930d8f12f0c0c32722634"
+      },
+      {
+        "path": "captures\\assessment\\raytrace\\saturn_traced.bmp",
+        "sha256": "0ecc73ac11a3f999faa54b9ab7b2f49ead036ccdf7fae2b96974ba4c0a5ee62f"
+      },
+      {
+        "path": "captures\\assessment\\raytrace\\voyager_inspect_traced.bmp",
+        "sha256": "4af0537743a485ea527cc88011515b788a81b0f2eeeba50f08c0bc1d406ff19a"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\surface_maps.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\shading\\maps_moon_off.bmp",
+        "sha256": "579716515c4b9aa80897917043c5fb389458b0a09e1cc663535a7b06040cf927"
+      },
+      {
+        "path": "captures\\assessment\\shading\\maps_moon_on.bmp",
+        "sha256": "02617f8bc44e541cf489389a1772f18c9dc9e9058c8b27c8a5971fc61af1d6a7"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\report_surface_maps.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\shading\\maps_moon_off.bmp",
+        "sha256": "579716515c4b9aa80897917043c5fb389458b0a09e1cc663535a7b06040cf927"
+      },
+      {
+        "path": "captures\\assessment\\shading\\maps_moon_on.bmp",
+        "sha256": "02617f8bc44e541cf489389a1772f18c9dc9e9058c8b27c8a5971fc61af1d6a7"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\environment.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\technical\\comet.bmp",
+        "sha256": "ac7733b488b7726180126b1369aac552fbe811ad3eea2094ecf0bf2569925124"
+      },
+      {
+        "path": "captures\\assessment\\technical\\asteroid_field.bmp",
+        "sha256": "a19bc59a859338861940ca1e246c1dd53ea2e5f85c2137f43d20071af61dda96"
+      },
+      {
+        "path": "captures\\assessment\\technical\\kuiper_field.bmp",
+        "sha256": "9fcb196c09cf29a66cbaa95217a1cdbd333941e5214ad319881e757a24bceedf"
+      },
+      {
+        "path": "captures\\assessment\\technical\\oort_field.bmp",
+        "sha256": "cd8b1208c66ab4fe5ad1acebeac60d4bfd2bab2a30dfc07d9fb83fcd1360dc76"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\body_catalog.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "captures\\assessment\\bodies\\sun.bmp",
+        "sha256": "deb80f93e0fe4321055131a8d1ddfaa4e8ae898daf4217e14d70b9d41c94dea6"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\mercury.bmp",
+        "sha256": "47e42f0e80e0493ed3c2d2ac969db3811e005ccb6d8e9dd3d2d6f53c5a85ca44"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\venus.bmp",
+        "sha256": "cf1c50ed3ac79fa8f92acf53d68da4eeaa9944956d889925bcf8e7717494f58c"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\earth.bmp",
+        "sha256": "331d5459347ba6a1d314535b822735b9011f37090d7e03dd40185583f98b312a"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\mars.bmp",
+        "sha256": "abaaa0c60dacb4946bab499c821cdf21a7285e8c4a9aef610e8d23841a213745"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\jupiter.bmp",
+        "sha256": "403d534ae08d5758a49a8d8e10c8b69822d9194b4e28d62ad521936017b1c5e0"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\saturn.bmp",
+        "sha256": "8de4f74302aaa8e72c23c77067d62f9c26dfaca4183930d8f12f0c0c32722634"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\uranus.bmp",
+        "sha256": "311dd06bb3223cb5f547686e7c47a2ecb8a6cda8ca810b89a1a62d7984c58cb2"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\neptune.bmp",
+        "sha256": "a35e5af3f2383aae66681254b0a9556a5d33b88c368fd9e63774691b5dfcc11a"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\pluto.bmp",
+        "sha256": "d077ec4103fe075f6bb22b84c8badfef36440f1269cce9d87bd73ff109850556"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\moon.bmp",
+        "sha256": "4fae352ff98b856982d47ae237fc44a503a373f3145c5efe5ed4e0895a8e890c"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\io.bmp",
+        "sha256": "f2df5918a359796e623fbc1008377e7fb95c2d6cd10ec69b10ffb12d3c9815d6"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\europa.bmp",
+        "sha256": "a8f5205dc6bc2e0566f50c07f7960ff4b2aae3b3b98fdffcdadd6047508f3311"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\ganymede.bmp",
+        "sha256": "4f10b8e9da899f1e92a45a5d0781ecda381e83e4b100c73ef3526b59d1235bf3"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\callisto.bmp",
+        "sha256": "a961604dc2497f6a88bb143ab7caf584a76ac54eee020a8b7e23e6ff5daa80c2"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\tethys.bmp",
+        "sha256": "89fd52a20a80ad2b0519502111b19f2e39d02cb28ddbf83f33789339ca9ff38c"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\dione.bmp",
+        "sha256": "589e93c798b27a02fc8b0ea8e3aec3a14ed41ae687c4647fe35d4dea8a15853e"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\rhea.bmp",
+        "sha256": "06b8efa8e7f983463beb46cafff2304773302f36b82ceeada19499ebc8ff87a7"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\titan.bmp",
+        "sha256": "a18cdc9fa0350241fde6c30f5015145785d8be36d10a64c63548f2c79e9c48cd"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\iapetus.bmp",
+        "sha256": "9f7e9edfab7e46b03d16c97364695d6b88917bd933fa7f3781625c4f4d1ea681"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\miranda.bmp",
+        "sha256": "97c1f2bf47f16f1714337dab7e003ffab05b718dd7e4fcc6075707882975bf51"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\ariel.bmp",
+        "sha256": "9db66c214002fad5fe35ddd2a8e2d1d2327f2075485baff85a04edd60921304b"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\umbriel.bmp",
+        "sha256": "2ee998ef79f7e9d6083617b526bb33d1f38dc6ecc6f550e591384a0e3a3d8c18"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\titania.bmp",
+        "sha256": "01a52f4dc3893646151d5395c85ec7ed4c392ce284c638150670491cd094a39c"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\oberon.bmp",
+        "sha256": "b3a0b95f6e75e2ac1142414e2527f3a230f0105c78ec1b5588afc9b3de0fda5d"
+      },
+      {
+        "path": "captures\\assessment\\bodies\\triton.bmp",
+        "sha256": "1d05116f6b8f2bed8c7218293cfd32ec1911bead5a548f22e2b09d46031ef46d"
+      }
+    ]
+  },
+  {
+    "figure": "docs\\report\\figures\\technical\\voyager_catalog.png",
+    "kind": "labelled runtime screenshot comparison",
+    "sources": [
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_01_Electronics_bus.jpg",
+        "sha256": "0131a2c50fe19f7a39a06f5dfc87bca8ca687b1f86d341627c4719cf9ff06649"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_02_High-gain_antenna.jpg",
+        "sha256": "bd2c14880f78266bdc5738a55fc755ddac3b707879f8d56449c6f749efdaa092"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_03_Feed_stack_and_low-gain_antenna.jpg",
+        "sha256": "367003d8b1cd759cc94231829a36903a977212889eef93a9d396b239d3f70855"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_04_Sun_sensor.jpg",
+        "sha256": "37f5e39f53f91765834ac5f61d3e8d5bbb3ed385793cbe656a5088316c88a522"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_05_Golden_Record.jpg",
+        "sha256": "dc92f9953cb2ec2c1e3940af307f1213bd515e4f2ec86d28e61382b5488e2538"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_06_Optical_calibration_target.jpg",
+        "sha256": "204a036832a49240076cc627a579189c81f00fb6599e1ec9e35304ab641c1b56"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_07_Magnetometer_boom.jpg",
+        "sha256": "2c730804bb72e056b91a9de8855839fc5110c12ef83a0cf107d98c600860b59e"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_08_Low-field_magnetometer_(tip).jpg",
+        "sha256": "5b0e3efc70b1c62859daf2700ce6ba6df59f673ec637626a7295815f85cf205e"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_09_Radioisotope_generators.jpg",
+        "sha256": "4b73b6528d6450b13098fd1870c00200010b21cdd01ef2cad36e4c7370aa92a2"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_10_Plasma_science_instrument.jpg",
+        "sha256": "1c135445457437d2e61bf6fdb562cd0bd5a3185dc4b881fd809dd3bf4e42d8c7"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_11_Cosmic_ray_subsystem.jpg",
+        "sha256": "60f88e00a467aa5075f916bd0674687d00b58df74b31d5a9f41a759761f8f0e8"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_12_Low-energy_charged_particles.jpg",
+        "sha256": "dfc032313804737eec9bbd16b370f385a95222788bbb916466c794285ef7f61c"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_13_Scan_platform.jpg",
+        "sha256": "3eedca68cbc2b498d125aa4ab7e793b6bc6c16c5eb2c1bef3ff64219aa44ddfe"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_14_Narrow-angle_camera.jpg",
+        "sha256": "7b6b27e8a9e6ad0495958fbae929ece3bbbd5379eb8ef44c258149ccf1048178"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_15_Wide-angle_camera.jpg",
+        "sha256": "073dca5a0065ca7c2dbe9ddc330cc3072bdd6c098644d134dab2d204998c369b"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_16_IRIS_telescope.jpg",
+        "sha256": "92cc675a0a040d8ddd4a1778c6a04bfc0b8cb668d8f1311b3a2b5b4201712ff2"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_17_Radio_and_plasma_wave_antennas.jpg",
+        "sha256": "6ed85817788e6a478fafb2814f08fdbe06250b79088e5cd772c7149bbac4f4ce"
+      },
+      {
+        "path": "docs\\objects\\images\\voyager\\voyager_18_Attitude_thrusters.jpg",
+        "sha256": "274f6fba26cc210bd94c073fb97a49bd23bc172713ba5eb05da34c47759c25eb"
+      }
+    ]
+  }
+]

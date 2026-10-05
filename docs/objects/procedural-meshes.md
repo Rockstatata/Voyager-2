@@ -86,15 +86,15 @@ The rear repeats the same positions at `y-T` and negates the normal. Each surfac
 
 For the front center fan, where `c` is the center and `a/b` are consecutive vertices of ring 1, the indices are `(c,b,a)`. The rear reverses them to `(c,a,b)`. Between adjacent rings the front uses `(innerLeft,innerRight,outerLeft)` and `(innerRight,outerRight,outerLeft)`; the rear reverses both. The outer front and rear rings are joined by two rim-wall triangles per segment.
 
-With Voyager's `n=48`, `m=8`:
+With the current Voyager model's `n=48`, `m=6`:
 
 ```text
-vertices per face = 1 + 8*(48+1) = 393
-total vertices    = 786
-triangles/face    = 48 + 7*(2*48) = 720
+vertices per face = 1 + 6*(48+1) = 295
+total vertices    = 590
+triangles/face    = 48 + 5*(2*48) = 528
 rim triangles     = 2*48 = 96
-total triangles   = 720+720+96 = 1,536
-total indices     = 4,608
+total triangles   = 528+528+96 = 1,152
+total indices     = 3,456
 ```
 
 ## Double-sided annulus: `RingGenerator`

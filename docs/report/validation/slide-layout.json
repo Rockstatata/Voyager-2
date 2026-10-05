@@ -1,0 +1,1979 @@
+[
+  {
+    "slide": 1,
+    "kind": "text",
+    "text": "Voyager 2 Solar-System Explorer",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 1,
+    "kind": "text",
+    "text": "01 INTRODUCTION \u00b7 What the project is and why it was built",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 1,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 1,
+    "kind": "text",
+    "text": "01 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 1,
+    "kind": "text",
+    "text": "Explore a 3D solar system.\nExplain how it is rendered.",
+    "box": [
+      32,
+      101,
+      425,
+      71.5
+    ],
+    "font_pt": 27
+  },
+  {
+    "slide": 1,
+    "kind": "text",
+    "text": "Replay flybys and inspect the spacecraft.\nFly manually. Compare rendering techniques.",
+    "box": [
+      32,
+      177,
+      435,
+      49.0
+    ],
+    "font_pt": 18
+  },
+  {
+    "slide": 1,
+    "kind": "text",
+    "text": "26 textured bodies \u00b7 4 ring systems\n76 assemblies \u00b7 18 hardware targets\n8,500 instanced rocks \u00b7 dynamic comet",
+    "box": [
+      46,
+      258,
+      407,
+      88
+    ],
+    "font_pt": 18
+  },
+  {
+    "slide": 1,
+    "kind": "image",
+    "source": "captures\\assessment\\technical\\voyager_clean.bmp",
+    "crop": null,
+    "box": [
+      495.6,
+      95.0,
+      428.79999999999995,
+      268.0
+    ]
+  },
+  {
+    "slide": 1,
+    "kind": "image",
+    "source": "docs\\report\\figures\\overview.jpg",
+    "crop": null,
+    "box": [
+      89.8,
+      374.0,
+      166.4,
+      104.0
+    ]
+  },
+  {
+    "slide": 1,
+    "kind": "image",
+    "source": "docs\\report\\figures\\saturn_encounter.jpg",
+    "crop": null,
+    "box": [
+      382.8,
+      374.0,
+      166.4,
+      104.0
+    ]
+  },
+  {
+    "slide": 1,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui | Roll: 2107006\nCSE 4102 | KUET | October 2026",
+    "box": [
+      631,
+      382,
+      296,
+      67.75
+    ],
+    "font_pt": 17
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "Explore, control, compare",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "02 INTRODUCTION \u00b7 A complete project walkthrough, followed by your recorded video",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "02 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 2,
+    "kind": "image",
+    "source": "docs\\report\\figures\\jupiter_encounter.jpg",
+    "crop": null,
+    "box": [
+      46.20000000000002,
+      99.0,
+      257.59999999999997,
+      161.0
+    ]
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "MISSION",
+    "box": [
+      32,
+      272,
+      286,
+      29.0
+    ],
+    "font_pt": 20
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "Dated launch, four flybys and heliopause.",
+    "box": [
+      32,
+      304,
+      286,
+      46.5
+    ],
+    "font_pt": 17
+  },
+  {
+    "slide": 2,
+    "kind": "image",
+    "source": "docs\\report\\figures\\dish.jpg",
+    "crop": null,
+    "box": [
+      352.20000000000005,
+      99.0,
+      257.59999999999997,
+      161.0
+    ]
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "INSPECTION",
+    "box": [
+      338,
+      272,
+      286,
+      29.0
+    ],
+    "font_pt": 20
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "Body focus, 18 hardware targets, free camera.",
+    "box": [
+      338,
+      304,
+      286,
+      46.5
+    ],
+    "font_pt": 17
+  },
+  {
+    "slide": 2,
+    "kind": "image",
+    "source": "docs\\report\\figures\\saturn_traced.jpg",
+    "crop": null,
+    "box": [
+      658.2,
+      99.0,
+      257.59999999999997,
+      161.0
+    ]
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "COMPARISON",
+    "box": [
+      644,
+      272,
+      286,
+      29.0
+    ],
+    "font_pt": 20
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "Three lights, five shading modes, ray tracing.",
+    "box": [
+      644,
+      304,
+      286,
+      46.5
+    ],
+    "font_pt": 17
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "C++20 \u00b7 OpenGL 3.3 \u00b7 GLFW / GLAD / GLM",
+    "box": [
+      46,
+      388,
+      560,
+      26.5
+    ],
+    "font_pt": 18
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "Course teachers: Md Tajmilur Rahman\nand Md Mubtashim Abrar Nihal \u2014 Lecturers",
+    "box": [
+      46,
+      420,
+      560,
+      44.0
+    ],
+    "font_pt": 16
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "PLAY PROJECT VIDEO",
+    "box": [
+      659,
+      392,
+      254,
+      27.75
+    ],
+    "font_pt": 19
+  },
+  {
+    "slide": 2,
+    "kind": "text",
+    "text": "Attach your final recording here.",
+    "box": [
+      659,
+      428,
+      254,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 3,
+    "kind": "text",
+    "text": "Vertices \u2192 indices \u2192 triangles \u2192 worlds",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 3,
+    "kind": "text",
+    "text": "03 GEOMETRY \u00b7 Shared sphere construction creates all 26 textured bodies",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 3,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 3,
+    "kind": "text",
+    "text": "03 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 3,
+    "kind": "image",
+    "source": "captures\\assessment\\technical\\earth_wire.bmp",
+    "crop": [
+      160,
+      120,
+      1260,
+      790
+    ],
+    "box": [
+      32.0,
+      102.29545454545455,
+      265.0,
+      161.4090909090909
+    ]
+  },
+  {
+    "slide": 3,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\index_cell.png",
+    "crop": [
+      25,
+      90,
+      610,
+      555
+    ],
+    "box": [
+      328.64516129032256,
+      95.0,
+      227.70967741935482,
+      181.0
+    ]
+  },
+  {
+    "slide": 3,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\body_catalog.png",
+    "crop": null,
+    "box": [
+      608.0,
+      167.72556390977445,
+      320.0,
+      139.54887218045113
+    ]
+  },
+  {
+    "slide": 3,
+    "kind": "text",
+    "text": "Vertex = position + normal + UV",
+    "box": [
+      32,
+      286,
+      550,
+      29.0
+    ],
+    "font_pt": 20
+  },
+  {
+    "slide": 3,
+    "kind": "equation",
+    "formula": "\\mathbf{p}=(\\sin\\phi\\cos\\theta,\\cos\\phi,\\sin\\phi\\sin\\theta)",
+    "box": [
+      32,
+      319,
+      254.88,
+      19.919999999999998
+    ]
+  },
+  {
+    "slide": 3,
+    "kind": "equation",
+    "formula": "\\phi=\\pi i/L,\\quad\\theta=2\\pi j/N,\\quad uv=(1-j/N,1-i/L)",
+    "box": [
+      32,
+      360,
+      384.0,
+      18.96
+    ]
+  },
+  {
+    "slide": 3,
+    "kind": "text",
+    "text": "Cell triangles: (TL, TR, BL) and (TR, BR, BL).\nPoles omit degenerate halves; the UV seam duplicates positions.",
+    "box": [
+      32,
+      403,
+      550,
+      44.0
+    ],
+    "font_pt": 16
+  },
+  {
+    "slide": 3,
+    "kind": "text",
+    "text": "32 \u00d7 64 shared sphere\n2,145 vertices \u00b7 3,968 triangles\n11,904 indices \u00b7 26 materials/maps",
+    "box": [
+      620,
+      410,
+      295,
+      67.75
+    ],
+    "font_pt": 17
+  },
+  {
+    "slide": 4,
+    "kind": "text",
+    "text": "Voyager: authored from reusable primitives",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 4,
+    "kind": "text",
+    "text": "04 OBJECT CONSTRUCTION \u00b7 Boxes, cylinders, frustums, rods and a curved parabolic dish",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 4,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 4,
+    "kind": "text",
+    "text": "04 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 4,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\primitive_profiles.png",
+    "crop": null,
+    "box": [
+      237.27272727272725,
+      88.0,
+      485.4545454545455,
+      178.0
+    ]
+  },
+  {
+    "slide": 4,
+    "kind": "text",
+    "text": "BOX: 24 vertices / 12 triangles",
+    "box": [
+      32,
+      273,
+      292,
+      25.25
+    ],
+    "font_pt": 17
+  },
+  {
+    "slide": 4,
+    "kind": "text",
+    "text": "CAPS + SIDES: 4n+6 / 4n",
+    "box": [
+      338,
+      273,
+      292,
+      25.25
+    ],
+    "font_pt": 17
+  },
+  {
+    "slide": 4,
+    "kind": "text",
+    "text": "DISH: 590 / 1,152",
+    "box": [
+      644,
+      273,
+      284,
+      25.25
+    ],
+    "font_pt": 17
+  },
+  {
+    "slide": 4,
+    "kind": "equation",
+    "formula": "y=-D+D(r/R)^2",
+    "box": [
+      32,
+      319,
+      188.88,
+      26.88
+    ]
+  },
+  {
+    "slide": 4,
+    "kind": "equation",
+    "formula": "\\mathbf{n}\\propto(-2Dx/R^2,1,-2Dz/R^2)",
+    "box": [
+      338,
+      319,
+      278.88,
+      24.96
+    ]
+  },
+  {
+    "slide": 4,
+    "kind": "image",
+    "source": "captures\\assessment\\technical\\dish_clean.bmp",
+    "crop": [
+      300,
+      30,
+      1230,
+      875
+    ],
+    "box": [
+      107.51479289940829,
+      370.0,
+      130.97041420118342,
+      118.99999999999999
+    ]
+  },
+  {
+    "slide": 4,
+    "kind": "image",
+    "source": "captures\\assessment\\technical\\dish_wire.bmp",
+    "crop": [
+      300,
+      30,
+      1230,
+      875
+    ],
+    "box": [
+      400.5147928994083,
+      370.0,
+      130.97041420118342,
+      118.99999999999999
+    ]
+  },
+  {
+    "slide": 4,
+    "kind": "text",
+    "text": "76 assemblies \u00b7 5,828 triangles\n18 inspectable hardware components\nRods: rotate +Y onto B\u2212A; rebase indices.",
+    "box": [
+      631,
+      380,
+      296,
+      110.25
+    ],
+    "font_pt": 17
+  },
+  {
+    "slide": 5,
+    "kind": "text",
+    "text": "Rings, belts, stars, comet and scene guides",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 5,
+    "kind": "text",
+    "text": "05 OBJECT FAMILIES \u00b7 Every rendered family has a primitive and a construction rule",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 5,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 5,
+    "kind": "text",
+    "text": "05 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 5,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\environment.png",
+    "crop": null,
+    "box": [
+      96.97560975609758,
+      94.0,
+      766.0487804878048,
+      151.0
+    ]
+  },
+  {
+    "slide": 5,
+    "kind": "text",
+    "text": "RINGS",
+    "box": [
+      32,
+      265,
+      286,
+      27.75
+    ],
+    "font_pt": 19
+  },
+  {
+    "slide": 5,
+    "kind": "text",
+    "text": "p = (r cos\u03b8, 0, r sin\u03b8)\nInner/outer edges; reversed back face.\n260 vertices / 256 triangles per band.",
+    "box": [
+      32,
+      300,
+      286,
+      64.0
+    ],
+    "font_pt": 16
+  },
+  {
+    "slide": 5,
+    "kind": "text",
+    "text": "ROCK FIELDS",
+    "box": [
+      338,
+      265,
+      286,
+      27.75
+    ],
+    "font_pt": 19
+  },
+  {
+    "slide": 5,
+    "kind": "text",
+    "text": "28 vertices / 24 triangles per rock.\n8,500 matrices \u2192 3 instanced draws.\nDeterministic placement; static fields.",
+    "box": [
+      338,
+      300,
+      286,
+      64.0
+    ],
+    "font_pt": 16
+  },
+  {
+    "slide": 5,
+    "kind": "text",
+    "text": "STARS / GUIDES",
+    "box": [
+      644,
+      265,
+      286,
+      27.75
+    ],
+    "font_pt": 19
+  },
+  {
+    "slide": 5,
+    "kind": "text",
+    "text": "7,380 points; 96-vertex line circles.\nNo surface triangles for these guides.\nHUD text uses screen-space quads.",
+    "box": [
+      644,
+      300,
+      286,
+      64.0
+    ],
+    "font_pt": 16
+  },
+  {
+    "slide": 5,
+    "kind": "text",
+    "text": "DYNAMIC COMET = sphere nucleus + glow coma + 16-segment cone tail",
+    "box": [
+      46,
+      410,
+      868,
+      26.5
+    ],
+    "font_pt": 18
+  },
+  {
+    "slide": 5,
+    "kind": "equation",
+    "formula": "\\mathbf{d}_{tail}=\\operatorname{normalize}(\\mathbf{p}_{comet}-\\mathbf{p}_{Sun})",
+    "box": [
+      46,
+      445,
+      270.0,
+      19.919999999999998
+    ]
+  },
+  {
+    "slide": 5,
+    "kind": "text",
+    "text": "52 cone vertices / 32 triangles",
+    "box": [
+      635,
+      447,
+      275,
+      24.0
+    ],
+    "font_pt": 16
+  },
+  {
+    "slide": 6,
+    "kind": "text",
+    "text": "Transforms, hierarchy, scale and cameras",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 6,
+    "kind": "text",
+    "text": "06 TRANSFORMATIONS \u00b7 Position, pose, size and view are separate operations",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 6,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 6,
+    "kind": "text",
+    "text": "06 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 6,
+    "kind": "equation",
+    "formula": "\\mathbf{p}_{clip}=PV M_{world}\\mathbf{p},\\quad M_{world}=M_{parent}TRS",
+    "box": [
+      32,
+      101,
+      429.84,
+      24.0
+    ]
+  },
+  {
+    "slide": 6,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\transform_hierarchy.png",
+    "crop": null,
+    "box": [
+      32.0,
+      168.0,
+      560.0,
+      217.0
+    ]
+  },
+  {
+    "slide": 6,
+    "kind": "text",
+    "text": "Four camera cases",
+    "box": [
+      618,
+      165,
+      308,
+      30.25
+    ],
+    "font_pt": 21
+  },
+  {
+    "slide": 6,
+    "kind": "text",
+    "text": "FreeFly: independent motion\nFocus: body-centred orbit\nChase: spacecraft frame\nInspect: hardware close-up",
+    "box": [
+      618,
+      205,
+      308,
+      128
+    ],
+    "font_pt": 18
+  },
+  {
+    "slide": 6,
+    "kind": "equation",
+    "formula": "\\mathbf{n}^{\\prime}=\\operatorname{normalize}((M_{3\\times3}^{-1})^T\\mathbf{n})",
+    "box": [
+      32,
+      410,
+      240.0,
+      25.919999999999998
+    ]
+  },
+  {
+    "slide": 6,
+    "kind": "text",
+    "text": "Subtract the eye in double precision.\nCompressed scale keeps bodies visible;\nphysical AU/km values remain in the HUD.",
+    "box": [
+      618,
+      395,
+      310,
+      64.0
+    ],
+    "font_pt": 16
+  },
+  {
+    "slide": 6,
+    "kind": "text",
+    "text": "Surface-only spin \u00b7 parent compensation \u00b7 quaternion rigs \u00b7 logarithmic depth",
+    "box": [
+      32,
+      462,
+      570,
+      22.75
+    ],
+    "font_pt": 15
+  },
+  {
+    "slide": 7,
+    "kind": "text",
+    "text": "Every motion has an owner and a clock",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 7,
+    "kind": "text",
+    "text": "07 MOTION \u00b7 Dated flight, moon revolution, axial spin, manual six-DOF and comet orientation",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 7,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 7,
+    "kind": "text",
+    "text": "07 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 7,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\moon_motion.png",
+    "crop": null,
+    "box": [
+      32.0,
+      106.69791666666667,
+      439.0,
+      100.60416666666666
+    ]
+  },
+  {
+    "slide": 7,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\spin.png",
+    "crop": null,
+    "box": [
+      489.0,
+      106.69791666666667,
+      439.0,
+      100.60416666666666
+    ]
+  },
+  {
+    "slide": 7,
+    "kind": "text",
+    "text": "MOON REVOLUTION / tilted parent frame",
+    "box": [
+      32,
+      230,
+      439,
+      25.25
+    ],
+    "font_pt": 17
+  },
+  {
+    "slide": 7,
+    "kind": "text",
+    "text": "AXIAL SPIN / surface transform only",
+    "box": [
+      489,
+      230,
+      439,
+      25.25
+    ],
+    "font_pt": 17
+  },
+  {
+    "slide": 7,
+    "kind": "equation",
+    "formula": "\\mathbf{p}(s)=h_{00}\\mathbf{p}_0+h_{10}h\\mathbf{v}_0+h_{01}\\mathbf{p}_1+h_{11}h\\mathbf{v}_1",
+    "box": [
+      32,
+      270,
+      372.96,
+      22.8
+    ]
+  },
+  {
+    "slide": 7,
+    "kind": "equation",
+    "formula": "r=\\frac{a(1-e^2)}{1+e\\cos\\nu},\\quad\\dot\\nu=2\\pi(0.4)/P_{days}",
+    "box": [
+      32,
+      322,
+      256.8,
+      28.799999999999997
+    ]
+  },
+  {
+    "slide": 7,
+    "kind": "equation",
+    "formula": "\\dot\\psi=2\\pi/P_{hours}",
+    "box": [
+      489,
+      322,
+      123.83999999999999,
+      25.919999999999998
+    ]
+  },
+  {
+    "slide": 7,
+    "kind": "equation",
+    "formula": "q^{\\prime}=\\operatorname{normalize}(q q_y q_x q_z)",
+    "box": [
+      32,
+      376,
+      190.79999999999998,
+      21.84
+    ]
+  },
+  {
+    "slide": 7,
+    "kind": "equation",
+    "formula": "\\mathbf{v}^{\\prime}=\\mathbf{v}+\\mathbf{a}\\Delta t,\\quad\\mathbf{p}^{\\prime}=\\mathbf{p}+\\mathbf{v}\\Delta t",
+    "box": [
+      489,
+      376,
+      246.95999999999998,
+      20.88
+    ]
+  },
+  {
+    "slide": 7,
+    "kind": "text",
+    "text": "Historical data: one date. Visual moons/spin: independent rates.\nManual flight + cameras: real time. Comet tail: anti-Sun direction.",
+    "box": [
+      32,
+      435,
+      896,
+      49.0
+    ],
+    "font_pt": 18
+  },
+  {
+    "slide": 8,
+    "kind": "text",
+    "text": "Three light types\u2014and a moving headlamp",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 8,
+    "kind": "text",
+    "text": "08 LIGHTING \u00b7 Source geometry and attenuation determine incident illumination",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 8,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 8,
+    "kind": "text",
+    "text": "08 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 8,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\lighting.png",
+    "crop": null,
+    "box": [
+      58.90909090909088,
+      92.0,
+      842.1818181818182,
+      193.0
+    ]
+  },
+  {
+    "slide": 8,
+    "kind": "text",
+    "text": "POINT / Sun",
+    "box": [
+      32,
+      295,
+      286,
+      26.5
+    ],
+    "font_pt": 18
+  },
+  {
+    "slide": 8,
+    "kind": "equation",
+    "formula": "\\mathbf{l}=(\\mathbf{p}_L-\\mathbf{p})/d",
+    "box": [
+      32,
+      330,
+      109.92,
+      18.96
+    ]
+  },
+  {
+    "slide": 8,
+    "kind": "text",
+    "text": "SPOT / camera",
+    "box": [
+      338,
+      295,
+      286,
+      26.5
+    ],
+    "font_pt": 18
+  },
+  {
+    "slide": 8,
+    "kind": "equation",
+    "formula": "C=\\mathrm{clamp}\\left(\\frac{\\theta-\\cos18^\\circ}{\\cos12^\\circ-\\cos18^\\circ},0,1\\right)",
+    "box": [
+      338,
+      330,
+      231.84,
+      22.8
+    ]
+  },
+  {
+    "slide": 8,
+    "kind": "text",
+    "text": "DIRECTIONAL / fill",
+    "box": [
+      644,
+      295,
+      286,
+      26.5
+    ],
+    "font_pt": 18
+  },
+  {
+    "slide": 8,
+    "kind": "equation",
+    "formula": "\\mathbf{l}=-\\operatorname{normalize}(\\mathbf{d}_L)",
+    "box": [
+      644,
+      330,
+      150.96,
+      18.96
+    ]
+  },
+  {
+    "slide": 8,
+    "kind": "equation",
+    "formula": "A(d)=\\frac{1}{k_c+k_ld+k_qd^2},\\quad D=\\max(\\mathbf{n}\\cdot\\mathbf{l},0)",
+    "box": [
+      32,
+      389,
+      346.8,
+      31.919999999999998
+    ]
+  },
+  {
+    "slide": 8,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\moving_spot.png",
+    "crop": null,
+    "box": [
+      606.0,
+      395.1041666666667,
+      322.0,
+      73.79166666666666
+    ]
+  },
+  {
+    "slide": 8,
+    "kind": "text",
+    "text": "Camera motion carries the spotlight position and direction; the cone is 12\u00b0\u201318\u00b0.",
+    "box": [
+      32,
+      472,
+      896,
+      24.0
+    ],
+    "font_pt": 16
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "Five shading techniques, matched views",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "09 SHADING \u00b7 Change the normal/evaluation stage while keeping geometry, texture and lights fixed",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "09 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 9,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\shading.png",
+    "crop": null,
+    "box": [
+      67.12328767123284,
+      94.0,
+      825.7534246575343,
+      137.0
+    ]
+  },
+  {
+    "slide": 9,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\shading_voyager.png",
+    "crop": null,
+    "box": [
+      67.12328767123284,
+      230.0,
+      825.7534246575343,
+      137.0
+    ]
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "FLAT",
+    "box": [
+      32,
+      372,
+      172,
+      22.75
+    ],
+    "font_pt": 15
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "Face normal",
+    "box": [
+      32,
+      396,
+      172,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "GOURAUD",
+    "box": [
+      213,
+      372,
+      172,
+      22.75
+    ],
+    "font_pt": 15
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "Vertex light",
+    "box": [
+      213,
+      396,
+      172,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "PHONG",
+    "box": [
+      394,
+      372,
+      172,
+      22.75
+    ],
+    "font_pt": 15
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "Pixel reflect",
+    "box": [
+      394,
+      396,
+      172,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "BLINN",
+    "box": [
+      575,
+      372,
+      172,
+      22.75
+    ],
+    "font_pt": 15
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "Pixel half-vector",
+    "box": [
+      575,
+      396,
+      172,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "TOON",
+    "box": [
+      756,
+      372,
+      172,
+      22.75
+    ],
+    "font_pt": 15
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "Bands + rim",
+    "box": [
+      756,
+      396,
+      172,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 9,
+    "kind": "equation",
+    "formula": "S_P=k_s\\max(\\mathbf{v}\\cdot\\mathbf{r},0)^p",
+    "box": [
+      32,
+      437,
+      177.84,
+      19.919999999999998
+    ]
+  },
+  {
+    "slide": 9,
+    "kind": "equation",
+    "formula": "S_B=k_s\\max(\\mathbf{n}\\cdot\\mathbf{h},0)^{2p}",
+    "box": [
+      489,
+      437,
+      189.84,
+      22.8
+    ]
+  },
+  {
+    "slide": 9,
+    "kind": "text",
+    "text": "Toon: 1 / 0.62 / 0.30 / 0.06 bands; rim at n\u00b7v < 0.22. Glow/unlit are separate materials.",
+    "box": [
+      32,
+      478,
+      896,
+      20.25
+    ],
+    "font_pt": 13
+  },
+  {
+    "slide": 10,
+    "kind": "text",
+    "text": "Visibility: eclipses, ring shadows and self-shadow",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 10,
+    "kind": "text",
+    "text": "10 SHADOWS \u00b7 Analytic Sun rays for bodies/rings; a depth map for the spacecraft",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 10,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 10,
+    "kind": "text",
+    "text": "10 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 10,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\shadows.png",
+    "crop": null,
+    "box": [
+      37.090909090909065,
+      94.0,
+      885.8181818181819,
+      203.0
+    ]
+  },
+  {
+    "slide": 10,
+    "kind": "equation",
+    "formula": "V_{soft}=1-\\frac{A_{overlap}}{\\pi\\alpha_{Sun}^{2}},\\quad V_{ring}=1-\\mathrm{opacity}",
+    "box": [
+      32,
+      318,
+      379.91999999999996,
+      42.0
+    ]
+  },
+  {
+    "slide": 10,
+    "kind": "text",
+    "text": "BODIES + RINGS",
+    "box": [
+      46,
+      395,
+      407,
+      27.75
+    ],
+    "font_pt": 19
+  },
+  {
+    "slide": 10,
+    "kind": "text",
+    "text": "Analytic shadow rays: sphere / annulus.\nFinite Sun discs create a stable penumbra.",
+    "box": [
+      46,
+      429,
+      407,
+      44.0
+    ],
+    "font_pt": 16
+  },
+  {
+    "slide": 10,
+    "kind": "text",
+    "text": "VOYAGER SELF-SHADOW",
+    "box": [
+      503,
+      395,
+      410,
+      27.75
+    ],
+    "font_pt": 19
+  },
+  {
+    "slide": 10,
+    "kind": "text",
+    "text": "2048\u00b2 depth map \u00b7 3\u00d73 PCF comparisons.\nBias avoids the surface shadowing itself.",
+    "box": [
+      503,
+      429,
+      410,
+      44.0
+    ],
+    "font_pt": 16
+  },
+  {
+    "slide": 11,
+    "kind": "text",
+    "text": "Ray tracing: nearest hit, light, reflection",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 11,
+    "kind": "text",
+    "text": "11 RAY TRACING \u00b7 Analytic spheres/rings and a triangle BVH for the authored spacecraft",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 11,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 11,
+    "kind": "text",
+    "text": "11 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 11,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\tracing.png",
+    "crop": null,
+    "box": [
+      148.36363636363637,
+      90.0,
+      663.2727272727273,
+      152.0
+    ]
+  },
+  {
+    "slide": 11,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\ray_paths.png",
+    "crop": null,
+    "box": [
+      37.26865671641792,
+      250.0,
+      427.46268656716416,
+      179.0
+    ]
+  },
+  {
+    "slide": 11,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\bvh_layout.png",
+    "crop": null,
+    "box": [
+      489.0,
+      253.071875,
+      438.99999999999994,
+      172.85625
+    ]
+  },
+  {
+    "slide": 11,
+    "kind": "equation",
+    "formula": "\\mathbf{p}(t)=\\mathbf{o}+t\\mathbf{d},\\quad t=-b\\pm\\sqrt{b^2-f}",
+    "box": [
+      32,
+      437,
+      261.84,
+      27.84
+    ]
+  },
+  {
+    "slide": 11,
+    "kind": "equation",
+    "formula": "\\mathbf{d}_r=\\mathbf{d}-2(\\mathbf{d}\\cdot\\mathbf{n})\\mathbf{n}",
+    "box": [
+      489,
+      437,
+      150.0,
+      19.919999999999998
+    ]
+  },
+  {
+    "slide": 11,
+    "kind": "text",
+    "text": "F9 hybrid Whitted view \u00b7 5,828 BVH triangles \u00b7 up to 4 ring layers \u00b7 F10 one mirror bounce",
+    "box": [
+      32,
+      478,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 12,
+    "kind": "text",
+    "text": "Textures: colour, atlas, relief and specular mask",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 12,
+    "kind": "text",
+    "text": "12 TEXTURES \u00b7 The mesh supplies shape; image channels supply surface detail",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 12,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 12,
+    "kind": "text",
+    "text": "12 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 12,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\texture_channels.png",
+    "crop": null,
+    "box": [
+      128.78048780487802,
+      93.0,
+      702.439024390244,
+      160.0
+    ]
+  },
+  {
+    "slide": 12,
+    "kind": "image",
+    "source": "docs\\report\\figures\\technical\\surface_maps.png",
+    "crop": null,
+    "box": [
+      32.0,
+      275.8333333333333,
+      436.0,
+      145.33333333333334
+    ]
+  },
+  {
+    "slide": 12,
+    "kind": "image",
+    "source": "assets\\textures\\spacecraft\\voyager_nasa_atlas.png",
+    "crop": null,
+    "box": [
+      516.0,
+      269.0,
+      159.0,
+      159.0
+    ]
+  },
+  {
+    "slide": 12,
+    "kind": "text",
+    "text": "NASA atlas\n11 textured finishes\n+ copper material",
+    "box": [
+      719,
+      294,
+      208,
+      67.75
+    ],
+    "font_pt": 17
+  },
+  {
+    "slide": 12,
+    "kind": "equation",
+    "formula": "\\mathbf{n}_t=\\operatorname{normalize}(-sS_x(H),-sS_y(H),1)",
+    "box": [
+      32,
+      443,
+      351.84,
+      22.8
+    ]
+  },
+  {
+    "slide": 12,
+    "kind": "equation",
+    "formula": "uv^{\\prime}=uv\\cdot zw+xy",
+    "box": [
+      651,
+      443,
+      162.96,
+      21.84
+    ]
+  },
+  {
+    "slide": 12,
+    "kind": "text",
+    "text": "F8 maps off/on \u00b7 Sobel relief is inferred from colour \u00b7 ocean mask controls highlights",
+    "box": [
+      32,
+      479,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 13,
+    "kind": "text",
+    "text": "Thank you",
+    "box": [
+      30,
+      20,
+      900,
+      40.25
+    ],
+    "font_pt": 29
+  },
+  {
+    "slide": 13,
+    "kind": "text",
+    "text": "13 DISCUSSION \u00b7 Questions about the project, its mathematics and its implementation",
+    "box": [
+      32,
+      58,
+      896,
+      21.5
+    ],
+    "font_pt": 14
+  },
+  {
+    "slide": 13,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui \u00b7 2107006 \u00b7 CSE 4102 \u00b7 KUET",
+    "box": [
+      32,
+      511,
+      800,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 13,
+    "kind": "text",
+    "text": "13 / 13",
+    "box": [
+      876,
+      511,
+      65,
+      16.5
+    ],
+    "font_pt": 10
+  },
+  {
+    "slide": 13,
+    "kind": "text",
+    "text": "From indexed triangles\nto an explorable mission.",
+    "box": [
+      32,
+      113,
+      525,
+      84.0
+    ],
+    "font_pt": 32
+  },
+  {
+    "slide": 13,
+    "kind": "text",
+    "text": "Geometry \u00b7 transforms \u00b7 motion\nlighting \u00b7 shading \u00b7 ray tracing \u00b7 textures",
+    "box": [
+      32,
+      208,
+      525,
+      59.0
+    ],
+    "font_pt": 22
+  },
+  {
+    "slide": 13,
+    "kind": "image",
+    "source": "docs\\report\\figures\\jupiter_encounter.jpg",
+    "crop": null,
+    "box": [
+      585.0,
+      124.3125,
+      343.0,
+      214.375
+    ]
+  },
+  {
+    "slide": 13,
+    "kind": "text",
+    "text": "Verified: builds, scene checks and runtime captures.\nMeasured raster views: 0.64\u20131.15 ms / RX 590.\nExplainable limits: compressed scale, visual moons,\nhybrid tracing and one reflection bounce.",
+    "box": [
+      47,
+      358,
+      495,
+      104
+    ],
+    "font_pt": 18
+  },
+  {
+    "slide": 13,
+    "kind": "text",
+    "text": "Sarwad Hasan Siddiqui\nRoll: 2107006 | CSE 4102 | KUET",
+    "box": [
+      586,
+      380,
+      339,
+      51.5
+    ],
+    "font_pt": 19
+  }
+]

@@ -32,8 +32,8 @@ public:
 	void start(const std::string& outputPath, std::vector<View> views);
 	bool active() const { return m_index < m_views.size(); }
 
-	// Bracket Application::render(). Results are read one frame late, so the
-	// query never stalls the pipeline.
+	// Bracket Application::render(). Two alternating queries delay reads;
+	// GL_QUERY_RESULT can still wait if the GPU has not finished that slot.
 	void beginGpu();
 	void endGpu();
 

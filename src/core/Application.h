@@ -44,7 +44,10 @@ public:
 	// Creates the window/context and loads GPU resources. `--capture <dir>`
 	// runs the scripted screenshot tour and exits; `--capture-bodies <dir>`
 	// shoots one Focus view per body and `--capture-shading <dir>` one view
-	// per shading technique and light. Returns false if initialization failed.
+	// per shading technique and light. `--capture-assessment <dir>` adds
+	// construction, fixed lighting comparisons and motion sequences.
+	// `--capture-demo <dir>` runs a 120-second
+	// assessment tour for an external window recorder. Returns false if initialization failed.
 	bool initialize(int argc = 0, char** argv = nullptr);
 
 	void run();
@@ -57,7 +60,7 @@ private:
 	void refreshWindowTitle();
 	std::string keyHints() const;
 	void jumpToBookmark(int index);
-	// kind: "tour", "bodies" or "shading".
+	// kind: "tour", "bodies", "shading", "raytrace", "voyager" or "demo".
 	void startCaptureTour(const std::string& directory, const std::string& kind);
 	// `--benchmark <file>`: timed views with vsync off (docs/guide/11-performance.md).
 	void startBenchmark(const std::string& outputPath);
@@ -97,6 +100,9 @@ private:
 	bool m_hudVisible = true;
 	bool m_helpVisible = false;
 	bool m_screenshotRequested = false;
+	bool m_demoOrbit = false;
+	double m_demoOrbitSeconds = 0.0;
+	std::string m_demoCaption;
 	double m_quitArmedSeconds = 0.0; // Esc must be pressed twice to quit
 	int m_screenshotCounter = 0;
 	double m_simulationSpeed = 1.0;

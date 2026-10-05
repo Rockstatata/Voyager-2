@@ -3876,6 +3876,57 @@ Diagnose and fix slow rendering (instructor: too many polygons used as texture),
 
 ---
 
+## Session 2026-10-05
+
+### Goal
+
+Audit the supplied graphics assessment criteria and create a concise report, ten-slide presentation and two-minute live runtime video with defensible explanations.
+
+### Files changed
+
+- `Application.*`: `--capture-demo` reuses CaptureTour and existing controllers, with 18 timed chapter images, live motion and an orbiting camera spotlight; external encoding keeps video dependencies out of the normal renderer.
+- `Input::attach`: GLFW sticky key/mouse polling preserves brief presses through slow frames. `scripts/verify_input_taps.py` reproduces missed taps in the original build and verifies the correction; runtime keyboard smoke also exercised flight/shading/lighting switches.
+- `scripts/{build_assessment_report,record_assessment_demo}.py`, `docs/report/`: editable report/metadata, equations, fresh images, PDF/PPTX/MP4, speaker notes, requirement audit, worked viva fundamentals and validation evidence.
+- Existing guide/object indexes, texture manifest, Texture2D UV comment, Benchmark query comments and performance measurement documentation corrected/linked.
+
+### Completed
+
+- [x] All graphics categories in the supplied note found in the implementation; no duplicate rendering subsystem needed.
+- [x] 18-page report following the condensed CSE-4000 template; ten slides including introduction/thanks; 120-second live video.
+- [x] Debug/Release x64 builds, both verification scripts, fresh capture tours and independent Release benchmark (RX 590, 1440x900, mean 1.71 ms).
+- [x] Distinguish historical ephemeris from educational moons/spin, compressed scale, post-data prediction and bounded hybrid ray tracing.
+
+### Current build state
+
+- Builds: Yes. Existing vendored GLFW missing-PDB and Release runtime-library warnings recorded in report validation.
+- Runtime shaders and capture tours: successful; visuals inspected. Source-contract checks do not replace every hands-on input/driver test.
+- Institution/submission metadata confirmed: KUET, October 2026. Next task: rehearse the viva/manual checklist before assessment.
+
+---
+
+## Assessment revision 2026-10-05
+
+The initial assessment package above is superseded by the author's clarified requirements: **two illustrated introduction slides, ten technical slides, one thank-you slide**, and a **nineteen-page XeLaTeX report**. The author will record and attach the final video after the introduction; document regeneration does not record or embed it.
+
+- `docs/report/Voyager_2_Graphics_Report.tex` now owns report content and formatting. It reproduces the supplied KUET template's A4 margins, Times New Roman body, line spacing, heading hierarchy, Roman/Arabic pagination, equation numbering and caption conventions. Course teachers replace supervisors; compact contents/lists and shared Chapters V?VII keep the complete submission below twenty pages.
+- `scripts/build_assessment_{figures,slides,report}.py` regenerates twenty-five source-backed visual plates, the thirteen-slide editable PPTX/PDF, substantive notes and the XeLaTeX report. Checks reject incorrect page counts, missing notes, overlapping slide content, undefined references and overfull LaTeX boxes.
+- `Application.*` adds `--capture-assessment`: twenty-five actual-runtime images of wireframes, matched lighting, moving spotlight, five spacecraft shaders, rotation/revolution and environmental fields. HUD/label suppression and polygon-line mode are confined to scripted capture; the normal scene remains unchanged.
+- A fresh standard tour and twenty-six-body tour supply current screenshots. Code/capture hashes accompany figures. Eighteen existing hardware close-ups support the full-resolution object catalogue.
+- `Visual_Fundamentals.md` and `Presentation_Notes_Source.md` expand indexed topology, all eighteen hardware constructions, transforms, motion, light/shading equations, Sobel maps and bounded hybrid tracing. The dish handbook is corrected to the actual **48 angular segments / 6 radial rings: 590 vertices, 1,152 triangles**.
+- Debug/Release builds, scene/navigation checks, brief-input regression, runtime capture tours and document checks passed. The earlier eight-view Release benchmark remains the measured performance evidence; it was not re-measured for this document-only revision.
+
+Student/course metadata remains the confirmed KUET, October 2026, CSE 4102 submission for Sarwad Hasan Siddiqui (2107006), with course teachers Md Tajmilur Rahman and Md Mubtashim Abrar Nihal. See `docs/report/README.md` and `docs/report/validation/` for deliverables, reproduction steps and limitations.
+
+---
+
+### Report print-visibility revision
+
+The report's eleven technical images now use the full printable width without height caps. Inline figures keep captions with their images; methodology flows naturally rather than reserving one page per section. Report-specific Earth shading and Moon relief crops enlarge the actual surface details and comparison labels. Introductory/closing prose is condensed and Chapters V–VII share a page, retaining nineteen pages, the template body font and technical derivations. Figure page references now use actual figure labels. The export guard records figure bounds and rejects undersized or out-of-margin images; all nineteen pages were rendered and reviewed again.
+
+### Presentation learning workbook
+
+`docs/guide/12-presentation-rehearsal.md` provides a three-hour/90-minute study route, fundamentals with numerical exercises, closed-book checkpoints, live controls, thirteen-slide speaking prompts and sixteen mock viva questions. Guide/report indexes link it. Consistency review corrected the assessment material's background count to **7,380 stars (5,200 + 1,800 + 380)**, matching `EnvironmentBuilder`; 4,000 is the asteroid instance count. The report/deck/figures were regenerated successfully. The mission guide now explicitly separates historical state-vector motion from visual animation and real-time manual/camera input.
+
 # 57. Reference Sources
 
 These should be treated as primary technical/scientific references when we implement the relevant pieces.

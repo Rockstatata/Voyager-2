@@ -2,6 +2,8 @@
 
 These notes explain the renderable objects at the level needed to reconstruct and defend the implementation. Start with the shared-system guides, then read each object's page.
 
+The [assessment package](../report/README.md) maps the instructor's graphics checklist to these implementations and supplies the report, slides, video and viva explanations.
+
 **New to the code?** Read the [learning guide](../guide/README.md) first; [chapter 11](../guide/11-performance.md) covers performance (benchmark, shadow mapping, LOD, culling). It builds everything up from the ground: the OpenGL pipeline, how every vertex and triangle is generated, transforms, textures, lighting, the five shading techniques, ray tracing, Voyager 2, the mission data, and step-by-step recipes for changes. These object pages are the reference that goes with it.
 
 1. [Procedural mesh handbook](procedural-meshes.md): exact vertex equations, index order, normals, UVs, winding, and counts for boxes, cylinders/frusta/cones, parabolic dishes, annuli, line circles, and star points.

@@ -13,7 +13,13 @@ void Input::attach(GLFWwindow* window)
 	m_mouseDelta = glm::dvec2(0.0);
 	s_pendingScroll = 0.0;
 	if (window != nullptr)
+	{
+		// Preserve a press released between frame polls (for example while the
+		// first traced view initializes its assets). Held input still polls normally.
+		glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
+		glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 		glfwSetScrollCallback(window, &Input::scrollCallback);
+	}
 }
 
 void Input::scrollCallback(GLFWwindow*, double, double yOffset)

@@ -2,6 +2,10 @@
 
 This guide explains the whole project from first principles, in the order you need it. Every formula is the one the code actually uses, and every chapter points to the exact files and functions, so you can read the guide and the code side by side.
 
+For assessment, use the [CSE 4102 report and presentation package](../report/README.md): a nineteen-page LaTeX report, thirteen slides (two introductions, ten technical, thanks), visual fundamentals and a [criterion audit with worked viva examples](../report/Assessment_and_Viva.md). The author will attach the final video after the introduction.
+
+**Presenting tomorrow? Start with [the presentation rehearsal workbook](12-presentation-rehearsal.md).** It maps this textbook to the slides, provides a three-hour/90-minute learning route, numerical exercises, demo steps, a speaking sequence and mock viva questions with expandable answers.
+
 ![Voyager 2 six hours before Jupiter closest approach](../objects/images/runtime/03_jupiter_approach.jpg)
 
 ## Reading order
@@ -19,6 +23,7 @@ This guide explains the whole project from first principles, in the order you ne
 | 9 | [Data, time and the mission](09-mission-data.md) | Horizons ephemeris, Hermite interpolation, the simulation clock, flyby clearance, CSV catalogs |
 | 10 | [How to change things](10-how-to-change-things.md) | Step-by-step recipes for the changes you are most likely to be asked for |
 | 11 | [Performance](11-performance.md) | The benchmark, what was slow and why, shadow mapping, level of detail, frustum culling, texture instead of geometry |
+| 12 | [Presentation rehearsal](12-presentation-rehearsal.md) | Learn, calculate, demonstrate and defend every topic; study plan, closed-book checkpoints and viva practice |
 
 ## The map of the code
 
@@ -69,4 +74,4 @@ x64\Debug\Voyager-2.exe --capture-shading shots   # screenshot every shading tec
 x64\Release\Voyager-2.exe --benchmark bench.txt   # frame and GPU time per view (chapter 11)
 ```
 
-The capture options (`--capture`, `--capture-bodies`, `--capture-shading`, `--capture-raytrace`, `--capture-voyager`) each write a folder of BMP screenshots and exit. Every image in these docs came from them.
+The capture options (`--capture`, `--capture-bodies`, `--capture-shading`, `--capture-raytrace`, `--capture-voyager`) each write a folder of BMP screenshots and exit. `--capture-demo <dir>` runs the 120-second assessment tour and saves 18 chapter images; `scripts/record_assessment_demo.py` records its window externally. Every runtime screenshot in these docs came from the application.
