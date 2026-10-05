@@ -2,6 +2,23 @@
 
 Start here for the new teacher instructions. Use the [rehearsal workbook](12-presentation-rehearsal.md) for the longer derivations and [change recipes](10-how-to-change-things.md) for editing. This document is a practical speaking and demonstration plan, checked against the current code. It does not replace your report or submitted proposal.
 
+## Important features to point out during the video
+
+Slide 2 now introduces the important features beside three actual screenshots. Its speaker notes provide the narration; the ten technical slides show their details. Use this map to explain why each feature matters and how to make it visible.
+
+| Important feature | What makes it useful in this project | Screenshot / slide | What to show and say |
+| --- | --- | --- | --- |
+| Dated mission and coherent flybys | Planets and Voyager use the same NASA/JPL date; interpolation produces smooth flight | 2 and 7 | Bookmarks 1–6 and running date: explain the shared clock and Hermite positions |
+| Authored, inspectable spacecraft | Reusable primitives create 76 assemblies, curved dish and 18 hardware targets | 2, 4 and 6 | I, then ./,: name a component and explain its vertices, normals and parent transform |
+| Four cameras and manual six-degree flight | Users choose bodies/hardware and change viewpoint, spacecraft thrust and pose | 6–7 | Select a world, orbit/zoom, then V and thrust/yaw/brake; explain input → update → render |
+| Precision across enormous scales | Floating origin keeps hardware close-ups stable beside interplanetary positions | 6 | Explain double-precision eye subtraction before float matrices; use overview and Inspect views |
+| Moving spotlight and five shading modes | The same scene demonstrates source geometry and per-vertex/per-fragment surface response | 8–9 | Freeze the view; F5/F6 and F3; explain the visible diffuse/specular change and calculation stage |
+| Shadows and bonus hybrid ray tracing | Analytic body/ring visibility, spacecraft depth-map self-shadow, triangle BVH and one reflection | 10–11 | F4 then F9/F10; point to ring/eclipse shadows and explain nearest hit and reflected direction |
+| NASA textures and derived surface detail | Atlas finishes, inferred relief and water-mask highlights add detail without extra geometry | 12 | F8 off/on; explain albedo versus normal/specular maps and unchanged silhouette |
+| Efficient, complete environment | Four ring systems, 8,500 instanced rocks, stars and a dynamic comet expand the scene | 3 and 5 | Point to rings, rock fields and comet; explain shared meshes and one draw per rock field |
+
+Describe these as strengths of the project's implementation and integration. The standard graphics algorithms have their usual sources; there is no claim that Gouraud, Phong, BVHs or ray tracing were invented here.
+
 ## 1. What is ready, and what is still your responsibility?
 
 | Teacher requirement | Finding | Evidence / demonstration |

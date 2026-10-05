@@ -1,0 +1,210 @@
+{
+  "date": "2026-10-06",
+  "decks": [
+    {
+      "file": "docs/report/Voyager_2_Presentation.pptx",
+      "slides": 13,
+      "text_changes": [
+        {
+          "slide": 2,
+          "old": "Explore, control, compare",
+          "new": "Important features: explore, inspect, compare"
+        },
+        {
+          "slide": 2,
+          "old": "02 INTRODUCTION \u00b7 A complete project walkthrough, followed by your recorded video",
+          "new": "02 INTRODUCTION \u00b7 Important features, screenshots and narrated project demo"
+        },
+        {
+          "slide": 2,
+          "old": "MISSION",
+          "new": "DATED MISSION"
+        },
+        {
+          "slide": 2,
+          "old": "Dated launch, four flybys and\nheliopause.",
+          "new": "NASA/JPL data on one date.\nReplay four giant-planet flybys."
+        },
+        {
+          "slide": 2,
+          "old": "INSPECTION",
+          "new": "PROCEDURAL VOYAGER"
+        },
+        {
+          "slide": 2,
+          "old": "Body focus, 18 hardware targets, free\ncamera.",
+          "new": "76 authored parts; 18 targets.\nInspect curved dish + NASA atlas."
+        },
+        {
+          "slide": 2,
+          "old": "COMPARISON",
+          "new": "RENDERING LAB"
+        },
+        {
+          "slide": 2,
+          "old": "Three lights, five shading modes, ray\ntracing.",
+          "new": "Three lights; five shading modes.\nBVH tracing + one mirror bounce."
+        },
+        {
+          "slide": 3,
+          "old": "03 GEOMETRY \u00b7 Shared sphere construction creates all 26 textured bodies",
+          "new": "03 GEOMETRY \u00b7 One indexed sphere reused for 26 textured bodies; vertices, normals and UVs define the surface"
+        },
+        {
+          "slide": 4,
+          "old": "04 OBJECT CONSTRUCTION \u00b7 Boxes, cylinders, frustums, rods and a curved parabolic dish",
+          "new": "04 SPACECRAFT \u00b7 Authored boxes, rods and a curved dish create 76 assemblies and 18 inspection targets"
+        },
+        {
+          "slide": 5,
+          "old": "05 OBJECT FAMILIES \u00b7 Every rendered family has a primitive and a construction rule",
+          "new": "05 ENVIRONMENT \u00b7 Four ring systems, 8,500 instanced rocks, 7,380 stars and a comet complete the scene"
+        },
+        {
+          "slide": 6,
+          "old": "06 TRANSFORMATIONS \u00b7 Position, pose, size and view are separate operations",
+          "new": "06 INTERACTION \u00b7 Four camera modes and floating origin let you inspect planets and metre-scale hardware"
+        },
+        {
+          "slide": 7,
+          "old": "07 MOTION \u00b7 Dated flight, moon revolution, axial spin, manual six-DOF and comet orientation",
+          "new": "07 MOTION \u00b7 NASA/JPL dated flybys, axial spin, moon revolution and user-controlled spacecraft flight"
+        },
+        {
+          "slide": 8,
+          "old": "08 LIGHTING \u00b7 Source geometry and attenuation determine incident illumination",
+          "new": "08 LIGHTING \u00b7 Sun, moving camera spotlight and directional fill; compare their responses in the same view"
+        },
+        {
+          "slide": 9,
+          "old": "09 SHADING \u00b7 Change the normal/evaluation stage while keeping geometry, texture and lights fixed",
+          "new": "09 SHADING \u00b7 Compare Flat, Gouraud, Phong, Blinn\u2013Phong and Toon on the same planets and spacecraft"
+        },
+        {
+          "slide": 10,
+          "old": "10 SHADOWS \u00b7 Analytic Sun rays for bodies/rings; a depth map for the spacecraft",
+          "new": "10 SHADOWS \u00b7 Analytic rays show eclipses and ring shadows; a depth map handles spacecraft self-shadow"
+        },
+        {
+          "slide": 11,
+          "old": "11 RAY TRACING \u00b7 Analytic spheres/rings and a triangle BVH for the authored spacecraft",
+          "new": "11 BONUS \u00b7 Hybrid tracing uses analytic planets/rings, a spacecraft triangle BVH and one optional reflection"
+        },
+        {
+          "slide": 12,
+          "old": "12 TEXTURES \u00b7 The mesh supplies shape; image channels supply surface detail",
+          "new": "12 SURFACES \u00b7 NASA atlas and derived normal/specular maps add detail; F8 toggles maps for comparison"
+        }
+      ],
+      "shape_layouts_and_styles_preserved": true,
+      "all_media_preserved": true,
+      "other_speaker_notes_preserved": true,
+      "sha256": "3d5c84b80b1209b18fac95df3d6d6341916267c2f9e39ab09b464a7921764ba1"
+    },
+    {
+      "file": "docs/report/Final-Presentation.pptx",
+      "slides": 13,
+      "text_changes": [
+        {
+          "slide": 2,
+          "old": "Explore, control, compare",
+          "new": "Important features: explore, inspect, compare"
+        },
+        {
+          "slide": 2,
+          "old": "02 INTRODUCTION \u00b7 A complete project walkthrough, followed by your recorded video",
+          "new": "02 INTRODUCTION \u00b7 Important features, screenshots and narrated project demo"
+        },
+        {
+          "slide": 2,
+          "old": "MISSION",
+          "new": "DATED MISSION"
+        },
+        {
+          "slide": 2,
+          "old": "Dated launch, four flybys and\nheliopause.",
+          "new": "NASA/JPL data on one date.\nReplay four giant-planet flybys."
+        },
+        {
+          "slide": 2,
+          "old": "INSPECTION",
+          "new": "PROCEDURAL VOYAGER"
+        },
+        {
+          "slide": 2,
+          "old": "Body focus, 18 hardware targets, free\ncamera.",
+          "new": "76 authored parts; 18 targets.\nInspect curved dish + NASA atlas."
+        },
+        {
+          "slide": 2,
+          "old": "COMPARISON",
+          "new": "RENDERING LAB"
+        },
+        {
+          "slide": 2,
+          "old": "Three lights, five shading modes, ray\ntracing.",
+          "new": "Three lights; five shading modes.\nBVH tracing + one mirror bounce."
+        },
+        {
+          "slide": 3,
+          "old": "03 GEOMETRY \u00b7 Shared sphere construction creates all 26 textured bodies",
+          "new": "03 GEOMETRY \u00b7 One indexed sphere reused for 26 textured bodies; vertices, normals and UVs define the surface"
+        },
+        {
+          "slide": 4,
+          "old": "04 OBJECT CONSTRUCTION \u00b7 Boxes, cylinders, frustums, rods and a curved parabolic dish",
+          "new": "04 SPACECRAFT \u00b7 Authored boxes, rods and a curved dish create 76 assemblies and 18 inspection targets"
+        },
+        {
+          "slide": 5,
+          "old": "05 OBJECT FAMILIES \u00b7 Every rendered family has a primitive and a construction rule",
+          "new": "05 ENVIRONMENT \u00b7 Four ring systems, 8,500 instanced rocks, 7,380 stars and a comet complete the scene"
+        },
+        {
+          "slide": 6,
+          "old": "06 TRANSFORMATIONS \u00b7 Position, pose, size and view are separate operations",
+          "new": "06 INTERACTION \u00b7 Four camera modes and floating origin let you inspect planets and metre-scale hardware"
+        },
+        {
+          "slide": 7,
+          "old": "07 MOTION \u00b7 Dated flight, moon revolution, axial spin, manual six-DOF and comet orientation",
+          "new": "07 MOTION \u00b7 NASA/JPL dated flybys, axial spin, moon revolution and user-controlled spacecraft flight"
+        },
+        {
+          "slide": 8,
+          "old": "08 LIGHTING \u00b7 Source geometry and attenuation determine incident illumination",
+          "new": "08 LIGHTING \u00b7 Sun, moving camera spotlight and directional fill; compare their responses in the same view"
+        },
+        {
+          "slide": 9,
+          "old": "09 SHADING \u00b7 Change the normal/evaluation stage while keeping geometry, texture and lights fixed",
+          "new": "09 SHADING \u00b7 Compare Flat, Gouraud, Phong, Blinn\u2013Phong and Toon on the same planets and spacecraft"
+        },
+        {
+          "slide": 10,
+          "old": "10 SHADOWS \u00b7 Analytic Sun rays for bodies/rings; a depth map for the spacecraft",
+          "new": "10 SHADOWS \u00b7 Analytic rays show eclipses and ring shadows; a depth map handles spacecraft self-shadow"
+        },
+        {
+          "slide": 11,
+          "old": "11 RAY TRACING \u00b7 Analytic spheres/rings and a triangle BVH for the authored spacecraft",
+          "new": "11 BONUS \u00b7 Hybrid tracing uses analytic planets/rings, a spacecraft triangle BVH and one optional reflection"
+        },
+        {
+          "slide": 12,
+          "old": "12 TEXTURES \u00b7 The mesh supplies shape; image channels supply surface detail",
+          "new": "12 SURFACES \u00b7 NASA atlas and derived normal/specular maps add detail; F8 toggles maps for comparison"
+        }
+      ],
+      "shape_layouts_and_styles_preserved": true,
+      "all_media_preserved": true,
+      "other_speaker_notes_preserved": true,
+      "sha256": "8f4ecb60cae2b8a5ec22977492aeaadbf02f5265b54c58ccf8c701fc205e64f1"
+    }
+  ],
+  "pdf_pages": 13,
+  "visual_review": "Slide 2 rendered in PowerPoint; PDF overview and bonus tracing slide inspected",
+  "text_fit": "All changed captions/subtitles checked in native PowerPoint",
+  "coverage": "Intro, video cue, important feature screenshots/descriptions, narration notes, thanks",
+  "video": "Author supplies final recording; cue and narration retained"
+}

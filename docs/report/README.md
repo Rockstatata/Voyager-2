@@ -24,7 +24,7 @@ The presentation follows the clarified structure: **two introduction slides, ten
 | Slide | What it explains |
 | ---: | --- |
 | 1 | Project purpose, complete scope, representative scenes and student/course information |
-| 2 | Mission exploration, inspection, controls and rendering comparisons; cue for the author's video |
+| 2 | Important features with screenshot captions: dated NASA/JPL mission, procedural/inspectable Voyager and rendering comparisons; proposed/final scope and video cue |
 | 3 | Vertex layout, buffers, sphere parameters, indexed cells, seams/poles, counts and all 26 bodies |
 | 4 | Procedural Voyager; box/cylinder/frustum/rod/dish construction, normals, counts and curved wireframe |
 | 5 | Rings, instancing, all three fields, points/lines, heliosphere, HUD and dynamic comet |
@@ -38,6 +38,8 @@ The presentation follows the clarified structure: **two introduction slides, ten
 | 13 | Thanks, implementation evidence and discussion |
 
 Speaker notes are substantive explanations, not a substitute for visible content: they expand the equations and connect each example to its implementation. Full-resolution catalogue plates are available separately because 26 body names and eighteen hardware close-ups cannot all be readable thumbnails on one projected slide.
+
+The important features are now explicit in slide 2's title and screenshot captions, and in the technical slide subtitles. The spacecraft is authored from primitives and a curved dish; flybys share dated NASA/JPL data; users select, inspect and pilot; matched views compare lights/shaders; analytic shadows and hybrid BVH tracing demonstrate visibility; NASA/derived maps supply surface detail; instancing supports the larger environment. Slide 2's notes contain the feature-by-feature video narration. See the [showcase feature map](../guide/13-teacher-showcase.md) for slide numbers and actions.
 
 Slide 2 shows **Proposed features** and **Implemented + additions**, matching the report's project overview. Slide 8 visibly shows the ambient, diffuse and specular terms and the combined illumination equation. Slide 9 already shows the Phong and Blinn--Phong specular equations below the matched views. The report derivation is Chapter III, Section 3.5, PDF pages 12–13. Both edited PPTX files retain thirteen slides and unrelated slide content/media. Expanded notes define every symbol and describe the equations. To reapply these cards and equations to closed PPTX files, use `python -X utf8 scripts/update_showcase_scope_slides.py`; close both files in PowerPoint first. This targeted updater preserves unrelated package parts and does not regenerate other slides. It also adds the slide 8 equation to the presentation PDF.
 

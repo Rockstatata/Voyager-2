@@ -22,6 +22,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from update_showcase_scope_slides import CARDS
+from highlight_showcase_features import SUBTITLES, INTRO_TITLE, INTRO_CAPTIONS
 
 ROOT=Path(__file__).resolve().parents[1]
 REPORT=ROOT/'docs/report'
@@ -102,6 +103,8 @@ class Deck:
         return ph
 
     def start(self,title,subtitle,notes):
+        subtitle=SUBTITLES.get(len(self.notes)+1,subtitle)
+        if len(self.notes)+1==2:title=INTRO_TITLE
         notes=NOTES[len(self.notes)+1]
         self.slide=self.ppt.slides.add_slide(self.ppt.slide_layouts[6]);self.notes.append((title,notes))
         self.slide.background.fill.solid();self.slide.background.fill.fore_color.rgb=RGBColor.from_string(WHITE)
@@ -146,9 +149,8 @@ def main():
 
     d.start('Explore, control, compare','02 INTRODUCTION · A complete project walkthrough, followed by your recorded video',
         "")
-    labels=[('MISSION','Dated launch, four flybys and heliopause.','jupiter_encounter.jpg'),
-            ('INSPECTION','Body focus, 18 hardware targets, free camera.','dish.jpg'),
-            ('COMPARISON','Three lights, five shading modes, ray tracing.','saturn_traced.jpg')]
+    labels=[(caption[1],caption[3],image) for caption,image in
+            zip(INTRO_CAPTIONS,['jupiter_encounter.jpg','dish.jpg','saturn_traced.jpg'])]
     for i,(a,b,c) in enumerate(labels):
         x=32+i*306;d.pic(FIG/c,x,99,286,161);d.text(a,x,272,286,20,True,color=TEAL);d.text(b,x,304,286,17)
     for i,(heading,body) in enumerate(CARDS):

@@ -31,6 +31,23 @@ Additional features include 26 textured bodies, four ring systems, 76 spacecraft
 
 Give the overview first; the following ten technical slides derive geometry, transforms, motion, lighting, shading, shadows, tracing and textures. The report methodology contains the detailed implementation and equations, and its typography follows the supplied CSE-4000 report template. Play the final project video at the existing cue, narrating each visible feature as it changes.
 
+IMPORTANT FEATURES AND VIDEO NARRATION
+Use the three screenshots above the captions as evidence. Begin with the dated mission: NASA/JPL offline positions and velocities place planets and Voyager on one shared Julian Date; interpolation gives smooth flybys. In the video, point to the running date and the four giant-planet encounters. This connects historical mission data to animation and transforms (slides 2 and 7).
+
+Next describe the spacecraft. The mesh is authored from reusable primitives rather than an imported spacecraft mesh: boxes, cylinders, rods and a sampled paraboloid. There are 76 assemblies and 18 inspectable hardware targets. Point to the dish curvature, truss structure, component labels and NASA texture atlas. The model and inspection system connect geometry, normals, hierarchical transforms and interaction (slides 2, 4, 6 and 12).
+
+Show user control: four camera modes, mouse selection, zoom and real-time manual six-degree flight. Floating origin subtracts camera position in double precision so hardware close-ups remain stable across large world coordinates. In the video show a selected body, then Inspect, then thrust/yaw/braking; explain that input changes state and the update computes the new pose (slides 6–7).
+
+Show the rendering comparison in a frozen view. Toggle the moving camera spotlight and directional fill, then compare Gouraud against Phong and the other three shading modes. Identify the visible response and where illumination is computed; explain ambient, Lambert diffuse and the specular exponent rather than only naming techniques (slides 8–9).
+
+The bonus rendering feature is hybrid Whitted ray tracing. F9 traces analytic planet/ring hits and the authored spacecraft through a triangle BVH. F10 enables one optional mirror reflection. Show a raster/traced comparison and describe primary, shadow and reflected rays, then show body/ring shadows and spacecraft self-shadow (slides 10–11).
+
+Texture detail is another important feature: the NASA atlas supplies spacecraft finishes; colour-derived relief and an ocean mask affect normal/specular response. F8 compares maps off/on without changing geometry. Explain that normal maps change shading normals, not the silhouette (slide 12).
+
+Finally explain the environment and efficiency: four ring systems, 8,500 deterministic rock instances in three fields, 7,380 star points and a dynamic comet. Instancing, shared sphere meshes, LOD and culling reduce drawing work. Rock fields are static; the comet and mission/body animation supply motion (slides 3 and 5).
+
+Narrate the video using feature → calculation → visible effect. Use the two-minute plan in docs/guide/13-teacher-showcase.md. The project-specific strengths are the integration, authored geometry and inspectable comparisons; the graphics algorithms themselves are established techniques.
+
 
 # Slide 3
 
@@ -134,6 +151,8 @@ The ordinary directional fill is cool, intensity .35, with normalized direction 
 Colour is albedo×(ambient+VS×SunDiffuse+otherDiffuse)+VS×SunSpecular+otherSpecular, ambient=.07. Only Sun terms receive Sun visibility. Auxiliary lights can illuminate a night side without changing the eclipse calculation; they do not cast shadows. F5/F6/F7 toggle the examples; K disables lighting.
 
 Sources: `LightingController.cpp`, `LightingUniforms.cpp`, `shaders/lighting.glsl`. Report §3.5.
+
+The lower-left panel shows ambient, diffuse and Phong-specular equations together with the implemented final light-composition equation. Slide 9 shows the Phong and Blinn-Phong specular equations side by side. In the report, see Chapter III, Section 3.5 (PDF pages 12–13).
 
 # Slide 9
 
