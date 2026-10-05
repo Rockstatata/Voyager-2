@@ -9,12 +9,13 @@ The presentation follows the clarified structure: **two introduction slides, ten
 | [Report PDF](Voyager_2_Graphics_Report.pdf) | Nineteen pages; five chapters; eleven-page methodology; numbered equations; full-width figures; verification; limitations; seven external references |
 | [Editable LaTeX report](Voyager_2_Graphics_Report.tex) | XeLaTeX source with Times New Roman and centralized template formatting |
 | [Editable PowerPoint](Voyager_2_Presentation.pptx) | Thirteen slides, editable text, high-resolution equations/screenshots and detailed speaker notes |
-| [Presentation PDF](Voyager_2_Presentation.pdf) | The same thirteen layouts in a portable format |
+| [Presentation PDF](Voyager_2_Presentation.pdf) | Generated thirteen-slide companion; subsequent manual PowerPoint edits may differ |
 | [Editable speaker-note source](Presentation_Notes_Source.md) | Derivations, all eighteen hardware constructions, worked examples, source paths and caveats |
 | [Exported speaker notes](Presentation_Notes.md) | The explanations embedded in the current PPTX |
 | [Visual fundamentals catalogue](Visual_Fundamentals.md) | Full-resolution body/hardware catalogues, primitive rules, worked topology examples and links to every object |
 | [Audit and viva guide](Assessment_and_Viva.md) | Requirement evidence, formulas, defense questions and rehearsal checks |
 | [Presentation learning workbook](../guide/12-presentation-rehearsal.md) | Study route, worked problems, closed-book checks, live-demo sequence and mock viva |
+| [Teacher showcase preparation](../guide/13-teacher-showcase.md) | Current requirements, original proposal comparison, narrated demo, implementation navigation and parameter-change drills |
 | [Validation](validation/README.md) | Builds, scene checks, runtime capture logs, input regression and document checks |
 | [Visual provenance](figures/technical/visual_manifest.json) | Actual source images/code and SHA-256 hashes for each new screenshot plate/diagram |
 
@@ -47,6 +48,12 @@ The supplied [CSE-4000 template](<CSE-4000-Final (Template).pdf>) and [KUET logo
 Course teachers replace the thesis supervisor field. At the author's request, the acknowledgment and the original Societal/Professional and Complex Engineering chapters are removed. Conclusions is renumbered Chapter V and shares a page with results. Methodology now spans eleven pages, adding worked indices/transforms, all eighteen hardware constructions, picking, Hermite reasoning, tangent-frame normal mapping, BVH details and rendering optimizations. The bibliography contains seven external sources and no project self-reference. The contents/lists are combined to retain the **less-than-twenty-page** constraint. The template typography and full-width figures remain; its example names, topic, signature placeholder and annotation boxes are not copied.
 
 ## Rebuild the documents
+
+**Preserving edited slides:** the full builder below regenerates the PPTX from its source and overwrites manual PowerPoint edits. The author's current `Voyager_2_Presentation.pptx` and `Final-Presentation.pptx` were preserved during the showcase audit. For report-only changes, use the following command, which does not rebuild either presentation:
+
+```powershell
+python -X utf8 -c "import sys; sys.path.insert(0,'scripts'); import build_assessment_report as r; r.compile_report()"
+```
 
 Requires Windows fonts, Python dependencies and **XeLaTeX** (MiKTeX or TeX Live), with the packages in the report's preamble. The document builder disables unattended TeX package installation and reports missing packages explicitly.
 

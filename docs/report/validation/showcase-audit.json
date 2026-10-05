@@ -1,0 +1,128 @@
+{
+  "date": "2026-10-05",
+  "required_implementation": {
+    "lighting": "source-verified; runtime evidence available",
+    "transformations": "source-verified; runtime evidence available",
+    "Gouraud shading": "source-verified; runtime evidence available",
+    "Phong shading": "source-verified; runtime evidence available",
+    "motion/animation": "source-verified; runtime evidence available",
+    "interaction": "source-verified; runtime evidence available"
+  },
+  "bonus_ray_tracing": "source-verified hybrid Whitted view, analytic visibility and spacecraft triangle BVH; retained ray-tracing captures",
+  "checks": {
+    "Debug_x64_build": "passed",
+    "scene_layout": "passed",
+    "navigation_and_motion": "passed",
+    "brief_input_taps": "passed",
+    "fresh_shading_capture": "20 screenshots; exit 0",
+    "visual_review": "Earth/spacecraft Gouraud and Phong, spotlight and directional fill inspected",
+    "report_export": "19 pages; full-width figure bounds; resolved references; 11 methodology pages"
+  },
+  "proposal": {
+    "file": "docs\\report\\Voyager_2_Project_Proposal_2_Page.pdf",
+    "sha256": "d05491cc80809aaf73406332a14191b694ec92aa5d400ecd65497c1961c73e26",
+    "pages": 2,
+    "comparison": "docs/guide/13-teacher-showcase.md"
+  },
+  "preserved_presentations": [
+    {
+      "file": "docs\\report\\Voyager_2_Presentation.pptx",
+      "sha256": "c26799a0de7a78ccd6a563063b38ad6f016fbd6ac06de4f92058f535a4af3bf5",
+      "slides": 13,
+      "video_media": [],
+      "preserved_byte_for_byte": true
+    },
+    {
+      "file": "docs\\report\\Final-Presentation.pptx",
+      "sha256": "c26799a0de7a78ccd6a563063b38ad6f016fbd6ac06de4f92058f535a4af3bf5",
+      "slides": 13,
+      "video_media": [],
+      "preserved_byte_for_byte": true
+    }
+  ],
+  "report_sha256": "77476751254e88cd02541e01bea3defffe35022fd2a1a6affc5a114f52fa205d",
+  "video": "No video embedded in either inspected PPTX; author supplies final recording",
+  "runtime_evidence": [
+    {
+      "file": "captures\\assessment\\showcase\\shading\\earth_blinn_phong.bmp",
+      "sha256": "331d5459347ba6a1d314535b822735b9011f37090d7e03dd40185583f98b312a"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\earth_flat.bmp",
+      "sha256": "b45b5d66a989c8af5bb378cf82b12fcb0410362e13ab1fb9d528f7581dddf395"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\earth_gouraud.bmp",
+      "sha256": "d643cd44c685daea7fad553d658b400b616c23070fc22588b84f25dcf1f2f0c8"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\earth_phong.bmp",
+      "sha256": "932be60079f72db027f956381a686c42e313c206fd1098e0a2b4bfc21a3e1403"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\earth_toon.bmp",
+      "sha256": "c4232b9135982db2cb3b9f136f7283baef03124f09db10757db9dfe987551c8f"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\light_falloff.bmp",
+      "sha256": "4b3a01b6cdea4452a1cd4234fcd9473b3f3e8953ca4e054cbb63b0f4b15de5c0"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\light_fill.bmp",
+      "sha256": "ff805fd5da4193ac394efad480224535d4fbca39b084a44de5191ee1c93cc59a"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\light_headlamp.bmp",
+      "sha256": "12804d58891281772a1fbfd89b889f09eed09b3ff35b78282a5143ea2516ec0a"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\maps_earth_off.bmp",
+      "sha256": "098d2d931220d3fd104798c9cd02b6b1ef1d9ae5a756332cc6619513fb89a132"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\maps_earth_on.bmp",
+      "sha256": "76cf76d84f0b336f03cf90997a863034f68c5afaa09120efce7af0cf9275bc08"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\maps_moon_off.bmp",
+      "sha256": "579716515c4b9aa80897917043c5fb389458b0a09e1cc663535a7b06040cf927"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\maps_moon_on.bmp",
+      "sha256": "02617f8bc44e541cf489389a1772f18c9dc9e9058c8b27c8a5971fc61af1d6a7"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\shadow_saturn_hard.bmp",
+      "sha256": "1966b7058233fa19528c8c33977f8e9e8d410050db1f7bc954e7f897775c3d8d"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\shadow_saturn_off.bmp",
+      "sha256": "88cca63d2aba1a4f0d8089e90ceaee048e9a75ad5b13dd05cd1a760c68c5fdbe"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\shadow_saturn_soft.bmp",
+      "sha256": "979fef1a2913a7151128328a89cd296fa1dbf86def86466772e3c84027e2e0a4"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\voyager_blinn_phong.bmp",
+      "sha256": "13c43d276a6662a5c0c6b4f73b27ca5d5f98911cf0156af3a7b033a8496f020d"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\voyager_flat.bmp",
+      "sha256": "b6db141cefe3ebf338719b8ad189bec8d1c650b46745b0a3aba70dc072bfd4d8"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\voyager_gouraud.bmp",
+      "sha256": "cd15d2fc830727d678c98d7cf0edf0ca5166f511511bdd2d9c6c8aa70572a2b9"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\voyager_phong.bmp",
+      "sha256": "ac1fd5a32555772f29678048aefbb6d0c7f02c2929d9c1161b13212d1915fec6"
+    },
+    {
+      "file": "captures\\assessment\\showcase\\shading\\voyager_toon.bmp",
+      "sha256": "62c55962cedfc94c6739b1f40beefe41d6296035323f90dcccf1d6068e87c6f0"
+    }
+  ],
+  "limits": "Automated tests do not replace hands-on flight/picking, speaker rehearsal or playback on the showcase machine. No new performance benchmark was taken."
+}

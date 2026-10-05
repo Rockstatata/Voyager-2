@@ -6,6 +6,8 @@ For assessment, use the [CSE 4102 report and presentation package](../report/REA
 
 **Presenting tomorrow? Start with [the presentation rehearsal workbook](12-presentation-rehearsal.md).** It maps this textbook to the slides, provides a three-hour/90-minute learning route, numerical exercises, demo steps, a speaking sequence and mock viva questions with expandable answers.
 
+For the latest teacher instructions, use the [showcase preparation guide](13-teacher-showcase.md): requirement evidence, proposal comparison, two-minute video narration, live demonstration, code navigation and parameter-change drills.
+
 ![Voyager 2 six hours before Jupiter closest approach](../objects/images/runtime/03_jupiter_approach.jpg)
 
 ## Reading order
@@ -24,6 +26,7 @@ For assessment, use the [CSE 4102 report and presentation package](../report/REA
 | 10 | [How to change things](10-how-to-change-things.md) | Step-by-step recipes for the changes you are most likely to be asked for |
 | 11 | [Performance](11-performance.md) | The benchmark, what was slow and why, shadow mapping, level of detail, frustum culling, texture instead of geometry |
 | 12 | [Presentation rehearsal](12-presentation-rehearsal.md) | Learn, calculate, demonstrate and defend every topic; study plan, closed-book checkpoints and viva practice |
+| 13 | [Teacher showcase](13-teacher-showcase.md) | Match the teacher criteria, narrate the video, demonstrate controls and explain small code changes |
 
 ## The map of the code
 
