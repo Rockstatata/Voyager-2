@@ -232,6 +232,9 @@ def main():
         x=32+i*306;d.text(title,x,295,286,18,True,color=TEAL);d.eq(formula,x,330,286,18)
     d.eq(r'A(d)=\frac{1}{k_c+k_ld+k_qd^2},\quad D=\max(\mathbf n\cdot\mathbf l,0)',32,389,535,21)
     d.pic(TECH/'moving_spot.png',606,391,322,82)
+    d.rect(32,419,558,49,PALE)
+    d.text('AMBIENT  k_a = 0.07\nDIFFUSE  D = max(n·l, 0)\nSPECULAR  S_P = k_s max(r·v, 0)^p  ·  I = a(k_a+V_SD_S+D_o)+V_SS_S+S_o',
+           42,422,538,13,True,leading=14.8)
     d.text('Camera motion carries the spotlight position and direction; the cone is 12°–18°.',32,472,896,16)
     d.end()
 

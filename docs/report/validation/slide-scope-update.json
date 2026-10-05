@@ -6,7 +6,7 @@
       "other_slides_preserved": true,
       "all_other_notes_preserved": true,
       "media_preserved": true,
-      "sha256": "711dff3a57a7efe3aa357f2a2a7e1e6f010780b06df60c37053b032f1844115b"
+      "sha256": "5ff631959daf11852a5bfba793511b9ec8ac961045050162a0402878eab87839"
     },
     {
       "file": "docs/report/Final-Presentation.pptx",
@@ -14,11 +14,15 @@
       "other_slides_preserved": true,
       "all_other_notes_preserved": true,
       "media_preserved": true,
-      "sha256": "f240cade2be963a7481d70a922b5a371593899e49240388b86c587adf6744950"
+      "sha256": "8f0dbb0764bd54b740ad8e173c7eac555d6d9212a9c7eb420aa2df96a53ed1be"
     }
   ],
   "pdf_pages": 13,
   "scope_cards": "Visible on slide 2; updated speaker notes",
   "visual_review": "PowerPoint preview inspected; text bounds checked",
-  "text_bounds": "Four new text boxes checked in PowerPoint; no overflow"
+  "text_bounds": "Scope-card and equation text boxes fit their authored regions",
+  "equation_locations": {
+    "lighting": "slide 8, visible lower-left equation panel",
+    "Phong_and_Blinn_Phong": "slide 9, equations under the matched image rows"
+  }
 }

@@ -133,6 +133,8 @@ The ordinary directional fill is cool, intensity .35, with normalized direction 
 
 Colour is albedo×(ambient+VS×SunDiffuse+otherDiffuse)+VS×SunSpecular+otherSpecular, ambient=.07. Only Sun terms receive Sun visibility. Auxiliary lights can illuminate a night side without changing the eclipse calculation; they do not cast shadows. F5/F6/F7 toggle the examples; K disables lighting.
 
+The visible equation panel on this slide identifies ambient $k_a=0.07$, Lambert diffuse $D=\max(n\cdot l,0)$, Phong specular $S_P=k_s\max(r\cdot v,0)^p$, and the implementation's full light composition. The matching report derivation is Chapter III, Section 3.5, PDF pages 12–13. Slide 9 places the Phong and Blinn–Phong specular equations below their matched images.
+
 Sources: `LightingController.cpp`, `LightingUniforms.cpp`, `shaders/lighting.glsl`. Report §3.5.
 
 # Slide 9: Five shading techniques, matched views
